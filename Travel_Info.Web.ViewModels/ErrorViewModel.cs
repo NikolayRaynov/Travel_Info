@@ -1,4 +1,4 @@
-namespace Travel_Info.Models
+namespace Travel_Info.Web.ViewModels
 {
     public class ErrorViewModel
     {
