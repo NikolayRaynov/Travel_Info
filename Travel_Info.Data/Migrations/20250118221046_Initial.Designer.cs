@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Travel_Info.Data;
 
@@ -11,9 +12,11 @@ using Travel_Info.Data;
 namespace Travel_Info.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250118221046_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -239,7 +242,7 @@ namespace Travel_Info.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("Travel_Info.Data.Models.Destination", b =>
@@ -277,7 +280,7 @@ namespace Travel_Info.Data.Migrations
 
                     b.HasIndex("PlaceToVisistId");
 
-                    b.ToTable("Destinations", (string)null);
+                    b.ToTable("Destinations");
                 });
 
             modelBuilder.Entity("Travel_Info.Data.Models.FavoritePlace", b =>
@@ -296,7 +299,7 @@ namespace Travel_Info.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("FavoritesPlaces", (string)null);
+                    b.ToTable("FavoritesPlaces");
                 });
 
             modelBuilder.Entity("Travel_Info.Data.Models.Image", b =>
@@ -324,7 +327,7 @@ namespace Travel_Info.Data.Migrations
 
                     b.HasIndex("DestinationId");
 
-                    b.ToTable("Images", (string)null);
+                    b.ToTable("Images");
                 });
 
             modelBuilder.Entity("Travel_Info.Data.Models.PlaceToVisit", b =>
@@ -343,7 +346,7 @@ namespace Travel_Info.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("PlacesToVisit", (string)null);
+                    b.ToTable("PlacesToVisit");
                 });
 
             modelBuilder.Entity("Travel_Info.Data.Models.Review", b =>
@@ -376,7 +379,7 @@ namespace Travel_Info.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Reviews", (string)null);
+                    b.ToTable("Reviews");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
