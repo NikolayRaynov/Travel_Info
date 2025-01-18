@@ -12,7 +12,7 @@ using Travel_Info.Data;
 namespace Travel_Info.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250118001940_Initial")]
+    [Migration("20250118003636_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
