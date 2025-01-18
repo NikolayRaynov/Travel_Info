@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Travel_Info.Data.Models", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Travel_Info.Web.Infrastructure", "Travel_Info.Web.Infrastructure\Travel_Info.Web.Infrastructure.csproj", "{13CB4E4C-33A9-4796-84D1-3D6390DD1043}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Travel_Info.Common", "Travel_Info.Common\Travel_Info.Common.csproj", "{8793747D-9F86-41E7-9133-8D03ACB8E6BF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{13CB4E4C-33A9-4796-84D1-3D6390DD1043}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{13CB4E4C-33A9-4796-84D1-3D6390DD1043}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{13CB4E4C-33A9-4796-84D1-3D6390DD1043}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8793747D-9F86-41E7-9133-8D03ACB8E6BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8793747D-9F86-41E7-9133-8D03ACB8E6BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8793747D-9F86-41E7-9133-8D03ACB8E6BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8793747D-9F86-41E7-9133-8D03ACB8E6BF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
