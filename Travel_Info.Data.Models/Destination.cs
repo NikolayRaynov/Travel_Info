@@ -16,11 +16,11 @@ namespace Travel_Info.Data.Models
 
         [Required]
         [MaxLength(NameMaxLength)]
-        public string Name { get; set; } = null!;
+        public string Name { get; set; } = string.Empty;
 
         [Required]
         [MaxLength(DescriptionMaxLength)]
-        public string Description { get; set; } = null!;
+        public string Description { get; set; } = string.Empty;
 
         public virtual ICollection<Image> Images { get; set; } = new List<Image>();
         public virtual ICollection<Category> Categories { get; set; } = new HashSet<Category>();
