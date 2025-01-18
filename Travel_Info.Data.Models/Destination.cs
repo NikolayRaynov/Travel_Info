@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,8 +23,22 @@ namespace Travel_Info.Data.Models
         [MaxLength(DestinationDescriptionMaxLength)]
         public string Description { get; set; } = string.Empty;
 
+        [Required]
+        public int CategoryId { get; set; }
+        [ForeignKey(nameof(CategoryId))]
+        public virtual Category Category { get; set; } = null!;
+
+        [Required]
+        public int FavoritePlaceId { get; set; }
+        [ForeignKey(nameof(FavoritePlaceId))]
+        public FavoritePlace FavoritePlace { get; set; } = null!;
+
+        [Required]
+        public int PlaceToVisistId { get; set; }
+        [ForeignKey(nameof(PlaceToVisistId))]
+        public PlaceToVisit PlaceToVisit { get; set; } = null!;
+
         public virtual ICollection<Image> Images { get; set; } = new List<Image>();
-        public virtual ICollection<Category> Categories { get; set; } = new HashSet<Category>();
         public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
     }
 }

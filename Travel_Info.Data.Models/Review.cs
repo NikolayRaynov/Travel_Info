@@ -17,14 +17,13 @@ namespace Travel_Info.Data.Models
 
         public string? Comment { get; set; }
 
+        [Required]
         public DateTime CreatedAt { get; set; }
-
 
         [Required]
         public string UserId { get; set; } = string.Empty;
         [ForeignKey(nameof(UserId))]
         public virtual ApplicationUser User { get; set; } = null!;
-
 
         [Required]
         public int DestinationId { get; set; }
