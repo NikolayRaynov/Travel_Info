@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Travel_Info.Data\Travel_Info.Data.csproj" />
+    <ProjectReference Include="..\Travel_Info.Web.Infrastructure\Travel_Info.Web.Infrastructure.csproj" />
     <ProjectReference Include="..\Travel_Info.Web.ViewModels\Travel_Info.Web.ViewModels.csproj" />
   </ItemGroup>
 
