@@ -10,11 +10,11 @@ namespace Travel_Info.Data.Models
         public int Id { get; set; }
 
         [Required]
-        [MaxLength(UrlMaxLength)]
+        [MaxLength(ImageUrlMaxLength)]
         public string? Url { get; set; }
 
         [Required]
-        [MaxLength(DescriptionMaxLength)]
+        [MaxLength(ImageDescriptionMaxLength)]
         public string Description { get; set; } = string.Empty;
 
         [Required]
