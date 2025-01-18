@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
+using static Travel_Info.Common.EntityValidationConstants.Image;
 
 namespace Travel_Info.Data.Models
 {
@@ -15,9 +11,11 @@ namespace Travel_Info.Data.Models
         public int DestinationId { get; set; }
 
         [Required]
+        [MaxLength(UrlMaxLength)]
         public string Url { get; set; } = null!;
 
         [Required]
+        [MaxLength(DescriptionMaxLength)]
         public string Description { get; set; } = null!;
 
         public virtual Destination Destination { get; set; } = null!;
