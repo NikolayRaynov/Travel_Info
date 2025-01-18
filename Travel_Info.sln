@@ -15,6 +15,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Travel_Info.Web.Infrastruct
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Travel_Info.Common", "Travel_Info.Common\Travel_Info.Common.csproj", "{8793747D-9F86-41E7-9133-8D03ACB8E6BF}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Web", "Web", "{BE58B236-3948-4FE5-B6D6-83D534154EAE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{927DCC72-E627-48B7-B27A-94099D37642F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,6 +52,13 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F2C14574-B98A-4A74-9A48-A00CCE6275BE} = {BE58B236-3948-4FE5-B6D6-83D534154EAE}
+		{51432B40-9FC5-4BFC-A382-6E764E955770} = {BE58B236-3948-4FE5-B6D6-83D534154EAE}
+		{6BFC5FF3-DA43-489E-9C64-8D54300289F5} = {927DCC72-E627-48B7-B27A-94099D37642F}
+		{6691F37C-E893-4417-901D-7DC4F5B981EE} = {927DCC72-E627-48B7-B27A-94099D37642F}
+		{13CB4E4C-33A9-4796-84D1-3D6390DD1043} = {BE58B236-3948-4FE5-B6D6-83D534154EAE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {89491639-B04D-42C7-ACED-3BB6FCFE657A}
