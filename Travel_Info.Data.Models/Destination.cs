@@ -15,11 +15,11 @@ namespace Travel_Info.Data.Models
         public int Id { get; set; }
 
         [Required]
-        [MaxLength(NameMaxLength)]
+        [MaxLength(DestinationNameMaxLength)]
         public string Name { get; set; } = string.Empty;
 
         [Required]
-        [MaxLength(DescriptionMaxLength)]
+        [MaxLength(DestinationDescriptionMaxLength)]
         public string Description { get; set; } = string.Empty;
 
         public virtual ICollection<Image> Images { get; set; } = new List<Image>();
