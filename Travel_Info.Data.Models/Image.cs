@@ -12,7 +12,7 @@ namespace Travel_Info.Data.Models
 
         [Required]
         [MaxLength(UrlMaxLength)]
-        public string Url { get; set; } = null!;
+        public string? Url { get; set; }
 
         [Required]
         [MaxLength(DescriptionMaxLength)]
