@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using static Travel_Info.Common.EntityValidationConstants.Destination;
+
 namespace Travel_Info.Data.Models
 {
     public class Destination
@@ -13,9 +15,11 @@ namespace Travel_Info.Data.Models
         public int Id { get; set; }
 
         [Required]
+        [MaxLength(NameMaxLength)]
         public string Name { get; set; } = null!;
 
         [Required]
+        [MaxLength(DescriptionMaxLength)]
         public string Description { get; set; } = null!;
 
         public virtual ICollection<Image> Images { get; set; } = new List<Image>();

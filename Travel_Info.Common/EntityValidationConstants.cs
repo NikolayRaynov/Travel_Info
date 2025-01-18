@@ -21,5 +21,13 @@ namespace Travel_Info.Common
             public const int NameMinLength = 10;
             public const int NameMaxLength = 80;
         }
+
+        public static class Destination
+        {
+            public const int NameMinLength = 4;
+            public const int NameMaxLength = 85;
+            public const int DescriptionMinLength = 10;
+            public const int DescriptionMaxLength = 500;
+        }
     }
 }
