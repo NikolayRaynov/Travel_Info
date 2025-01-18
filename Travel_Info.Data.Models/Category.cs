@@ -16,7 +16,7 @@ namespace Travel_Info.Data.Models
 
         [Required]
         [MaxLength(NameMaxLength)]
-        public string Name { get; set; } = null!;
+        public string Name { get; set; } = string.Empty;
 
         public virtual ICollection<Destination> Destinations { get; set; } = new HashSet<Destination>();
     }
