@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Travel_Info.Web.ViewModels"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Travel_Info.Data", "Travel_Info.Data\Travel_Info.Data.csproj", "{6BFC5FF3-DA43-489E-9C64-8D54300289F5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Travel_Info.Data.Models", "Travel_Info.Data.Models\Travel_Info.Data.Models.csproj", "{6691F37C-E893-4417-901D-7DC4F5B981EE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{6BFC5FF3-DA43-489E-9C64-8D54300289F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6BFC5FF3-DA43-489E-9C64-8D54300289F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6BFC5FF3-DA43-489E-9C64-8D54300289F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6691F37C-E893-4417-901D-7DC4F5B981EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6691F37C-E893-4417-901D-7DC4F5B981EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6691F37C-E893-4417-901D-7DC4F5B981EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6691F37C-E893-4417-901D-7DC4F5B981EE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
