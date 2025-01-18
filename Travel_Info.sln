@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34607.119
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Travel_Info", "Travel_Info\Travel_Info.csproj", "{F2C14574-B98A-4A74-9A48-A00CCE6275BE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Travel_Info", "Travel_Info\Travel_Info.csproj", "{F2C14574-B98A-4A74-9A48-A00CCE6275BE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Travel_Info.Web.ViewModels", "Travel_Info.Web.ViewModels\Travel_Info.Web.ViewModels.csproj", "{51432B40-9FC5-4BFC-A382-6E764E955770}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Travel_Info.Web.ViewModels", "Travel_Info.Web.ViewModels\Travel_Info.Web.ViewModels.csproj", "{51432B40-9FC5-4BFC-A382-6E764E955770}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Travel_Info.Data", "Travel_Info.Data\Travel_Info.Data.csproj", "{6BFC5FF3-DA43-489E-9C64-8D54300289F5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{51432B40-9FC5-4BFC-A382-6E764E955770}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{51432B40-9FC5-4BFC-A382-6E764E955770}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{51432B40-9FC5-4BFC-A382-6E764E955770}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6BFC5FF3-DA43-489E-9C64-8D54300289F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6BFC5FF3-DA43-489E-9C64-8D54300289F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6BFC5FF3-DA43-489E-9C64-8D54300289F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6BFC5FF3-DA43-489E-9C64-8D54300289F5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -16,10 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <ProjectReference Include="..\Travel_Info.Data\Travel_Info.Data.csproj" />
     <ProjectReference Include="..\Travel_Info.Web.ViewModels\Travel_Info.Web.ViewModels.csproj" />
   </ItemGroup>
 
