@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using static Travel_Info.Common.EntityValidationConstants.Category;
+
 namespace Travel_Info.Data.Models
 {
     public class Category
@@ -13,9 +15,9 @@ namespace Travel_Info.Data.Models
         public int Id { get; set; }
 
         [Required]
+        [MaxLength(NameMaxLength)]
         public string Name { get; set; } = null!;
 
-        public virtual ICollection<Destination> Destinations { get; set; }
-
+        public virtual ICollection<Destination> Destinations { get; set; } = new HashSet<Destination>();
     }
 }

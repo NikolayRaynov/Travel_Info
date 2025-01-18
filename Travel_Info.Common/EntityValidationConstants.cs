@@ -15,5 +15,11 @@ namespace Travel_Info.Common
             public const int DescriptionMinLength = 10;
             public const int DescriptionMaxLength = 500;
         }
+
+        public static class Category
+        {
+            public const int NameMinLength = 10;
+            public const int NameMaxLength = 80;
+        }
     }
 }
