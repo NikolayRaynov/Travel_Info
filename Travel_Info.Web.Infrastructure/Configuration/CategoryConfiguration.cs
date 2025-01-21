@@ -10,7 +10,7 @@ using Travel_Info.Data.Models;
 
 namespace Travel_Info.Web.Infrastructure.Configuration
 {
-    internal class CategoryConfiguration : IEntityTypeConfiguration<Category>
+    public class CategoryConfiguration : IEntityTypeConfiguration<Category>
     {
         public void Configure(EntityTypeBuilder<Category> builder)
         {
