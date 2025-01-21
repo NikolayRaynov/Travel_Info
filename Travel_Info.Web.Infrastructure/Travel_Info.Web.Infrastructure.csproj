@@ -7,7 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Travel_Info.Data\Travel_Info.Data.csproj" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Travel_Info.Data.Models\Travel_Info.Data.Models.csproj" />
   </ItemGroup>
 
 </Project>

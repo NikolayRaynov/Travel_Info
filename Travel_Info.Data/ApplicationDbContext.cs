@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Travel_Info.Data.Models;
+using Travel_Info.Web.Infrastructure.Configuration;
 
 namespace Travel_Info.Data
 {
@@ -20,6 +21,8 @@ namespace Travel_Info.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.ApplyConfiguration(new CategoryConfiguration());
+
             base.OnModelCreating(builder);
         }
     }
