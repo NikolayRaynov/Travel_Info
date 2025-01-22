@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Travel_Info.Data;
 
@@ -11,9 +12,11 @@ using Travel_Info.Data;
 namespace Travel_Info.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250122172343_SeedFavorites")]
+    partial class SeedFavorites
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -228,15 +231,15 @@ namespace Travel_Info.Data.Migrations
                         {
                             Id = "dea12856-c198-4129-b3f3-b893d8395082",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "264d7b54-a3b8-4b0f-acde-1f3a19ebf062",
+                            ConcurrencyStamp = "206fd339-ad7e-4316-8225-4c10888ed816",
                             Email = "user@mail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "USER@MAIL.COM",
                             NormalizedUserName = "USER@MAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEIBk8aGxwK7sy58rgQubvcTJ0224DVXBTJEYmqBNatUmhJPebXAlRIj2IPfMBQv6ng==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEPaTxGHyg5VYryZQwwo+pE+VBp5pEfKiXdWgDix5WzxZTtff0sOopgYtxxzYEUnyGw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "e290883e-11dc-42e8-b35a-1c28e1c01d55",
+                            SecurityStamp = "23a8897c-7078-4fd2-b005-1ac4d777bc3a",
                             TwoFactorEnabled = false,
                             UserName = "user@mail.com"
                         },
@@ -244,15 +247,15 @@ namespace Travel_Info.Data.Migrations
                         {
                             Id = "8b3d2e65-4498-4d45-9127-2fde83fef2a4",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "5ac8f186-ad0f-4b25-ab70-0c8c0f7471ca",
+                            ConcurrencyStamp = "406f386a-f084-48eb-a1ef-57322420f0bc",
                             Email = "admin@mail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@MAIL.COM",
                             NormalizedUserName = "ADMIN@MAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEFB4RxlT+wa31MXFwpoAkBsL8k1c6jjADmxYLr/P5M2NdI26ghYla/4bv3UG9kgQyg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEEEneNb3kHzV1MsPcu7Ejn0c0YiRdiluhE2KHi7SKHM3gOBfmHl5wL4m7yPZobv9GA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "118e961f-dc4c-4d92-b11b-d00980e61414",
+                            SecurityStamp = "d05aef8c-86be-473d-914c-bf2f794c7fa1",
                             TwoFactorEnabled = false,
                             UserName = "admin@mail.com"
                         });
@@ -412,18 +415,6 @@ namespace Travel_Info.Data.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("PlacesToVisit");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            UserId = "dea12856-c198-4129-b3f3-b893d8395082"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            UserId = "8b3d2e65-4498-4d45-9127-2fde83fef2a4"
-                        });
                 });
 
             modelBuilder.Entity("Travel_Info.Data.Models.Review", b =>
