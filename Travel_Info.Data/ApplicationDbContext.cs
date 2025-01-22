@@ -23,6 +23,7 @@ namespace Travel_Info.Data
         {
             builder.ApplyConfiguration(new CategoryConfiguration());
             builder.ApplyConfiguration(new UserConfiguration());
+            builder.ApplyConfiguration(new FavoritePlaceConfiguration());
 
             base.OnModelCreating(builder);
         }
