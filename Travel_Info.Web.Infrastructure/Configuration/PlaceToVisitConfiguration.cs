@@ -9,30 +9,30 @@ using Travel_Info.Data.Models;
 
 namespace Travel_Info.Web.Infrastructure.Configuration
 {
-    public class FavoritePlaceConfiguration : IEntityTypeConfiguration<FavoritePlace>
+    public class PlaceToVisitConfiguration : IEntityTypeConfiguration<PlaceToVisit>
     {
-        public void Configure(EntityTypeBuilder<FavoritePlace> builder)
+        public void Configure(EntityTypeBuilder<PlaceToVisit> builder)
         {
-            builder.HasData(SeedFavorites());
+            builder.HasData(SeedDesiredPlaces());
         }
 
-        private List<FavoritePlace> SeedFavorites()
+        private List<PlaceToVisit> SeedDesiredPlaces()
         {
-            List<FavoritePlace> favoritePlaces = new List<FavoritePlace>()
+            List<PlaceToVisit> desiredPlaces = new List<PlaceToVisit>()
             {
-                new FavoritePlace 
-                { 
+                new PlaceToVisit
+                {
                     Id = 1,
                     UserId = "dea12856-c198-4129-b3f3-b893d8395082"
                 },
-                new FavoritePlace 
-                { 
+                new PlaceToVisit
+                {
                     Id = 2,
                     UserId = "8b3d2e65-4498-4d45-9127-2fde83fef2a4"
                 }
             };
 
-            return favoritePlaces;
+            return desiredPlaces;
         }
     }
 }
