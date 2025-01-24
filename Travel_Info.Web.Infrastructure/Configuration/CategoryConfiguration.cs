@@ -24,22 +24,22 @@ namespace Travel_Info.Web.Infrastructure.Configuration
                 new Category()
                 {
                    Id = 1,
-                   Name = "Море"
+                   Name = "Beach"
                 },
                 new Category()
                 {
                    Id = 2,
-                    Name = "Планина"
+                    Name = "Mount"
                 },
                 new Category()
                 {
                    Id = 3,
-                   Name = "Разходка"
+                   Name = "Stroll"
                 },
                 new Category()
                 {
                    Id = 4,
-                   Name = "История"
+                   Name = "Historical"
                 }
             };
 
