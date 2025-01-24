@@ -28,5 +28,10 @@ namespace Travel_Info.Common
             public const int DestinationDescriptionMinLength = 10;
             public const int DestinationDescriptionMaxLength = 800;
         }
+
+        public static class Review
+        {
+            public const int CommentMaxLength = 500;
+        }
     }
 }

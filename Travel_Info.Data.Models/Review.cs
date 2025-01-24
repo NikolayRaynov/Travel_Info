@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Travel_Info.Common.EntityValidationConstants.Review;
 
 namespace Travel_Info.Data.Models
 {
@@ -15,6 +16,7 @@ namespace Travel_Info.Data.Models
 
         public int Rating { get; set; }
 
+        [MaxLength(CommentMaxLength)]
         public string? Comment { get; set; }
 
         [Required]
