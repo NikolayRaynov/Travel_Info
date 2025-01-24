@@ -22,5 +22,7 @@ namespace Travel_Info.Data.Models
 
         [ForeignKey(nameof(DestinationId))]
         public virtual Destination Destination { get; set; } = null!;
+
+        public bool IsDeleted { get; set; } = false;
     }
 }

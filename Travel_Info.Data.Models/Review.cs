@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static Travel_Info.Common.EntityValidationConstants.Review;
 
 namespace Travel_Info.Data.Models
@@ -31,5 +26,7 @@ namespace Travel_Info.Data.Models
         public int DestinationId { get; set; }
         [ForeignKey(nameof(DestinationId))]
         public virtual Destination Destination { get; set; } = null!;
+
+        public bool IsDeleted { get; set; } = false;
     }
 }
