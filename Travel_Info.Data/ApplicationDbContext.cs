@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
 using Travel_Info.Data.Models;
 using Travel_Info.Web.Infrastructure.Configuration;
 
@@ -30,6 +31,17 @@ namespace Travel_Info.Data
             builder.ApplyConfiguration(new ReviewConfiguration());
 
             base.OnModelCreating(builder);
+
+            GlobalFilter(builder);
+        }
+
+        private static void GlobalFilter(ModelBuilder builder)
+        {
+            builder.Entity<Destination>().HasQueryFilter(d => !d.IsDeleted);
+            builder.Entity<Image>().HasQueryFilter(i => !i.IsDeleted);
+            builder.Entity<Review>().HasQueryFilter(r => !r.IsDeleted);
+            builder.Entity<FavoritePlace>().HasQueryFilter(fp => !fp.IsDeleted);
+            builder.Entity<PlaceToVisit>().HasQueryFilter(ptv => !ptv.IsDeleted);
         }
     }
 }
