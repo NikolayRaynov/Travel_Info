@@ -11,7 +11,7 @@ namespace Travel_Info.Data.Models
 
         [Required]
         [MaxLength(ImageUrlMaxLength)]
-        public string? Url { get; set; }
+        public string Url { get; set; } = string.Empty;
 
         [Required]
         [MaxLength(ImageDescriptionMaxLength)]
