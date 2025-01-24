@@ -26,7 +26,7 @@ namespace Travel_Info.Common
             public const int DestinationNameMinLength = 4;
             public const int DestinationNameMaxLength = 85;
             public const int DestinationDescriptionMinLength = 10;
-            public const int DestinationDescriptionMaxLength = 500;
+            public const int DestinationDescriptionMaxLength = 800;
         }
     }
 }
