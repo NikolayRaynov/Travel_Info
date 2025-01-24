@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Travel_Info.Data;
 
@@ -11,9 +12,11 @@ using Travel_Info.Data;
 namespace Travel_Info.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250123174541_ChangeDescOfDestinationLength")]
+    partial class ChangeDescOfDestinationLength
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -228,15 +231,15 @@ namespace Travel_Info.Data.Migrations
                         {
                             Id = "dea12856-c198-4129-b3f3-b893d8395082",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "18c20491-09c7-4f4e-8f78-14c9178d8f42",
+                            ConcurrencyStamp = "8326a69d-b07d-403b-822e-2806b9078b22",
                             Email = "user@mail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "USER@MAIL.COM",
                             NormalizedUserName = "USER@MAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEBd+YFf/aEbFfhj1MajKBxjYn8SSJm50SQHQuja2/Er2FGlE+AEPFL/9YHNzuqB3ng==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEIYU8+joDeV2IIrp/dMfpicJm3YDvT0MXuZoBqazmtvuV3LENxvgYoJA2fJjmoQ/kw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "73e7d8ca-c920-450c-a8ec-31da88c45d5e",
+                            SecurityStamp = "64015527-03fa-44c1-b4cf-c7953ea3730c",
                             TwoFactorEnabled = false,
                             UserName = "user@mail.com"
                         },
@@ -244,15 +247,15 @@ namespace Travel_Info.Data.Migrations
                         {
                             Id = "8b3d2e65-4498-4d45-9127-2fde83fef2a4",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "350d6541-7205-4a94-89f1-63a463d9ed24",
+                            ConcurrencyStamp = "0bc592b4-3d15-4901-85d8-1791f1d2e72d",
                             Email = "admin@mail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@MAIL.COM",
                             NormalizedUserName = "ADMIN@MAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEKE/WnxGMiCjvi7J8R6N9CBpeIagvafNhvRsbGPczsEpMOmZMh20SsYylGjLmITVUw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEEPAPJOnbmzae9HBjhFxh/mL9+Cip4mz1JQx8xaC59BQDREH3PjgdpiNEHXdpiukzg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "45a9116c-e159-4683-82bf-324c48e0f80a",
+                            SecurityStamp = "4c9096bc-957d-4b75-abf1-9b9bf169b543",
                             TwoFactorEnabled = false,
                             UserName = "admin@mail.com"
                         });
@@ -334,44 +337,6 @@ namespace Travel_Info.Data.Migrations
                     b.HasIndex("PlaceToVisistId");
 
                     b.ToTable("Destinations");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CategoryId = 1,
-                            Description = "Парк Росенец (известен още като \"Отманли\") се намира в землището на село Атия,                                            около 15 км южно от Бургас и 19 километра северно от Созопол.За любителите на слънцето и морските бани съвсем близо е един от най-дивите и                          слабонаселени плажове в близост до Бургас, който ще превърне почивката ви в                           истинско удоволствие сред прекрасната природа, сгушена между тайнствената Странджа                    и красивото Черно море.",
-                            FavoritePlaceId = 1,
-                            Name = "Парк Росенец",
-                            PlaceToVisistId = 1
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CategoryId = 2,
-                            Description = "\"Дяволското гърло\", макар и да звучи зловещо, е една от най-интересните и                                                   необикновени пещери в България. Тя е част от уникалния феномен Триградско                                                 ждрело, който се намира се в Рило-Родопската област.Пещерата ще ви предложи                                               неповторимата гледка на най-високия подземен водопад на Балканите (42м).Тя ще ви                                          пренесе в едно приключение, разкривайки част от тайните си галерии.Според                                                 легендата в Дяволското гърло Орфей губи завинаги любимата Евридика и тя потъва в                                          подземното царство на Х Страховитото име произлиза от скалната форма на входа й,                                          която наподобява дяволск глава.",
-                            FavoritePlaceId = 2,
-                            Name = "Дявoлcĸoтo гъpлo",
-                            PlaceToVisistId = 2
-                        },
-                        new
-                        {
-                            Id = 3,
-                            CategoryId = 3,
-                            Description = "Екопътека Струилица-Калето-Лъката се намира в Родопите, по поречието на река                                               Девинска, което е със статут на защитена местност от 2002г. Край реката са изградени                                      места за отдих, подходящи за пикник и почивка на прохлада през лятото. Обособени са                                       места за риболовен туризъм, а по маршрута са поставени информационни табелки за                                           растителния и животинския свят в района.",
-                            FavoritePlaceId = 1,
-                            Name = "Екопътека Струилица",
-                            PlaceToVisistId = 2
-                        },
-                        new
-                        {
-                            Id = 4,
-                            CategoryId = 4,
-                            Description = "Екопътека Струилица-Калето-Лъката се намира в Родопите, по поречието на                                                   река Девинска, което е със статут на защитена местност от 2002г. Край                                                     реката са изградени места за отдих, подходящи за пикник и почивка на                                                      прохлада през лятото. Обособени са места за риболовен туризъм, а по                                                       маршрута са поставени  информационни табелки за растителния и животинския                                                 свят в района.",
-                            FavoritePlaceId = 2,
-                            Name = "Царевец",
-                            PlaceToVisistId = 1
-                        });
                 });
 
             modelBuilder.Entity("Travel_Info.Data.Models.FavoritePlace", b =>
