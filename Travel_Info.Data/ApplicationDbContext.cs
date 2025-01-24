@@ -27,6 +27,7 @@ namespace Travel_Info.Data
             builder.ApplyConfiguration(new PlaceToVisitConfiguration());
             builder.ApplyConfiguration(new DestinationConfiguration());
             builder.ApplyConfiguration(new ImageConfiguration());
+            builder.ApplyConfiguration(new ReviewConfiguration());
 
             base.OnModelCreating(builder);
         }
