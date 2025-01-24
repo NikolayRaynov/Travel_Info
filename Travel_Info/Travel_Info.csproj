@@ -22,4 +22,11 @@
     <ProjectReference Include="..\Travel_Info.Web.ViewModels\Travel_Info.Web.ViewModels.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\images\beach\" />
+    <Folder Include="wwwroot\images\mount\" />
+    <Folder Include="wwwroot\images\historical\" />
+    <Folder Include="wwwroot\images\stroll\" />
+  </ItemGroup>
+
 </Project>
