@@ -1,12 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Travel_Info.Data.Models;
-using static Travel_Info.Common.ConfigurationConstants.Destination;
 
 namespace Travel_Info.Web.Infrastructure.Configuration
 {
