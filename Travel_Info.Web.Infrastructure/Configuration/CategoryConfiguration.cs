@@ -1,11 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Travel_Info.Data.Models;
 
 namespace Travel_Info.Web.Infrastructure.Configuration
@@ -24,22 +18,26 @@ namespace Travel_Info.Web.Infrastructure.Configuration
                 new Category()
                 {
                    Id = 1,
-                   Name = "Beach"
+                   NameEn = "Beach", 
+                   NameBg = "Плаж"
                 },
                 new Category()
                 {
                    Id = 2,
-                    Name = "Mount"
+                   NameEn = "Mount", 
+                   NameBg = "Планина"
                 },
                 new Category()
                 {
                    Id = 3,
-                   Name = "Stroll"
+                   NameEn = "Stroll", 
+                   NameBg = "Разходка"
                 },
                 new Category()
                 {
                    Id = 4,
-                   Name = "Historical"
+                   NameEn = "Historical", 
+                   NameBg = "Исторически"
                 }
             };
 

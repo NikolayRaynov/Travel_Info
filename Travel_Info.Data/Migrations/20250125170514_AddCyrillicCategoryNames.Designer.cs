@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Travel_Info.Data;
 
@@ -11,9 +12,11 @@ using Travel_Info.Data;
 namespace Travel_Info.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250125170514_AddCyrillicCategoryNames")]
+    partial class AddCyrillicCategoryNames
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -228,15 +231,15 @@ namespace Travel_Info.Data.Migrations
                         {
                             Id = "dea12856-c198-4129-b3f3-b893d8395082",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "f0c7ca54-f18e-4f6f-a672-0715d1d59a23",
+                            ConcurrencyStamp = "8ffa54d0-221d-417e-a00d-4e7ee8f6203f",
                             Email = "user@mail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "USER@MAIL.COM",
                             NormalizedUserName = "USER@MAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEBtTx8TH2absM7/lhv8DrySRLlSVIRL7AOa+wouRE9MH6252ELec9dUFbxGjPGW0vg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEMsXm8SQ6LUXspem/iINHUjJJB1klFqIt1ehZUqs90Sq/FCqJUyysP3NMvB6NIEQwQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "68ea42ef-098c-4d71-a837-6e2d8ef9e0a6",
+                            SecurityStamp = "cb1e0b01-7486-45cc-82c8-fa9d3d3763b6",
                             TwoFactorEnabled = false,
                             UserName = "user@mail.com"
                         },
@@ -244,15 +247,15 @@ namespace Travel_Info.Data.Migrations
                         {
                             Id = "8b3d2e65-4498-4d45-9127-2fde83fef2a4",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "ba6e25fc-062c-4c0b-8c37-6770d7048a16",
+                            ConcurrencyStamp = "63c258d4-693d-40e5-b07a-d3d443ee4435",
                             Email = "admin@mail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@MAIL.COM",
                             NormalizedUserName = "ADMIN@MAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAELBs9MyZa4/bbDr0C+aoZvIqLEBq1nG4s9G/2QOaIDK/sH4VYg14vKlBMsy/mKrs8g==",
+                            PasswordHash = "AQAAAAIAAYagAAAAELj6W0egc6nZ1xpL/SCPYnzWPzfmSuQgQbfSvmb1Oq/Ox6IZ9o7de3UxJw+jBHqp9A==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "666d172d-0fb9-45f3-a04f-b0c21c584f1d",
+                            SecurityStamp = "5b5432b3-db8c-4f84-b6c5-09f6ba8db5f4",
                             TwoFactorEnabled = false,
                             UserName = "admin@mail.com"
                         });
@@ -318,32 +321,26 @@ namespace Travel_Info.Data.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("CategoryId")
-                        .HasColumnType("int")
-                        .HasComment("Identifier of the category to which the destination belongs.");
+                        .HasColumnType("int");
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(800)
-                        .HasColumnType("nvarchar(800)")
-                        .HasComment("Description of the destination.");
+                        .HasColumnType("nvarchar(800)");
 
-                    b.Property<int?>("FavoritePlaceId")
-                        .HasColumnType("int")
-                        .HasComment("Identifier of the favorite place associated with the destination.");
+                    b.Property<int>("FavoritePlaceId")
+                        .HasColumnType("int");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit")
-                        .HasComment("Indicator for logical deletion of the destination.");
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(85)
-                        .HasColumnType("nvarchar(85)")
-                        .HasComment("Name of the destination.");
+                        .HasColumnType("nvarchar(85)");
 
-                    b.Property<int?>("PlaceToVisistId")
-                        .HasColumnType("int")
-                        .HasComment("Identifier of the place to visit associated with the destination.");
+                    b.Property<int>("PlaceToVisistId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -576,7 +573,7 @@ namespace Travel_Info.Data.Migrations
                         {
                             Id = 1,
                             Comment = "Страхотно място!",
-                            CreatedAt = new DateTime(2025, 1, 25, 19, 24, 36, 405, DateTimeKind.Local).AddTicks(9354),
+                            CreatedAt = new DateTime(2025, 1, 25, 19, 5, 13, 117, DateTimeKind.Local).AddTicks(4918),
                             DestinationId = 1,
                             IsDeleted = false,
                             Rating = 5,
@@ -585,7 +582,7 @@ namespace Travel_Info.Data.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2025, 1, 25, 19, 24, 36, 405, DateTimeKind.Local).AddTicks(9509),
+                            CreatedAt = new DateTime(2025, 1, 25, 19, 5, 13, 117, DateTimeKind.Local).AddTicks(5049),
                             DestinationId = 2,
                             IsDeleted = false,
                             Rating = 5,
@@ -595,7 +592,7 @@ namespace Travel_Info.Data.Migrations
                         {
                             Id = 3,
                             Comment = "Страхотно място!",
-                            CreatedAt = new DateTime(2025, 1, 25, 19, 24, 36, 405, DateTimeKind.Local).AddTicks(9525),
+                            CreatedAt = new DateTime(2025, 1, 25, 19, 5, 13, 117, DateTimeKind.Local).AddTicks(5054),
                             DestinationId = 3,
                             IsDeleted = false,
                             Rating = 5,
@@ -604,7 +601,7 @@ namespace Travel_Info.Data.Migrations
                         new
                         {
                             Id = 4,
-                            CreatedAt = new DateTime(2025, 1, 25, 19, 24, 36, 405, DateTimeKind.Local).AddTicks(9530),
+                            CreatedAt = new DateTime(2025, 1, 25, 19, 5, 13, 117, DateTimeKind.Local).AddTicks(5067),
                             DestinationId = 4,
                             IsDeleted = false,
                             Rating = 5,
@@ -673,11 +670,15 @@ namespace Travel_Info.Data.Migrations
 
                     b.HasOne("Travel_Info.Data.Models.FavoritePlace", "FavoritePlace")
                         .WithMany("Destinations")
-                        .HasForeignKey("FavoritePlaceId");
+                        .HasForeignKey("FavoritePlaceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Travel_Info.Data.Models.PlaceToVisit", "PlaceToVisit")
                         .WithMany("Destinations")
-                        .HasForeignKey("PlaceToVisistId");
+                        .HasForeignKey("PlaceToVisistId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Category");
 
