@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using static Travel_Info.Common.EntityValidationConstants.Image;
 
@@ -11,18 +12,22 @@ namespace Travel_Info.Data.Models
 
         [Required]
         [MaxLength(ImageUrlMaxLength)]
+        [Comment("URL of the image.")]
         public string Url { get; set; } = string.Empty;
 
         [Required]
         [MaxLength(ImageDescriptionMaxLength)]
+        [Comment("Description of the image.")]
         public string Description { get; set; } = string.Empty;
 
         [Required]
+        [Comment("Identifier of the destination to which the image belongs.")]
         public int DestinationId { get; set; }
 
         [ForeignKey(nameof(DestinationId))]
         public virtual Destination Destination { get; set; } = null!;
 
+        [Comment("Indicator for logical deletion of the image.")]
         public bool IsDeleted { get; set; } = false;
     }
 }
