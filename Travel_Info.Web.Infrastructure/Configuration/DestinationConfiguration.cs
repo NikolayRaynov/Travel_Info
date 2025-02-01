@@ -10,6 +10,11 @@ namespace Travel_Info.Web.Infrastructure.Configuration
         public void Configure(EntityTypeBuilder<Destination> builder)
         {
             builder.HasData(SeedDestinations());
+
+            builder
+                .HasOne(u => u.User)
+                .WithMany(d => d.Destinations)
+                .OnDelete(DeleteBehavior.NoAction);
         }
 
         private List<Destination> SeedDestinations()

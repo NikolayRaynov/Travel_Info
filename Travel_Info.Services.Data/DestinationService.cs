@@ -21,7 +21,9 @@ namespace Travel_Info.Services.Data
 
         public async Task<IEnumerable<Destination>> GetAllAsync()
         {
-            return await repository.All<Destination>().ToListAsync();
+            return await repository.All<Destination>()
+                .Include(d => d.Images)
+                .ToListAsync();
         }
 
         public async Task<Destination?> GetByIdAsync(int id)
