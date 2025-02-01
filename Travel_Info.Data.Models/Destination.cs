@@ -37,6 +37,11 @@ namespace Travel_Info.Data.Models
         [ForeignKey(nameof(PlaceToVisistId))]
         public virtual PlaceToVisit? PlaceToVisit { get; set; }
 
+        [Comment("Identifier of the user who created the destination.")]
+        public string? UserId { get; set; }
+        [ForeignKey(nameof(UserId))]
+        public virtual ApplicationUser User { get; set; } = null!;
+
         [Comment("Indicator for logical deletion of the destination.")]
         public bool IsDeleted { get; set; } = false;
 
