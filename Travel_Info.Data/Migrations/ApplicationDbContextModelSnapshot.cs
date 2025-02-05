@@ -280,7 +280,7 @@ namespace Travel_Info.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
 
                     b.HasData(
                         new
@@ -359,7 +359,7 @@ namespace Travel_Info.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Destinations");
+                    b.ToTable("Destinations", (string)null);
 
                     b.HasData(
                         new
@@ -425,7 +425,7 @@ namespace Travel_Info.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("FavoritesPlaces");
+                    b.ToTable("FavoritesPlaces", (string)null);
 
                     b.HasData(
                         new
@@ -474,7 +474,7 @@ namespace Travel_Info.Data.Migrations
 
                     b.HasIndex("DestinationId");
 
-                    b.ToTable("Images");
+                    b.ToTable("Images", (string)null);
 
                     b.HasData(
                         new
@@ -532,7 +532,7 @@ namespace Travel_Info.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("PlacesToVisit");
+                    b.ToTable("PlacesToVisit", (string)null);
 
                     b.HasData(
                         new
@@ -589,7 +589,7 @@ namespace Travel_Info.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Reviews");
+                    b.ToTable("Reviews", (string)null);
 
                     b.HasData(
                         new

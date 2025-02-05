@@ -1,0 +1,28 @@
+﻿@model DestinationDetailsViewModel
+
+<h1>@Model.Name</h1>
+
+@if (!string.IsNullOrEmpty(Model.ImageUrl))
+{
+    <img src="@Model.ImageUrl" alt="Image of @Model.Name" class="img-fluid" style="height: 200px; object-fit: cover;">
+}
+
+<p>@Model.Description</p>
+
+<h2>Reviews</h2>
+
+@if (Model.Reviews.Any())
+{
+    <ul>
+        @foreach (var review in Model.Reviews)
+        {
+            <li>
+                <strong>@review.User:</strong> Rating: @review.Rating - @review.Comment (@review.CreatedAt)
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>No reviews yet.</p>
+}
