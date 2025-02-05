@@ -28,7 +28,11 @@ namespace Travel_Info.Services.Data
 
         public async Task<Destination?> GetByIdAsync(int id)
         {
-            return await repository.GetByIdAsync<Destination>(id);
+            return await repository.All<Destination>()
+                .Include(d => d.Images)
+                .Include(d => d.Reviews)
+                .ThenInclude(r => r.User)
+                .FirstOrDefaultAsync(d => d.Id == id);
         }
 
         public async Task SoftDeleteAsync(Destination destination)

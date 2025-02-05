@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Travel_Info.Services.Data;
 using Travel_Info.Services.Data.Interfaces;
 using Travel_Info.Web.ViewModels.Destination;
+using Travel_Info.Web.ViewModels.Review;
 
 namespace Travel_Info.Controllers
 {
@@ -29,6 +31,36 @@ namespace Travel_Info.Controllers
             }).ToList();
 
             return View(viewModels);
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<IActionResult> Details(int id)
+        {
+            var destination = await destinationService.GetByIdAsync(id);
+
+            if (destination == null)
+            {
+                return NotFound();
+            }
+
+            var viewModel = new DestinationDetailsViewModel
+            {
+                Id = destination.Id,
+                Name = destination.Name,
+                Description = destination.Description,
+                ImageUrl = destination.Images.FirstOrDefault()?.Url ?? "/images/noPhoto.jpg", // Placeholder, ако няма снимка
+                Reviews = destination.Reviews.Select(r => new ReviewViewModel
+                {
+                    Id = r.Id,
+                    Rating = r.Rating,
+                    Comment = r.Comment,
+                    CreatedAt = r.CreatedAt,
+                    User = r.User.UserName // Или друг начин да вземете потребителското име
+                }).ToList()
+            };
+
+            return View(viewModel);
         }
     }
 }
