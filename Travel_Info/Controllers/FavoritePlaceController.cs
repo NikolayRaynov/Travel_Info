@@ -60,7 +60,6 @@ namespace Travel_Info.Web.Controllers
             return View(viewModel);
         }
 
-
         [HttpPost]
         public async Task<IActionResult> Add(AddToFavoriteViewModel model)
         {
@@ -76,6 +75,24 @@ namespace Travel_Info.Web.Controllers
                 TempData["ErrorMessage"] = "This destination is already in your favorites.";
                 return RedirectToAction("Index", "Destination");
             }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Remove(int id)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            try
+            {
+                await favoritePlaceService.RemoveFromFavoritesAsync(id, userId);
+                TempData["SuccessMessage"] = "The destination was successfuly removed from your favorites!";
+            }
+            catch (InvalidOperationException ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+            }
+
+            return RedirectToAction("Index");
         }
     }
 }

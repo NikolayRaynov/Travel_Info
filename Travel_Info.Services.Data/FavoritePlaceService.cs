@@ -18,14 +18,25 @@ namespace Travel_Info.Services.Data
         {
             var favoritePlace = await repository
                 .All<FavoritePlace>()
-                .FirstOrDefaultAsync(f => f.UserId == userId && f.Destinations.Any(d => d.Id == destinationId) && !f.IsDeleted);
+                .Include(fp => fp.Destinations)
+                .FirstOrDefaultAsync(fp => fp.UserId == userId && !fp.IsDeleted);
 
             if (favoritePlace == null)
             {
                 throw new InvalidOperationException("This destination is not in your favorites.");
             }
 
-            favoritePlace.IsDeleted = true;
+            var destinationToRemove = favoritePlace.Destinations.FirstOrDefault(d => d.Id == destinationId);
+            if (destinationToRemove != null)
+            {
+                favoritePlace.Destinations.Remove(destinationToRemove);
+            }
+
+            if (!favoritePlace.Destinations.Any())
+            {
+                favoritePlace.IsDeleted = true;
+            }
+
             repository.Update(favoritePlace);
             await repository.SaveChangesAsync();
         }
