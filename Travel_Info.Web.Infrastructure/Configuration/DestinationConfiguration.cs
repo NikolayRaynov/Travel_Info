@@ -28,7 +28,7 @@ namespace Travel_Info.Web.Infrastructure.Configuration
                     Description = beachDescription,
                     CategoryId = 1,
                     FavoritePlaceId = 1,
-                    PlaceToVisistId = 1,
+                    PlaceToVisitId = 1,
                 },
                 new Destination
                 {
@@ -37,7 +37,7 @@ namespace Travel_Info.Web.Infrastructure.Configuration
                     Description = mountDescription,
                     CategoryId = 2,
                     FavoritePlaceId = 2,
-                    PlaceToVisistId = 2,
+                    PlaceToVisitId = 2,
                 },
                 new Destination
                 {
@@ -46,7 +46,7 @@ namespace Travel_Info.Web.Infrastructure.Configuration
                     Description = walkDescription,
                     CategoryId = 3,
                     FavoritePlaceId = 1,
-                    PlaceToVisistId = 2,
+                    PlaceToVisitId = 2,
                 },
                 new Destination
                 {
@@ -55,7 +55,7 @@ namespace Travel_Info.Web.Infrastructure.Configuration
                     Description = historicalPlaceDescription,
                     CategoryId = 4,
                     FavoritePlaceId = 2,
-                    PlaceToVisistId = 1,
+                    PlaceToVisitId = 1,
                 }
             };
 

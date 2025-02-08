@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Travel_Info.Data;
 
@@ -11,9 +12,11 @@ using Travel_Info.Data;
 namespace Travel_Info.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250206200507_AddApplicationUsersTable")]
+    partial class AddApplicationUsersTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -228,15 +231,15 @@ namespace Travel_Info.Data.Migrations
                         {
                             Id = "dea12856-c198-4129-b3f3-b893d8395082",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "f88452d1-27e5-4647-938b-6dbe14a8fe08",
+                            ConcurrencyStamp = "de737e4f-56ff-4b71-af2a-296c1246a816",
                             Email = "user@mail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "USER@MAIL.COM",
                             NormalizedUserName = "USER@MAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEOW/u0LBvUSjk7y4PqhqJZ56We/fFDc+baA92nKV5wItxTxm+2QhGSVh1KzyN+xnHw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEDJvC4MlQI116cqfbeNetuXpcizQyIBs8igp9SPEm/fWDv2bxgbH6jIhJNseql1iNw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "df30eca6-9c8e-4e7f-869b-c246e73862d8",
+                            SecurityStamp = "6907523f-29a9-40e4-8cce-7a9cb1dd3f9f",
                             TwoFactorEnabled = false,
                             UserName = "user@mail.com"
                         },
@@ -244,15 +247,15 @@ namespace Travel_Info.Data.Migrations
                         {
                             Id = "8b3d2e65-4498-4d45-9127-2fde83fef2a4",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "6f24bb86-7963-4e12-bacc-a647aa332e8f",
+                            ConcurrencyStamp = "f63ae0c3-68e9-47b7-9b58-4fc23e1e307f",
                             Email = "admin@mail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@MAIL.COM",
                             NormalizedUserName = "ADMIN@MAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAELH91RheoHouxQIUl6TqHmQcVLnGsJcke6E1XIrLLjgX4E6dnjQKoe9wkCP6dlfM2A==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEAwMLasQSlX2TdloxxOHO7VtQ9mhOAIYq5O+vTNxo6Yo+Lx9y83ZMrZA/FsJ1Ype7g==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "68aa9a38-fefa-47c1-8266-b8d4cc9b4c58",
+                            SecurityStamp = "109089d2-5784-4078-8156-b8e7334b4660",
                             TwoFactorEnabled = false,
                             UserName = "admin@mail.com"
                         });
@@ -341,7 +344,7 @@ namespace Travel_Info.Data.Migrations
                         .HasColumnType("nvarchar(85)")
                         .HasComment("Name of the destination.");
 
-                    b.Property<int?>("PlaceToVisitId")
+                    b.Property<int?>("PlaceToVisistId")
                         .HasColumnType("int")
                         .HasComment("Identifier of the place to visit associated with the destination.");
 
@@ -355,7 +358,7 @@ namespace Travel_Info.Data.Migrations
 
                     b.HasIndex("FavoritePlaceId");
 
-                    b.HasIndex("PlaceToVisitId");
+                    b.HasIndex("PlaceToVisistId");
 
                     b.HasIndex("UserId");
 
@@ -370,7 +373,7 @@ namespace Travel_Info.Data.Migrations
                             FavoritePlaceId = 1,
                             IsDeleted = false,
                             Name = "Парк Росенец",
-                            PlaceToVisitId = 1
+                            PlaceToVisistId = 1
                         },
                         new
                         {
@@ -380,7 +383,7 @@ namespace Travel_Info.Data.Migrations
                             FavoritePlaceId = 2,
                             IsDeleted = false,
                             Name = "Дявoлcĸoтo гъpлo",
-                            PlaceToVisitId = 2
+                            PlaceToVisistId = 2
                         },
                         new
                         {
@@ -390,7 +393,7 @@ namespace Travel_Info.Data.Migrations
                             FavoritePlaceId = 1,
                             IsDeleted = false,
                             Name = "Екопътека Струилица",
-                            PlaceToVisitId = 2
+                            PlaceToVisistId = 2
                         },
                         new
                         {
@@ -400,7 +403,7 @@ namespace Travel_Info.Data.Migrations
                             FavoritePlaceId = 2,
                             IsDeleted = false,
                             Name = "Царевец",
-                            PlaceToVisitId = 1
+                            PlaceToVisistId = 1
                         });
                 });
 
@@ -596,7 +599,7 @@ namespace Travel_Info.Data.Migrations
                         {
                             Id = 1,
                             Comment = "Страхотно място!",
-                            CreatedAt = new DateTime(2025, 2, 8, 19, 22, 56, 811, DateTimeKind.Local).AddTicks(8766),
+                            CreatedAt = new DateTime(2025, 2, 6, 22, 5, 6, 824, DateTimeKind.Local).AddTicks(3759),
                             DestinationId = 1,
                             IsDeleted = false,
                             Rating = 5,
@@ -605,7 +608,7 @@ namespace Travel_Info.Data.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2025, 2, 8, 19, 22, 56, 811, DateTimeKind.Local).AddTicks(8849),
+                            CreatedAt = new DateTime(2025, 2, 6, 22, 5, 6, 824, DateTimeKind.Local).AddTicks(3827),
                             DestinationId = 2,
                             IsDeleted = false,
                             Rating = 5,
@@ -615,7 +618,7 @@ namespace Travel_Info.Data.Migrations
                         {
                             Id = 3,
                             Comment = "Страхотно място!",
-                            CreatedAt = new DateTime(2025, 2, 8, 19, 22, 56, 811, DateTimeKind.Local).AddTicks(8861),
+                            CreatedAt = new DateTime(2025, 2, 6, 22, 5, 6, 824, DateTimeKind.Local).AddTicks(3838),
                             DestinationId = 3,
                             IsDeleted = false,
                             Rating = 5,
@@ -624,7 +627,7 @@ namespace Travel_Info.Data.Migrations
                         new
                         {
                             Id = 4,
-                            CreatedAt = new DateTime(2025, 2, 8, 19, 22, 56, 811, DateTimeKind.Local).AddTicks(8866),
+                            CreatedAt = new DateTime(2025, 2, 6, 22, 5, 6, 824, DateTimeKind.Local).AddTicks(3841),
                             DestinationId = 4,
                             IsDeleted = false,
                             Rating = 5,
@@ -697,7 +700,7 @@ namespace Travel_Info.Data.Migrations
 
                     b.HasOne("Travel_Info.Data.Models.PlaceToVisit", "PlaceToVisit")
                         .WithMany("Destinations")
-                        .HasForeignKey("PlaceToVisitId");
+                        .HasForeignKey("PlaceToVisistId");
 
                     b.HasOne("Travel_Info.Data.Models.ApplicationUser", "User")
                         .WithMany("Destinations")

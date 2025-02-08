@@ -33,8 +33,8 @@ namespace Travel_Info.Data.Models
         public virtual FavoritePlace? FavoritePlace { get; set; }
 
         [Comment("Identifier of the place to visit associated with the destination.")]
-        public int? PlaceToVisistId { get; set; }
-        [ForeignKey(nameof(PlaceToVisistId))]
+        public int? PlaceToVisitId { get; set; }
+        [ForeignKey(nameof(PlaceToVisitId))]
         public virtual PlaceToVisit? PlaceToVisit { get; set; }
 
         [Comment("Identifier of the user who created the destination.")]
