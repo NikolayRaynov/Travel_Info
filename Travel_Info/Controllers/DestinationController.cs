@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Travel_Info.Services.Data;
 using Travel_Info.Services.Data.Interfaces;
 using Travel_Info.Web.ViewModels.Destination;
 using Travel_Info.Web.ViewModels.Review;
@@ -49,14 +48,14 @@ namespace Travel_Info.Controllers
                 Id = destination.Id,
                 Name = destination.Name,
                 Description = destination.Description,
-                ImageUrl = destination.Images.FirstOrDefault()?.Url ?? "/images/noPhoto.jpg", // Placeholder, ако няма снимка
+                ImageUrl = destination.Images.FirstOrDefault()?.Url ?? "/images/noPhoto.jpg",
                 Reviews = destination.Reviews.Select(r => new ReviewViewModel
                 {
                     Id = r.Id,
                     Rating = r.Rating,
                     Comment = r.Comment,
                     CreatedAt = r.CreatedAt,
-                    User = r.User.UserName // Или друг начин да вземете потребителското име
+                    User = r.User.UserName
                 }).ToList()
             };
 
