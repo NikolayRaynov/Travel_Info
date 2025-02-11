@@ -1,0 +1,17 @@
+﻿@model AddToWishlistViewModel
+
+<h2>Add to Favorites</h2>
+
+<div class="card mb-3">
+    <img src="@Model.DestinationImageUrl" class="card-img-top" alt="@Model.DestinationName">
+    <div class="card-body">
+        <h5 class="card-title">@Model.DestinationName</h5>
+        <p class="card-text">@Model.DestinationDescription</p>
+    </div>
+</div>
+
+<form asp-action="Add" method="post">
+    <input type="hidden" name="DestinationId" value="@Model.DestinationId" />
+    <button type="submit" class="btn btn-primary">Confirm</button>
+    <a asp-action="Index" asp-controller="Destination" class="btn btn-secondary">Cancel</a>
+</form>
