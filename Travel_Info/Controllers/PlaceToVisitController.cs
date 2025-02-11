@@ -36,5 +36,43 @@ namespace Travel_Info.Controllers
 
             return View(viewModel);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Add(int id)
+        {
+            var destination = await destinationService.GetByIdAsync(id);
+
+            if (destination == null)
+            {
+                return NotFound();
+            }
+
+            var viewModel = new AddToWishlistViewModel
+            {
+                DestinationId = destination.Id,
+                DestinationName = destination.Name,
+                DestinationDescription = destination.Description,
+                DestinationImageUrl = destination.Images.FirstOrDefault()?.Url ?? "/images/NoPhoto.jpg"
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Add(AddToWishlistViewModel model)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (await placeToVisitService.AddToWishlistAsync(model.DestinationId, userId))
+            {
+                TempData["SuccessMessage"] = "The destination was successfully added to your wishlist!";
+                return RedirectToAction("Index", "PlaceToVisit");
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "This destination is already in your wishlist.";
+                return RedirectToAction("Index", "Destination");
+            }
+        }
     }
 }
