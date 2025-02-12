@@ -25,24 +25,24 @@ namespace Travel_Info.Services.Data
                 return false;
             }
 
-            var userFavorites = await repository.All<PlaceToVisit>()
+            var userWishlist = await repository.All<PlaceToVisit>()
                 .FirstOrDefaultAsync(pv => pv.UserId == userId);
 
-            if (userFavorites == null)
+            if (userWishlist == null)
             {
-                userFavorites = new PlaceToVisit
+                userWishlist = new PlaceToVisit
                 {
                     UserId = userId,
                     Destinations = new List<Destination>()
                 };
 
-                await repository.AddAsync(userFavorites);
+                await repository.AddAsync(userWishlist);
             }
 
             var destination = await repository.GetByIdAsync<Destination>(destinationId);
             if (destination != null)
             {
-                userFavorites.Destinations.Add(destination);
+                userWishlist.Destinations.Add(destination);
             }
 
             await repository.SaveChangesAsync();

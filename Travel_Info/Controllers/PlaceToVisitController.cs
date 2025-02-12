@@ -74,5 +74,23 @@ namespace Travel_Info.Controllers
                 return RedirectToAction("Index", "Destination");
             }
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Remove(int id)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            try
+            {
+                await placeToVisitService.RemoveFromWishlistAsync(id, userId);
+                TempData["SuccessMessage"] = "The destination was successfuly removed from your wishlist!";
+            }
+            catch (InvalidOperationException ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+            }
+
+            return RedirectToAction("Index");
+        }
     }
 }
