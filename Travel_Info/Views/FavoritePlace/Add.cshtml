@@ -1,17 +1,28 @@
-﻿@model AddToFavoriteViewModel
+﻿@model Travel_Info.Web.ViewModels.FavoritePlace.AddToFavoriteViewModel
 
-<h2>Add to Favorites</h2>
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger text-center">
+        @TempData["ErrorMessage"]
+    </div>
+}
 
-<div class="card mb-3">
-    <img src="@Model.DestinationImageUrl" class="card-img-top" alt="@Model.DestinationName">
+<div class="card">
+    <div class="card-header">
+        <h4>@Model.DestinationName</h4>
+    </div>
     <div class="card-body">
-        <h5 class="card-title">@Model.DestinationName</h5>
-        <p class="card-text">@Model.DestinationDescription</p>
+        <img src="@Model.DestinationImageUrl" class="img-fluid" alt="@Model.DestinationName" style="height: 200px; object-fit: cover;">
+        <p>@Model.DestinationDescription</p>
+    </div>
+    <div class="card-footer">
+        <form asp-action="Add" method="post">
+            <input type="hidden" asp-for="DestinationId" />
+            <button type="submit" class="btn btn-primary">Add to Favorites</button>
+        </form>
     </div>
 </div>
 
-<form asp-action="Add" method="post">
-    <input type="hidden" name="DestinationId" value="@Model.DestinationId" />
-    <button type="submit" class="btn btn-primary">Confirm</button>
-    <a asp-action="Index" asp-controller="Destination" class="btn btn-secondary">Cancel</a>
-</form>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

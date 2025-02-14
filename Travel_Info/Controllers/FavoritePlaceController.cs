@@ -49,6 +49,14 @@ namespace Travel_Info.Web.Controllers
                 return NotFound();
             }
 
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (await favoritePlaceService.IsInFavoriteAsync(id, userId))
+            {
+                TempData["ErrorMessage"] = "This destination is already in your favorites.";
+                return RedirectToAction("Index", "Destination");
+            }
+
             var viewModel = new AddToFavoriteViewModel
             {
                 DestinationId = destination.Id,
@@ -63,29 +71,55 @@ namespace Travel_Info.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Add(AddToFavoriteViewModel model)
         {
+            if (model.DestinationId <= 0)
+            {
+                TempData["ErrorMessage"] = "Invalid destination.";
+                return RedirectToAction("Index", "Destination");
+            }
+
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            if (await favoritePlaceService.AddToFavoritesAsync(model.DestinationId, userId))
+            var success = await favoritePlaceService.AddToFavoritesAsync(model.DestinationId, userId);
+            
+            if (success)
             {
-                TempData["SuccessMessage"] = "The destination was successfully added to your favorites!";
                 return RedirectToAction("Index", "FavoritePlace");
             }
             else
             {
-                TempData["ErrorMessage"] = "This destination is already in your favorites.";
+                TempData["ErrorMessage"] = "An error occurred while adding the destination to your favorites.";
                 return RedirectToAction("Index", "Destination");
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var destination = await destinationService.GetByIdAsync(id);
+            if (destination == null)
+            {
+                return NotFound();
+            }
+
+            var viewModel = new DeleteFavoriteViewModel
+            {
+                DestinationId = destination.Id,
+                DestinationName = destination.Name,
+                DestinationDescription = destination.Description,
+                DestinationImageUrl = destination.Images.FirstOrDefault()?.Url ?? "/images/NoPhoto.jpg"
+            };
+
+            return View(viewModel);
+        }
+
         [HttpPost]
-        public async Task<IActionResult> Remove(int id)
+        public async Task<IActionResult> Delete(DeleteFavoriteViewModel model)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             try
             {
-                await favoritePlaceService.RemoveFromFavoritesAsync(id, userId);
-                TempData["SuccessMessage"] = "The destination was successfuly removed from your favorites!";
+                await favoritePlaceService.RemoveFromFavoritesAsync(model.DestinationId, userId);
             }
             catch (InvalidOperationException ex)
             {

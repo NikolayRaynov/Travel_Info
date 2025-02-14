@@ -4,6 +4,13 @@
     ViewBag.Title = "Destinations";
 }
 
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger text-center">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
 <div class="text-center row">
     @foreach (var e in Model)
     {
