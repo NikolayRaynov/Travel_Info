@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Travel_Info.Data.Models;
+using Travel_Info.Services.Data;
 using Travel_Info.Services.Data.Interfaces;
 using Travel_Info.Web.ViewModels.PlaceToVisit;
 
@@ -47,6 +48,14 @@ namespace Travel_Info.Controllers
                 return NotFound();
             }
 
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (await placeToVisitService.IsInWishlistAsync(id, userId))
+            {
+                TempData["ErrorMessage"] = "This destination is already in your favorites.";
+                return RedirectToAction("Index", "Destination");
+            }
+
             var viewModel = new AddToWishlistViewModel
             {
                 DestinationId = destination.Id,
@@ -65,7 +74,6 @@ namespace Travel_Info.Controllers
 
             if (await placeToVisitService.AddToWishlistAsync(model.DestinationId, userId))
             {
-                TempData["SuccessMessage"] = "The destination was successfully added to your wishlist!";
                 return RedirectToAction("Index", "PlaceToVisit");
             }
             else
@@ -75,15 +83,34 @@ namespace Travel_Info.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var destination = await destinationService.GetByIdAsync(id);
+            if (destination == null)
+            {
+                return NotFound();
+            }
+
+            var viewModel = new DeleteFromWishlistViewModel
+            {
+                DestinationId = destination.Id,
+                DestinationName = destination.Name,
+                DestinationDescription = destination.Description,
+                DestinationImageUrl = destination.Images.FirstOrDefault()?.Url ?? "/images/NoPhoto.jpg"
+            };
+
+            return View(viewModel);
+        }
+
         [HttpPost]
-        public async Task<IActionResult> Remove(int id)
+        public async Task<IActionResult> Delete(DeleteFromWishlistViewModel model)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             try
             {
-                await placeToVisitService.RemoveFromWishlistAsync(id, userId);
-                TempData["SuccessMessage"] = "The destination was successfuly removed from your wishlist!";
+                await placeToVisitService.RemoveFromWishlistAsync(model.DestinationId, userId);
             }
             catch (InvalidOperationException ex)
             {

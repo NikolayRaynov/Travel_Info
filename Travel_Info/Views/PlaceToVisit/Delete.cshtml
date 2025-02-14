@@ -1,0 +1,34 @@
+﻿@model DeleteFromWishlistViewModel
+
+@{
+    ViewBag.Title = "Remove from Wishlist";
+}
+
+<h2 class="text-center">Remove from Wishlist</h2>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger text-center">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
+<div class="text-center">
+    <h4>Are you sure you want to remove the following destination from your wishlist?</h4>
+    <div class="card" style="width: 20rem; margin: auto;">
+        <img src="@Model.DestinationImageUrl" class="card-img-top" alt="@Model.DestinationName" style="height: 200px; object-fit: cover;">
+        <div class="card-body">
+            <h5 class="card-title">@Model.DestinationName</h5>
+            <p class="card-text">@Model.DestinationDescription</p>
+            <form asp-action="Delete" method="post">
+                <input type="hidden" name="DestinationId" value="@Model.DestinationId" />
+                <button type="submit" class="btn btn-danger">Remove from Wishlist</button>
+                <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -6,6 +6,13 @@
 
 <h2 class="text-center">@ViewBag.Title</h2>
 
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger text-center">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
 <div class="text-center row">
     @foreach (var place in Model)
     {
@@ -29,7 +36,7 @@
                     <a asp-controller="Destination" asp-action="Details" asp-route-id="@place.Id" class="btn btn-success btn-sm mb-2 w-100 fw-bold rounded btn-dark-text">View Details</a>
                 </div>
                 <div class="col-12 px-1">
-                    <form asp-action="Remove" method="post">
+                    <form asp-controller="FavoritePlace" asp-action="Delete" method="get">
                         <input type="hidden" name="id" value="@place.Id" />
                         <button type="submit" class="btn btn-danger btn-sm mb-2 w-100 fw-bold rounded btn-dark-text">Remove from Favorites</button>
                     </form>
