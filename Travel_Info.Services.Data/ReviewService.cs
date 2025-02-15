@@ -23,13 +23,12 @@ namespace Travel_Info.Services.Data
         public async Task DeleteReviewAsync(int reviewId, string userId)
         {
             var review = await GetReviewByIdAsync(reviewId);
-            if (review == null || review.UserId != userId)
+            if (review != null && review.UserId == userId)
             {
-                throw new InvalidOperationException("You cannot delete this review.");
+                review.IsDeleted = true;
+                repository.Update(review);
+                await repository.SaveChangesAsync();
             }
-
-            review.IsDeleted = true;
-            await repository.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<Review>> GetAllReviewsByDestinationIdAsync(int destinationId)
