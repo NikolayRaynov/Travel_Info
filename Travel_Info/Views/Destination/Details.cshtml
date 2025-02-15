@@ -9,15 +9,32 @@
 
 <p>@Model.Description</p>
 
-<h2>Reviews</h2>
+<h4>Reviews:</h4>
 
 @if (Model.Reviews.Any())
 {
-    <ul>
+    <ul class="list-unstyled">
         @foreach (var review in Model.Reviews)
         {
             <li>
-                <strong>@review.User:</strong> Rating: @review.Rating - @review.Comment (@review.CreatedAt)
+                <p><strong>@review.User:</strong></p>
+                <p>@review.Comment</p>
+                <p>Rating: 
+                    <span>
+                    @for (int i = 1; i <= @review.Rating; i++)
+                    {
+                        if (i <= @review.Rating)
+                        {
+                            <i class="bi bi-star-fill text-warning"></i>
+                        }
+                        else
+                        {
+                            <i class="bi bi-star text-muted"></i>
+                        }
+                    }
+                </span>
+                </p>
+                <p>(@review.CreatedAt)</p>
             </li>
         }
     </ul>
