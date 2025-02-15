@@ -1,0 +1,32 @@
+﻿@model IEnumerable<ReviewViewModel>
+
+<h1>Reviews</h1>
+
+@if (Model.Any())
+{
+    <ul class="list-unstyled">
+        @foreach (var review in Model)
+        {
+            <li>
+                <p><strong>@review.User:</strong></p>
+                <p>@review.Comment</p>
+                <p>
+                    Rating:
+                    <span>
+                        @for (int i = 1; i <= @review.Rating; i++)
+                        {
+                            <i class="bi bi-star-fill text-warning"></i>
+                        }
+                    </span>
+                </p>
+                <p>(@review.CreatedAt)</p>
+                <a asp-action="Edit" asp-route-id="@review.Id" class="btn btn-warning">Edit</a>
+                <a asp-action="Delete" asp-route-id="@review.Id" class="btn btn-danger">Delete</a>
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>No reviews yet.</p>
+}
