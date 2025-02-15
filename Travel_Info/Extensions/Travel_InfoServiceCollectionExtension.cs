@@ -13,6 +13,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<IDestinationService, DestinationService>();
             services.AddScoped<IFavoritePlaceService, FavoritePlaceService>();
             services.AddScoped<IPlaceToVisitService, PlaceToVisitService>();
+            services.AddScoped<IReviewService, ReviewService>();
 
             return services;
         }
