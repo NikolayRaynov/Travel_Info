@@ -1,13 +1,14 @@
 ﻿using Travel_Info.Data.Models;
+using Travel_Info.Web.ViewModels.Review;
 
 namespace Travel_Info.Services.Data.Interfaces
 {
     public interface IReviewService
     {
-        Task<IEnumerable<Review>> GetAllReviewsByDestinationIdAsync(int destinationId);
-        Task<Review> GetReviewByIdAsync(int reviewId);
-        Task AddReviewAsync(Review review);
-        Task UpdateReviewAsync(Review review);
+        Task<IEnumerable<ReviewViewModel>> GetAllReviewsByDestinationIdAsync(int destinationId);
+        Task<ReviewViewModel> GetReviewByIdAsync(int reviewId);
+        Task AddReviewAsync(AddReviewViewModel model, string userId);
+        Task UpdateReviewAsync(EditReviewViewModel model, string userId);
         Task DeleteReviewAsync(int reviewId, string userId);
     }
 }

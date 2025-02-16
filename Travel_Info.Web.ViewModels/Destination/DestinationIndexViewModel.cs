@@ -1,4 +1,6 @@
-﻿namespace Travel_Info.Web.ViewModels.Destination
+﻿using Travel_Info.Web.ViewModels.Review;
+
+namespace Travel_Info.Web.ViewModels.Destination
 {
     public class DestinationIndexViewModel
     {
@@ -7,5 +9,7 @@
         public string Description { get; set; } = string.Empty;
         public string ImageUrl { get; set; } = string.Empty;
         public string User { get; set; } = string.Empty;
+        public List<ReviewViewModel> Reviews { get; set; } = new List<ReviewViewModel>();
+
     }
 }

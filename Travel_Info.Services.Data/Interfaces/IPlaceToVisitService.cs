@@ -1,4 +1,4 @@
-﻿using Travel_Info.Data.Models;
+﻿using Travel_Info.Web.ViewModels.Destination;
 
 namespace Travel_Info.Services.Data.Interfaces
 {
@@ -7,6 +7,6 @@ namespace Travel_Info.Services.Data.Interfaces
         Task<bool> AddToWishlistAsync(int destinationId, string userId);
         Task RemoveFromWishlistAsync(int destinationId, string userId);
         Task<bool> IsInWishlistAsync(int destinationId, string userId);
-        Task<IEnumerable<Destination>> GetAllDesiredPlacesAsync(string userId);
+        Task<IEnumerable<DestinationIndexViewModel>> GetAllDesiredPlacesAsync(string userId);
     }
 }

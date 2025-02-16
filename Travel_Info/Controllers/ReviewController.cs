@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Travel_Info.Services.Data;
+using System.Security.Claims;
 using Travel_Info.Services.Data.Interfaces;
 using Travel_Info.Web.ViewModels.Review;
 
@@ -18,16 +18,35 @@ namespace Travel_Info.Controllers
         public async Task<IActionResult> Index(int destinationId)
         {
             var reviews = await reviewService.GetAllReviewsByDestinationIdAsync(destinationId);
-            var model = reviews.Select(r => new ReviewViewModel
-            {
-                Id = r.Id,
-                Rating = r.Rating,
-                Comment = r.Comment,
-                CreatedAt = r.CreatedAt,
-                User = r.User.UserName
-            }).ToList();
+            return View(reviews);
+        }
 
+
+        [HttpGet]
+        public IActionResult Add(int destinationId)
+        {
+            var model = new AddReviewViewModel
+            {
+                DestinationId = destinationId,
+                Rating = 0,
+                Comment = string.Empty
+            };
             return View(model);
         }
+
+
+        [HttpPost]
+        public async Task<IActionResult> Add(AddReviewViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            await reviewService.AddReviewAsync(model, userId);
+            return RedirectToAction("Details", "Destination", new { id = model.DestinationId });
+        }
+
     }
 }

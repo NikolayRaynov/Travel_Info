@@ -2,6 +2,7 @@
 using Travel_Info.Data.Models;
 using Travel_Info.Data.Repository.Interfaces;
 using Travel_Info.Services.Data.Interfaces;
+using Travel_Info.Web.ViewModels.Destination;
 
 namespace Travel_Info.Services.Data
 {
@@ -18,7 +19,8 @@ namespace Travel_Info.Services.Data
         {
             var existingDesiredPlace = await repository.All<PlaceToVisit>()
                 .Include(pv => pv.Destinations)
-                .FirstOrDefaultAsync(pv => pv.UserId == userId && pv.Destinations.Any(d => d.Id == destinationId));
+                .FirstOrDefaultAsync(pv => pv.UserId == userId && pv.Destinations
+                .Any(d => d.Id == destinationId));
 
             if (existingDesiredPlace != null)
             {
@@ -50,16 +52,22 @@ namespace Travel_Info.Services.Data
             return true;
         }
 
-        public async Task<IEnumerable<Destination>> GetAllDesiredPlacesAsync(string userId)
+        public async Task<IEnumerable<DestinationIndexViewModel>> GetAllDesiredPlacesAsync(string userId)
         {
             return await repository
                 .All<PlaceToVisit>()
                 .Where(pv => pv.UserId == userId && !pv.IsDeleted)
                 .Include(pv => pv.Destinations)
-                .ThenInclude(i => i.Images)
+                .ThenInclude(d => d.Images)
                 .SelectMany(pv => pv.Destinations)
+                .Select(d => new DestinationIndexViewModel
+                {
+                    Id = d.Id,
+                    Name = d.Name,
+                    Description = d.Description,
+                    ImageUrl = d.Images.FirstOrDefault().Url ?? "/images/NoPhoto.jpg"
+                })
                 .ToListAsync();
-
         }
 
         public async Task<bool> IsInWishlistAsync(int destinationId, string userId)

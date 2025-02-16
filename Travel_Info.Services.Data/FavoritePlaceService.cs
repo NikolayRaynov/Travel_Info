@@ -2,6 +2,7 @@
 using Travel_Info.Data.Models;
 using Travel_Info.Data.Repository.Interfaces;
 using Travel_Info.Services.Data.Interfaces;
+using Travel_Info.Web.ViewModels.Destination;
 
 namespace Travel_Info.Services.Data
 {
@@ -48,14 +49,21 @@ namespace Travel_Info.Services.Data
                 .AnyAsync(f => f.UserId == userId && f.Destinations.Any(d => d.Id == destinationId) && !f.IsDeleted);
         }
 
-        public async Task<IEnumerable<Destination>> GetAllFavoritesAsync(string userId)
+        public async Task<IEnumerable<DestinationIndexViewModel>> GetAllFavoritesAsync(string userId)
         {
             return await repository
                 .All<FavoritePlace>()
-                .Where(fp => fp.UserId == userId && !fp.IsDeleted)
-                .Include(fp => fp.Destinations)
-                .ThenInclude(i => i.Images)
-                .SelectMany(fp => fp.Destinations)
+                .Where(pv => pv.UserId == userId && !pv.IsDeleted)
+                .Include(pv => pv.Destinations)
+                .ThenInclude(d => d.Images)
+                .SelectMany(pv => pv.Destinations)
+                .Select(d => new DestinationIndexViewModel
+                {
+                    Id = d.Id,
+                    Name = d.Name,
+                    Description = d.Description,
+                    ImageUrl = d.Images.FirstOrDefault().Url ?? "/images/NoPhoto.jpg"
+                })
                 .ToListAsync();
         }
 
@@ -63,7 +71,8 @@ namespace Travel_Info.Services.Data
         {
             var existingFavorite = await repository.All<FavoritePlace>()
                 .Include(fp => fp.Destinations)
-                .FirstOrDefaultAsync(fp => fp.UserId == userId && fp.Destinations.Any(d => d.Id == destinationId));
+                .FirstOrDefaultAsync(fp => fp.UserId == userId && fp.Destinations
+                .Any(d => d.Id == destinationId));
 
             if (existingFavorite != null)
             {
