@@ -28,15 +28,7 @@ namespace Travel_Info.Web.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var favoriteDestinations = await favoritePlaceService.GetAllFavoritesAsync(userId);
 
-            var viewModel = favoriteDestinations.Select(destination => new FavoritePlaceIndexViewModel
-            {
-                Id = destination.Id,
-                Name = destination.Name,
-                Description = destination.Description,
-                ImageUrl = destination.Images.FirstOrDefault()?.Url ?? "/images/NoPhoto.jpg"
-            }).ToList();
-
-            return View(viewModel);
+            return View(favoriteDestinations);
         }
 
         [HttpGet]
@@ -62,7 +54,7 @@ namespace Travel_Info.Web.Controllers
                 DestinationId = destination.Id,
                 DestinationName = destination.Name,
                 DestinationDescription = destination.Description,
-                DestinationImageUrl = destination.Images.FirstOrDefault()?.Url ?? "/images/NoPhoto.jpg"
+                DestinationImageUrl = destination.ImageUrl ?? "/images/NoPhoto.jpg"
             };
 
             return View(viewModel);
@@ -80,7 +72,7 @@ namespace Travel_Info.Web.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             var success = await favoritePlaceService.AddToFavoritesAsync(model.DestinationId, userId);
-            
+
             if (success)
             {
                 return RedirectToAction("Index", "FavoritePlace");
@@ -106,7 +98,7 @@ namespace Travel_Info.Web.Controllers
                 DestinationId = destination.Id,
                 DestinationName = destination.Name,
                 DestinationDescription = destination.Description,
-                DestinationImageUrl = destination.Images.FirstOrDefault()?.Url ?? "/images/NoPhoto.jpg"
+                DestinationImageUrl = destination.ImageUrl ?? "/images/NoPhoto.jpg"
             };
 
             return View(viewModel);

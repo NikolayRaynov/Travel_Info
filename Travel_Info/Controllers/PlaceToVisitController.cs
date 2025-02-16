@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Travel_Info.Data.Models;
-using Travel_Info.Services.Data;
 using Travel_Info.Services.Data.Interfaces;
 using Travel_Info.Web.ViewModels.PlaceToVisit;
 
@@ -27,15 +26,7 @@ namespace Travel_Info.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var desiredPlaces = await placeToVisitService.GetAllDesiredPlacesAsync(userId);
 
-            var viewModel = desiredPlaces.Select(destination => new PlaceToVisitIndexViewModel
-            {
-                Id = destination.Id,
-                Name = destination.Name,
-                Description = destination.Description,
-                ImageUrl = destination.Images.FirstOrDefault()?.Url ?? "/images/NoPhoto.jpg"
-            }).ToList();
-
-            return View(viewModel);
+            return View(desiredPlaces);
         }
 
         [HttpGet]
@@ -61,7 +52,7 @@ namespace Travel_Info.Controllers
                 DestinationId = destination.Id,
                 DestinationName = destination.Name,
                 DestinationDescription = destination.Description,
-                DestinationImageUrl = destination.Images.FirstOrDefault()?.Url ?? "/images/NoPhoto.jpg"
+                DestinationImageUrl = destination.ImageUrl ?? "/images/NoPhoto.jpg"
             };
 
             return View(viewModel);
@@ -97,7 +88,7 @@ namespace Travel_Info.Controllers
                 DestinationId = destination.Id,
                 DestinationName = destination.Name,
                 DestinationDescription = destination.Description,
-                DestinationImageUrl = destination.Images.FirstOrDefault()?.Url ?? "/images/NoPhoto.jpg"
+                DestinationImageUrl = destination.ImageUrl ?? "/images/NoPhoto.jpg"
             };
 
             return View(viewModel);

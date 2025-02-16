@@ -21,12 +21,13 @@ namespace Travel_Info.Controllers
         public async Task<IActionResult> Index()
         {
             var destinations = await destinationService.GetAllAsync();
-            var viewModels = destinations.Select(d => new DestinationIndexViewModel
+            var viewModels = destinations
+            .Select(d => new DestinationIndexViewModel
             {
                 Id = d.Id,
                 Name = d.Name,
                 Description = d.Description,
-                ImageUrl = d.Images.FirstOrDefault()?.Url ?? string.Empty
+                ImageUrl = d.ImageUrl
             }).ToList();
 
             return View(viewModels);
@@ -48,14 +49,15 @@ namespace Travel_Info.Controllers
                 Id = destination.Id,
                 Name = destination.Name,
                 Description = destination.Description,
-                ImageUrl = destination.Images.FirstOrDefault()?.Url ?? "/images/noPhoto.jpg",
-                Reviews = destination.Reviews.Select(r => new ReviewViewModel
+                ImageUrl = destination.ImageUrl,
+                Reviews = destination.Reviews
+                .Select(r => new ReviewViewModel
                 {
                     Id = r.Id,
                     Rating = r.Rating,
                     Comment = r.Comment,
                     CreatedAt = r.CreatedAt,
-                    User = r.User.UserName
+                    User = r.User
                 }).ToList()
             };
 
