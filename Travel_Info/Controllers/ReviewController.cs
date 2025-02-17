@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Travel_Info.Services.Data.Interfaces;
 using Travel_Info.Web.ViewModels.Review;
 
 namespace Travel_Info.Controllers
 {
+    [Authorize]
+    
     public class ReviewController : Controller
     {
         private readonly IReviewService reviewService;
