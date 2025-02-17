@@ -4,9 +4,9 @@
     ViewData["Title"] = "Add Review";
 }
 
-<h1>Add Review for @Model.DestinationName</h1>
+<h1>Add Review</h1>
 
-<form asp-action="Create" method="post">
+<form asp-action="Add" method="post">
     <div class="form-group">
         <label asp-for="Rating" class="control-label"></label>
         <select asp-for="Rating" class="form-control" required>
