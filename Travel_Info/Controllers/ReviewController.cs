@@ -64,10 +64,24 @@ namespace Travel_Info.Controllers
             {
                 Id = review.Id,
                 Rating = review.Rating,
-                Comment = review.Comment
+                Comment = review.Comment,
+                DestinationId = review.DestinationId
             };
 
             return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(EditReviewViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            await reviewService.UpdateReviewAsync(model, userId);
+            return RedirectToAction("Details", "Destination", new { id = model.DestinationId });
         }
     }
 }
