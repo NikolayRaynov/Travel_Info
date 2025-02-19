@@ -51,5 +51,23 @@ namespace Travel_Info.Controllers
             return RedirectToAction("Details", "Destination", new { id = model.DestinationId });
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var review = await reviewService.GetReviewByIdAsync(id);
+            if (review == null)
+            {
+                return NotFound();
+            }
+
+            var model = new EditReviewViewModel
+            {
+                Id = review.Id,
+                Rating = review.Rating,
+                Comment = review.Comment
+            };
+
+            return View(model);
+        }
     }
 }
