@@ -4,7 +4,8 @@
     using static Travel_Info.Common.EntityValidationConstants.Review;
     public class EditReviewViewModel
     {
-        public object Id { get; set; }
+        public int Id { get; set; }
+        public int DestinationId { get; set; }
         public int Rating { get; set; }
 
         [MaxLength(CommentMaxLength)]
