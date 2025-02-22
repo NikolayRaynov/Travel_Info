@@ -37,30 +37,3 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
-
-<style>
-    .rating {
-        direction: rtl; /* За да се показват звездите от дясно на ляво */
-        display: inline-block;
-    }
-
-    .rating input {
-        display: none; /* Скриваме радиобутони */
-    }
-
-    .rating label {
-        font-size: 30px; /* Размер на звездите */
-        color: #ddd; /* Цвят на неактивните звезди */
-        cursor: pointer;
-        transition: color 0.2s; /* Плавен преход на цвета */
-    }
-
-    .rating input:checked ~ label {
-        color: #f39c12; /* Цвят на активните звезди */
-    }
-
-    .rating label:hover,
-    .rating label:hover ~ label {
-        color: #f39c12; /* Цвят на звездите при задържане */
-    }
-</style>
