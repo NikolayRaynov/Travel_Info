@@ -78,9 +78,9 @@ namespace Travel_Info.Services.Data
             }
         }
 
-        public async Task DeleteReviewAsync(int reviewId, string userId)
+        public async Task DeleteReviewAsync(DeleteReviewViewModel model, string userId)
         {
-            var review = await repository.GetByIdAsync<Review>(reviewId);
+            var review = await repository.GetByIdAsync<Review>(model.Id);
             if (review != null && review.UserId == userId)
             {
                 review.IsDeleted = true;

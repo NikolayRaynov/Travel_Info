@@ -103,5 +103,13 @@ namespace Travel_Info.Controllers
 
             return View(model);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(DeleteReviewViewModel model)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            await reviewService.DeleteReviewAsync(model, userId);
+            return RedirectToAction("Details", "Destination", new { id = model.DestinationId });
+        }
     }
 }
