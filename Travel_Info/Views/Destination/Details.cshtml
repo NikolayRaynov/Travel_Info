@@ -35,7 +35,7 @@
                 </span>
                 </p>
                 <p>(@review.CreatedAt)</p>
-                @if (User .Identity.IsAuthenticated && review.User == User.Identity.Name)
+                @if (User.Identity.IsAuthenticated && review.User == User.Identity.Name)
                 {
                     <div>
                         <a asp-controller="Review" asp-action="Edit" asp-route-id="@review.Id" class="btn btn-warning">Edit</a>
