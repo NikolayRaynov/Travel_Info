@@ -29,6 +29,7 @@ namespace Travel_Info.Web.Infrastructure.Configuration
                     CategoryId = 1,
                     FavoritePlaceId = 1,
                     PlaceToVisitId = 1,
+                    UserId = "dea12856-c198-4129-b3f3-b893d8395082"
                 },
                 new Destination
                 {
@@ -38,6 +39,7 @@ namespace Travel_Info.Web.Infrastructure.Configuration
                     CategoryId = 2,
                     FavoritePlaceId = 2,
                     PlaceToVisitId = 2,
+                    UserId = "dea12856-c198-4129-b3f3-b893d8395082"
                 },
                 new Destination
                 {
@@ -47,6 +49,7 @@ namespace Travel_Info.Web.Infrastructure.Configuration
                     CategoryId = 3,
                     FavoritePlaceId = 1,
                     PlaceToVisitId = 2,
+                    UserId = "dea12856-c198-4129-b3f3-b893d8395082"
                 },
                 new Destination
                 {
@@ -56,6 +59,7 @@ namespace Travel_Info.Web.Infrastructure.Configuration
                     CategoryId = 4,
                     FavoritePlaceId = 2,
                     PlaceToVisitId = 1,
+                    UserId = "dea12856-c198-4129-b3f3-b893d8395082"
                 }
             };
 

@@ -38,7 +38,7 @@ namespace Travel_Info.Data.Models
         public virtual PlaceToVisit? PlaceToVisit { get; set; }
 
         [Comment("Identifier of the user who created the destination.")]
-        public string? UserId { get; set; }
+        public string UserId { get; set; } = string.Empty;
         [ForeignKey(nameof(UserId))]
         public virtual ApplicationUser User { get; set; } = null!;
 
