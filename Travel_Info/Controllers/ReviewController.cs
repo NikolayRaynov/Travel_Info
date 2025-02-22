@@ -55,7 +55,7 @@ namespace Travel_Info.Controllers
         public async Task<IActionResult> Edit(int id)
         {
             var review = await reviewService.GetReviewByIdAsync(id);
-            if (review == null)
+            if (review == null || review.User != User.FindFirstValue(ClaimTypes.NameIdentifier))
             {
                 return NotFound();
             }
