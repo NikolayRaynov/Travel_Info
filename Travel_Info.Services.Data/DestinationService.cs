@@ -44,7 +44,8 @@ namespace Travel_Info.Services.Data
                     Id = d.Id,
                     Name = d.Name,
                     Description = d.Description,
-                    ImageUrl = d.Images.FirstOrDefault().Url ?? "/images/NoPhoto.jpg"
+                    ImageUrl = d.Images.FirstOrDefault().Url ?? "/images/NoPhoto.jpg",
+                    UserId = d.UserId
                 })
                 .ToListAsync();
         }
