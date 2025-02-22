@@ -27,7 +27,8 @@ namespace Travel_Info.Controllers
                 Id = d.Id,
                 Name = d.Name,
                 Description = d.Description,
-                ImageUrl = d.ImageUrl
+                ImageUrl = d.ImageUrl,
+                UserId = d.UserId,
             }).ToList();
 
             return View(viewModels);
