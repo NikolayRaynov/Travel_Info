@@ -83,5 +83,25 @@ namespace Travel_Info.Controllers
             await reviewService.UpdateReviewAsync(model, userId);
             return RedirectToAction("Details", "Destination", new { id = model.DestinationId });
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var review = await reviewService.GetReviewByIdAsync(id);
+            if (review == null || review.User != User.FindFirstValue(ClaimTypes.NameIdentifier))
+            {
+                return NotFound();
+            }
+
+            var model = new DeleteReviewViewModel
+            {
+                Id = review.Id,
+                Rating = review.Rating,
+                Comment = review.Comment,
+                DestinationId = review.DestinationId
+            };
+
+            return View(model);
+        }
     }
 }
