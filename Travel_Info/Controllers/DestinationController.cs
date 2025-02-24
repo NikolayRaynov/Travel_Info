@@ -32,7 +32,7 @@ namespace Travel_Info.Controllers
                 Id = d.Id,
                 Name = d.Name,
                 Description = d.Description,
-                ImageUrl = d.ImageUrl,
+                ImageUrls = d.ImageUrls.ToList(),
                 UserId = d.UserId,
             }).ToList();
 
@@ -112,7 +112,7 @@ namespace Travel_Info.Controllers
                 Id = destination.Id,
                 Name = destination.Name,
                 Description = destination.Description,
-                ImageUrl = destination.ImageUrl,
+                ImageUrls = destination.ImageUrls.ToList(),
                 Reviews = destination.Reviews
                 .Select(r => new ReviewViewModel
                 {

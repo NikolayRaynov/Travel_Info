@@ -29,7 +29,9 @@ namespace Travel_Info.Services.Data
 
         public async Task<CategoryViewModel> GetByIdAsync(int id)
         {
-            var category = await repository.GetByIdAsync<Category>(id);
+            var category = await repository
+                .GetByIdAsync<Category>(id);
+
             if (category == null)
             {
                 throw new InvalidOperationException("Category not found.");

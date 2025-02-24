@@ -19,6 +19,6 @@ namespace Travel_Info.Web.ViewModels.FavoritePlace
         public string DestinationDescription { get; set; } = null!;
 
         [MaxLength(ImageUrlMaxLength)]
-        public string DestinationImageUrl { get; set; } = null!;
+        public List<string> DestinationImageUrls { get; set; } = new List<string>();
     }
 }

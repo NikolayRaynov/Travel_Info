@@ -7,16 +7,43 @@
     </div>
 }
 
-<div class="card mb-3">
-    <img src="@Model.DestinationImageUrl" class="card-img-top" alt="@Model.DestinationName">
+<div class="card">
+    <div class="card-header">
+        <h4>@Model.DestinationName</h4>
+    </div>
     <div class="card-body">
-        <h5 class="card-title">@Model.DestinationName</h5>
-        <p class="card-text">@Model.DestinationDescription</p>
+        @if (Model.DestinationImageUrls != null && Model.DestinationImageUrls.Any())
+        {
+            <div id="imageCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    @for (int i = 0; i < Model.DestinationImageUrls.Count; i++)
+                    {
+                        <div class="carousel-item @(i == 0 ? "active" : "")">
+                            <img src="@Model.DestinationImageUrls[i]" class="d-block w-100" alt="@Model.DestinationName" style="height: 200px; object-fit: cover;">
+                        </div>
+                    }
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#imageCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#imageCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        }
+        else
+        {
+            <img src="~/images/NoPhoto.jpg" class="img-fluid" alt="@Model.DestinationName" style="height: 200px; object-fit: cover;">
+        }
+        
+        <p>@Model.DestinationDescription</p>
+    </div>
+    <div class="card-footer">
+        <form asp-action="Add" method="post">
+            <input type="hidden" asp-for="DestinationId" />
+            <button type="submit" class="btn btn-primary">Add to Wishlist</button>
+        </form>
     </div>
 </div>
-
-<form asp-action="Add" method="post">
-    <input type="hidden" name="DestinationId" value="@Model.DestinationId" />
-    <button type="submit" class="btn btn-primary">Confirm</button>
-    <a asp-action="Index" asp-controller="Destination" class="btn btn-secondary">Cancel</a>
-</form>

@@ -36,7 +36,7 @@ namespace Travel_Info.Services.Data
             var review = await repository.GetByIdAsync<Review>(reviewId);
             if (review == null)
             {
-                return null;
+                throw new InvalidOperationException("Review not found");
             }
 
             return new ReviewViewModel

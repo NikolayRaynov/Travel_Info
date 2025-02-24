@@ -6,7 +6,7 @@ namespace Travel_Info.Services.Data.Interfaces
     {
         Task<IEnumerable<DestinationIndexViewModel>> GetAllAsync();
         Task<DestinationIndexViewModel?> GetByIdAsync(int id);
-        Task CreateAsync(CreateDestinationViewModel destination);
+        Task CreateAsync(AddDestinationViewModel destinationModel, List<string> imageUrls, string userId);
         Task UpdateAsync(EditDestinationViewModel destination);
         Task SoftDeleteAsync(int id);
     }

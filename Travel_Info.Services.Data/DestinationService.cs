@@ -16,20 +16,20 @@ namespace Travel_Info.Services.Data
             repository = repo;
         }
 
-        public async Task CreateAsync(CreateDestinationViewModel destinationModel)
+        public async Task CreateAsync(AddDestinationViewModel destinationModel, List<string> imageUrls, string userId)
         {
             var destination = new Destination
             {
                 Name = destinationModel.Name,
                 Description = destinationModel.Description,
-                Images = new List<Image>
-                {
-                    new Image
-                    {
-                        Url = destinationModel.ImageUrl
-                    }
-                }
+                CategoryId = destinationModel.CategoryId,
+                UserId = userId
             };
+
+            foreach (var imageUrl in imageUrls)
+            {
+                destination.Images.Add(new Image { Url = imageUrl });
+            }
 
             await repository.AddAsync(destination);
             await repository.SaveChangesAsync();
@@ -44,7 +44,7 @@ namespace Travel_Info.Services.Data
                     Id = d.Id,
                     Name = d.Name,
                     Description = d.Description,
-                    ImageUrl = d.Images.FirstOrDefault().Url ?? "/images/NoPhoto.jpg",
+                    ImageUrls = d.Images.Select(i => i.Url).ToList(),
                     UserId = d.UserId
                 })
                 .ToListAsync();
@@ -60,7 +60,7 @@ namespace Travel_Info.Services.Data
 
             if (destination == null)
             {
-                return null;
+                throw new InvalidOperationException("Destination not found");
             }
 
             return new DestinationIndexViewModel
@@ -68,7 +68,8 @@ namespace Travel_Info.Services.Data
                 Id = destination.Id,
                 Name = destination.Name,
                 Description = destination.Description,
-                ImageUrl = destination.Images.FirstOrDefault()?.Url ?? "/images/NoPhoto.jpg",
+                ImageUrls = destination.Images
+                    .Select(i => i.Url).ToList(),
                 Reviews = destination.Reviews
                 .Select(r => new ReviewViewModel
                 {
