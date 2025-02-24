@@ -4,7 +4,7 @@
     using System.ComponentModel.DataAnnotations;
     using Travel_Info.Web.ViewModels.Category;
     using static Travel_Info.Common.EntityValidationConstants.Destination;
-    public class CreateDestinationViewModel
+    public class AddDestinationViewModel
     {
         public int Id { get; set; }
 

@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Security.Claims;
 using Travel_Info.Services.Data.Interfaces;
+using Travel_Info.Web.ViewModels.Category;
 using Travel_Info.Web.ViewModels.Destination;
 using Travel_Info.Web.ViewModels.Review;
 
@@ -10,10 +13,12 @@ namespace Travel_Info.Controllers
     public class DestinationController : Controller
     {
         private readonly IDestinationService destinationService;
+        private readonly ICategoryService categoryService;
 
-        public DestinationController(IDestinationService destinationService)
+        public DestinationController(IDestinationService destinationService, ICategoryService categoryService)
         {
             this.destinationService = destinationService;
+            this.categoryService = categoryService;
         }
 
         [AllowAnonymous]
@@ -32,6 +37,63 @@ namespace Travel_Info.Controllers
             }).ToList();
 
             return View(viewModels);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Add()
+        {
+            var categories = await categoryService.GetAllAsync();
+            var model = new AddDestinationViewModel
+            {
+                Categories = categories
+                    .Select(c => new CategoryViewModel
+                    {
+                        Id = c.Id,
+                        NameBg = c.NameBg
+                    })
+                    .ToList()
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Add(AddDestinationViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var category = await categoryService.GetByIdAsync(model.CategoryId);
+                var categoryFolder = category.NameEn;
+
+                var imageUrls = new List<string>();
+
+                foreach (var image in model.Images)
+                {
+                    if (image.Length > 0)
+                    {
+                        var fileName = Path.GetFileName(image.FileName);
+                        var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", categoryFolder);
+
+                        Directory.CreateDirectory(folderPath);
+                        var filePath = Path.Combine(folderPath, fileName);
+
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await image.CopyToAsync(stream);
+                        }
+
+                        imageUrls.Add($"/images/{categoryFolder}/{fileName}");
+                    }
+                }
+
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                await destinationService.CreateAsync(model, imageUrls, userId);
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(model);
         }
 
         [AllowAnonymous]
