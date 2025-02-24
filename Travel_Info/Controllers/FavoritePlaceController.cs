@@ -54,7 +54,7 @@ namespace Travel_Info.Web.Controllers
                 DestinationId = destination.Id,
                 DestinationName = destination.Name,
                 DestinationDescription = destination.Description,
-                DestinationImageUrl = destination.ImageUrl ?? "/images/NoPhoto.jpg"
+                DestinationImageUrls = destination.ImageUrls
             };
 
             return View(viewModel);
@@ -98,7 +98,7 @@ namespace Travel_Info.Web.Controllers
                 DestinationId = destination.Id,
                 DestinationName = destination.Name,
                 DestinationDescription = destination.Description,
-                DestinationImageUrl = destination.ImageUrl ?? "/images/NoPhoto.jpg"
+                DestinationImageUrls = destination.ImageUrls
             };
 
             return View(viewModel);

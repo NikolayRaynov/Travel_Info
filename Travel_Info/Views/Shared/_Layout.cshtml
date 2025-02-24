@@ -31,11 +31,11 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Destination" asp-action="Index">All Destinations</a>
-                        </li>
                         @if (this.User?.Identity != null && this.User.Identity.IsAuthenticated)
                         {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Destination" asp-action="Add">Add Destination</a>
+                            </li>
                              <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="FavoritePlace" asp-action="Index">My Favorites</a>
                             </li>

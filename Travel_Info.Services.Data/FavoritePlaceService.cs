@@ -27,7 +27,9 @@ namespace Travel_Info.Services.Data
                 throw new InvalidOperationException("This destination is not in your favorites.");
             }
 
-            var destinationToRemove = favoritePlace.Destinations.FirstOrDefault(d => d.Id == destinationId);
+            var destinationToRemove = favoritePlace.Destinations
+                .FirstOrDefault(d => d.Id == destinationId);
+
             if (destinationToRemove != null)
             {
                 favoritePlace.Destinations.Remove(destinationToRemove);
@@ -46,7 +48,8 @@ namespace Travel_Info.Services.Data
         {
             return await repository
                 .All<FavoritePlace>()
-                .AnyAsync(f => f.UserId == userId && f.Destinations.Any(d => d.Id == destinationId) && !f.IsDeleted);
+                .AnyAsync(f => f.UserId == userId && f.Destinations
+                .Any(d => d.Id == destinationId) && !f.IsDeleted);
         }
 
         public async Task<IEnumerable<DestinationIndexViewModel>> GetAllFavoritesAsync(string userId)
@@ -62,7 +65,9 @@ namespace Travel_Info.Services.Data
                     Id = d.Id,
                     Name = d.Name,
                     Description = d.Description,
-                    ImageUrl = d.Images.FirstOrDefault().Url ?? "/images/NoPhoto.jpg"
+                    ImageUrls = d.Images
+                        .Select(i => i.Url)
+                        .ToList()
                 })
                 .ToListAsync();
         }
@@ -93,7 +98,9 @@ namespace Travel_Info.Services.Data
                 await repository.AddAsync(userFavorites);
             }
 
-            var destination = await repository.GetByIdAsync<Destination>(destinationId);
+            var destination = await repository
+                .GetByIdAsync<Destination>(destinationId);
+
             if (destination != null)
             {
                 userFavorites.Destinations.Add(destination);

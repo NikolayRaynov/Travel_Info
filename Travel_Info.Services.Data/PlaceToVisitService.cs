@@ -41,7 +41,9 @@ namespace Travel_Info.Services.Data
                 await repository.AddAsync(userWishlist);
             }
 
-            var destination = await repository.GetByIdAsync<Destination>(destinationId);
+            var destination = await repository
+                .GetByIdAsync<Destination>(destinationId);
+
             if (destination != null)
             {
                 userWishlist.Destinations.Add(destination);
@@ -65,7 +67,9 @@ namespace Travel_Info.Services.Data
                     Id = d.Id,
                     Name = d.Name,
                     Description = d.Description,
-                    ImageUrl = d.Images.FirstOrDefault().Url ?? "/images/NoPhoto.jpg"
+                    ImageUrls = d.Images
+                        .Select(i => i.Url)
+                        .ToList()
                 })
                 .ToListAsync();
         }
@@ -74,7 +78,8 @@ namespace Travel_Info.Services.Data
         {
             return await repository
                 .All<PlaceToVisit>()
-                .AnyAsync(w => w.UserId == userId && w.Destinations.Any(d => d.Id == destinationId) && !w.IsDeleted);
+                .AnyAsync(w => w.UserId == userId && w.Destinations
+                .Any(d => d.Id == destinationId) && !w.IsDeleted);
         }
 
         public async Task RemoveFromWishlistAsync(int destinationId, string userId)

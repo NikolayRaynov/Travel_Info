@@ -17,15 +17,32 @@
     @foreach (var place in Model)
     {
         <div class="card col-3 h-100" style="width: 20rem; margin: 0.5rem;">
-            <div class="card-img-top">
-                @if (!string.IsNullOrEmpty(place.ImageUrl))
-                {
-                    <img src="@place.ImageUrl" class="img-fluid" style="height: 200px; object-fit: cover;">
-                }
-                else
-                {
-                    <img src="~/images/NoPhoto.jpg" class="img-fluid" style="height: 200px; object-fit: cover;">
-                }
+            <div id="carouselExampleIndicators_@place.Id" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    @if (place.ImageUrls != null && place.ImageUrls.Any())
+                    {
+                        for (int i = 0; i < place.ImageUrls.Count; i++)
+                        {
+                            <div class="carousel-item @(i == 0 ? "active" : "")">
+                                <img src="@place.ImageUrls[i]" class="d-block w-100" style="height: 200px; object-fit: cover;" alt="@place.Name">
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="carousel-item active">
+                            <img src="~/images/NoPhoto.jpg" class="d-block w-100" style="height: 200px; object-fit: cover;" alt="No Image">
+                        </div>
+                    }
+                    </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators_@place.Id" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators_@place.Id" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
             </div>
             <div class="card-body">
                 <h4 class="card-title">@place.Name</h4>

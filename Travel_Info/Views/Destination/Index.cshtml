@@ -18,23 +18,32 @@
     @foreach (var e in Model)
     {
         <div class="card col-3 h-100" style="width: 20rem; margin:0.5rem">
-            @if (!string.IsNullOrEmpty(e.ImageUrl))
-            {
-                <img src="@e.ImageUrl" class="card-img-top img-fluid" style="height: 200px; object-fit: cover;">
-            }
-            else
-            {
-                <img src="~/images/NoPhoto.jpg" class="card-img-top img-fluid" style="height: 200px; object-fit: cover;">
-            }
-            <div class="card-body" style="height: calc(100% - 150px); overflow: auto;">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="title-wrapper" style="height: 6em; overflow: hidden;">
-                            <h4 class="card-title mt-1">@e.Name</h4>
-                            <h6 class="card-text mt-1">@e.Description</h6>
+            <div id="carouselExampleIndicators_@e.Id" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    @if (e.ImageUrls != null && e.ImageUrls.Any())
+                    {
+                        for (int i = 0; i < e.ImageUrls.Count; i++)
+                        {
+                            <div class="carousel-item @(i == 0 ? "active" : "")">
+                                <img src="@e.ImageUrls[i]" class="d-block w-100" style="height: 200px; object-fit: cover;" alt="Destination Image">
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="carousel-item active">
+                            <img src="~/images/NoPhoto.jpg" class="d-block w-100" style="height: 200px; object-fit: cover;" alt="Placeholder Image">
                         </div>
-                    </div>
+                    }
                 </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators_@e.Id" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators_@e.Id" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
             </div>
 
             <div class="row gx-0">
