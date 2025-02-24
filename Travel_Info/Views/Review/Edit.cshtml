@@ -10,13 +10,13 @@
 
     <div class="form-group">
         <label asp-for="Rating" class="control-label"></label>
-        <select asp-for="Rating" class="form-control" required>
-            <option value="">Select Rating</option>
-            @for (int i = 1; i <= 5; i++)
+        <div class="rating-stars">
+            @for (int i = 5; i >= 1; i--)
             {
-                <option value="@i">@i</option>
+                <input type="radio" id="star-@i" name="Rating" value="@i" @(Model.Rating == i ? "checked" : "") />
+                <label for="star-@i" class="star">&#9733;</label>
             }
-        </select>
+        </div>
         <span asp-validation-for="Rating" class="text-danger"></span>
     </div>
 
@@ -28,7 +28,7 @@
 
     <div class="form-group">
         <button type="submit" class="btn btn-primary">Update Review</button>
-        <a asp-action="Details" asp-route-id="@Model.DestinationId" class="btn btn-secondary">Cancel</a>
+        <a asp-controller="Destination" asp-action="Details" asp-route-id="@Model.DestinationId" class="btn btn-secondary">Cancel</a>
     </div>
 </form>
 
@@ -36,4 +36,24 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <style>
+        .rating-stars {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: flex-end;
+        }
+        .rating-stars input {
+            display: none;
+        }
+        .rating-stars label {
+            font-size: 2rem;
+            color: gray;
+            cursor: pointer;
+        }
+        .rating-stars input:checked ~ label,
+        .rating-stars label:hover,
+        .rating-stars label:hover ~ label {
+            color: gold;
+        }
+    </style>
 }
