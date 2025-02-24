@@ -14,6 +14,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<IFavoritePlaceService, FavoritePlaceService>();
             services.AddScoped<IPlaceToVisitService, PlaceToVisitService>();
             services.AddScoped<IReviewService, ReviewService>();
+            services.AddScoped<ICategoryService, CategoryService>();
 
             return services;
         }
