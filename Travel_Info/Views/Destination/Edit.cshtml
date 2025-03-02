@@ -1,0 +1,166 @@
+﻿@model EditDestinationViewModel
+
+@{
+    ViewData["Title"] = "Редактиране на дестинация";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Edit" method="post" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
+
+    <div class="row">
+        <div class="col-md-6">
+
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label">Име</label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    @for (int i = 0; i < Model.ImageUrls.Count; i++)
+                    {
+                        <div class="carousel-item @(i == 0 ? "active" : "")">
+                            <img src="@Model.ImageUrls[i]" class="d-block w-100" style="width: 100%; height: 400px; object-fit: cover;" alt="Снимка @i">
+                            <div class="carousel-caption d-none d-md-block">
+                                <button type="button" class="btn btn-danger delete-image delete-button" data-id="@Model.Id" data-url="@Model.ImageUrls[i]">Изтрий</button>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label asp-for="Description" class="form-label">Описание</label>
+                <textarea asp-for="Description" class="form-control"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-3 mt-3">
+        <label for="newImages" class="form-label">Добавете нови снимки</label>
+        <input type="file" name="NewImages" class="form-control" multiple />
+    </div>
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Запази промените</button>
+        <a asp-controller="Destination" asp-action="Index" class="btn btn-secondary">Cancel</a>
+    </div>
+</form>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $(".delete-image").click(function () {
+                var destinationId = $(this).data("id");
+                var imageUrl = $(this).data("url");
+                var button = $(this);
+
+                $.ajax({
+                    url: "/Destination/DeleteImage",
+                    type: "POST",
+                    data: { id: destinationId, imageUrl: imageUrl },
+                    headers: {
+                        "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val()
+                    },
+                    success: function () {
+                        var carouselItem = button.closest(".carousel-item");
+                        var isActive = carouselItem.hasClass("active");
+
+                        carouselItem.remove();
+
+                        if (isActive) {
+                            $(".carousel-item").first().addClass("active");
+                        }
+                    },
+                    error: function () {
+                        alert("Грешка при изтриване на изображението.");
+                    }
+                });
+            });
+        });
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var textarea = document.querySelector("textarea");
+
+            function adjustHeight(textarea) {
+                textarea.style.height = "auto";
+                textarea.style.height = (textarea.scrollHeight) + "px";
+            }
+
+            adjustHeight(textarea);
+
+            textarea.addEventListener("input", function () {
+                adjustHeight(textarea);
+            });
+        });
+    </script>
+}
+
+<style>
+    .carousel-image {
+        width: 100%;
+        height: 300px;
+        object-fit: cover;
+    }
+
+    .carousel-inner {
+        position: relative;
+        width: 100%;
+        overflow: hidden;
+    }
+
+    .carousel-item {
+        transition: transform 0.5s ease;
+    }
+
+    .carousel-caption {
+        background: none !important;
+        border-radius: 5px;
+    }
+
+    .delete-image {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .comments-section {
+        margin-top: 20px;
+    }
+
+    .comment {
+        background-color: #f8f9fa;
+        padding: 10px;
+        border-radius: 5px;
+        margin-bottom: 10px;
+    }
+
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 30px;
+    }
+
+    .col-md-6 {
+        flex: 1 1 48%;
+    }
+</style>
