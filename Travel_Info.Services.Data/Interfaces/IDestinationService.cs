@@ -1,4 +1,5 @@
-﻿using Travel_Info.Web.ViewModels.Destination;
+﻿using Microsoft.AspNetCore.Http;
+using Travel_Info.Web.ViewModels.Destination;
 
 namespace Travel_Info.Services.Data.Interfaces
 {
@@ -7,7 +8,7 @@ namespace Travel_Info.Services.Data.Interfaces
         Task<IEnumerable<DestinationIndexViewModel>> GetAllAsync();
         Task<DestinationIndexViewModel?> GetByIdAsync(int id);
         Task CreateAsync(AddDestinationViewModel destinationModel, List<string> imageUrls, string userId);
-        Task UpdateAsync(EditDestinationViewModel destination);
+        Task UpdateAsync(EditDestinationViewModel destination, List<IFormFile> newImages);
         Task SoftDeleteAsync(int id);
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Travel_Info.Data.Models;
 using Travel_Info.Data.Repository.Interfaces;
 using Travel_Info.Services.Data.Interfaces;
@@ -10,10 +11,12 @@ namespace Travel_Info.Services.Data
     public class DestinationService : IDestinationService
     {
         private readonly IRepository repository;
+        private readonly ICategoryService categoryService;
 
-        public DestinationService(IRepository repo)
+        public DestinationService(IRepository repository, ICategoryService categoryService)
         {
-            repository = repo;
+            this.repository = repository;
+            this.categoryService = categoryService;
         }
 
         public async Task CreateAsync(AddDestinationViewModel destinationModel, List<string> imageUrls, string userId)
@@ -93,7 +96,7 @@ namespace Travel_Info.Services.Data
             }
         }
 
-        public async Task UpdateAsync(EditDestinationViewModel destinationModel)
+        public async Task UpdateAsync(EditDestinationViewModel destinationModel, List<IFormFile> newImages)
         {
             var destination = await repository.GetByIdAsync<Destination>(destinationModel.Id);
             if (destination != null)
@@ -101,17 +104,33 @@ namespace Travel_Info.Services.Data
                 destination.Name = destinationModel.Name;
                 destination.Description = destinationModel.Description;
 
-                if (!string.IsNullOrEmpty(destinationModel.ImageUrl))
+                if (newImages != null && newImages.Count > 0)
                 {
-                    if (destination.Images.Any())
+                    var category = await categoryService.GetByIdAsync(destination.CategoryId);
+                    var categoryFolder = category.NameEn;
+
+                    foreach (var image in newImages)
                     {
-                        destination.Images.First().Url = destinationModel.ImageUrl;
-                    }
-                    else
-                    {
-                        destination.Images.Add(new Image { Url = destinationModel.ImageUrl });
+                        if (image.Length > 0)
+                        {
+                            var fileName = Path.GetFileName(image.FileName);
+                            var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", categoryFolder).ToLower();
+
+                            Directory.CreateDirectory(folderPath);
+                            var filePath = Path.Combine(folderPath, fileName).ToLower();
+
+                            using (var stream = new FileStream(filePath, FileMode.Create))
+                            {
+                                await image.CopyToAsync(stream);
+                            }
+
+                            destination.Images.Add(new Image { Url = $"/image/{categoryFolder}/{fileName}" });
+                        }
                     }
                 }
+
+                repository.Update(destination);
+                await repository.SaveChangesAsync();
 
                 repository.Update(destination);
                 await repository.SaveChangesAsync();
