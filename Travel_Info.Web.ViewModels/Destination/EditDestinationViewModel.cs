@@ -18,7 +18,7 @@
         public string Description { get; set; } = string.Empty;
 
         [MaxLength(ImageUrlMaxLength)]
-        public string ImageUrl { get; set; } = string.Empty;
+        public List<string> ImageUrls { get; set; } = new List<string>();
         public string User { get; set; } = string.Empty;
     }
 }
