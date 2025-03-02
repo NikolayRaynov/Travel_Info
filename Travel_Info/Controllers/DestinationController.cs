@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Security.Claims;
 using Travel_Info.Services.Data.Interfaces;
 using Travel_Info.Web.ViewModels.Category;
@@ -94,6 +93,26 @@ namespace Travel_Info.Controllers
             }
 
             return View(model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var destination = await destinationService.GetByIdAsync(id);
+            if (destination == null)
+            {
+                return NotFound();
+            }
+
+            var viewModel = new EditDestinationViewModel
+            {
+                Id = destination.Id,
+                Name = destination.Name,
+                Description = destination.Description,
+                ImageUrls = destination.ImageUrls.ToList()
+            };
+
+            return View(viewModel);
         }
 
         [AllowAnonymous]
