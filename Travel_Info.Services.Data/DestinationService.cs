@@ -159,5 +159,15 @@ namespace Travel_Info.Services.Data
                 await repository.SaveChangesAsync();
             }
         }
+
+        public async Task DeleteDestinationAsync(int destinationId)
+        {
+            var destination = await repository.GetByIdAsync<Destination>(destinationId);
+            if (destination != null)
+            {
+                repository.Delete(destination);
+                await repository.SaveChangesAsync();
+            }
+        }
     }
 }
