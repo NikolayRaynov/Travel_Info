@@ -1,8 +1,10 @@
 ﻿@model Travel_Info.Web.ViewModels.Review.EditReviewViewModel
 
 @{
-    ViewData["Title"] = "Edit Review";
+    ViewBag.Title = "Edit Review";
 }
+
+<h2>@ViewBag.Title</h2>
 
 <form asp-action="Edit" method="post">
     <input type="hidden" asp-for="Id" />
