@@ -1,6 +1,10 @@
 ﻿@model IEnumerable<ReviewViewModel>
 
-<h1>Reviews</h1>
+@{
+    ViewBag.Title = "Reviews";
+}
+
+<h1>@ViewBag.Title</h1>
 
 @if (Model.Any())
 {

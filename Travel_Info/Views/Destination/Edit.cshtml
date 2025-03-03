@@ -1,10 +1,10 @@
 ﻿@model EditDestinationViewModel
 
 @{
-    ViewData["Title"] = "Редактиране на дестинация";
+    ViewBag.Title = "Редактиране на дестинация";
 }
 
-<h2>@ViewData["Title"]</h2>
+<h2>@ViewBag.Title</h2>
 
 <form asp-action="Edit" method="post" enctype="multipart/form-data">
     @Html.AntiForgeryToken()

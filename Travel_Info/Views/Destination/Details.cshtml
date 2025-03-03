@@ -1,39 +1,45 @@
 ﻿@model DestinationDetailsViewModel
 
-<h1>@Model.Name</h1>
+<h1 class="dest-name mb-4">@Model.Name</h1>
 
-@if (Model.ImageUrls != null && Model.ImageUrls.Any())
-{
-    <div id="imageCarousel" class="carousel slide" data-bs-ride="carousel">
-        <div class="carousel-inner">
-            @for (int i = 0; i < Model.ImageUrls.Count; i++)
-            {
-                <div class="carousel-item @(i == 0 ? "active" : "")">
-                    <img src="@Model.ImageUrls[i]" alt="Image of @Model.Name" class="d-block w-100" style="height: 400px; object-fit: cover;">
+<div class="row g-4">
+    <div class="col-md-6">
+        @if (Model.ImageUrls != null && Model.ImageUrls.Any())
+        {
+            <div id="imageCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    @for (int i = 0; i < Model.ImageUrls.Count; i++)
+                    {
+                        <div class="carousel-item @(i == 0 ? "active" : "")">
+                            <img src="@Model.ImageUrls[i]" alt="Image of @Model.Name" class="d-block w-100 img-fluid" style="height: 400px; object-fit: cover;">
+                        </div>
+                    }
                 </div>
-            }
-        </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#imageCarousel" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#imageCarousel" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-        </button>
+                <button class="carousel-control-prev" type="button" data-bs-target="#imageCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#imageCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        }
     </div>
-}
 
-<p>@Model.Description</p>
+    <div class="col-md-6">
+        <p class="mb-0">@Model.Description</p>
+    </div>
+</div>
 
-<h4>Reviews:</h4>
+<h4 class="reviews-section mt-4 mb-3">Reviews:</h4>
 
 @if (Model.Reviews.Any())
 {
     <ul class="list-unstyled">
         @foreach (var review in Model.Reviews)
         {
-            <li>
+            <li class="mb-4">
                 <p><strong>@review.User:</strong></p>
                 <p>@review.Comment</p>
                 <p>Rating: 
@@ -51,16 +57,15 @@
                     }
                 </span>
                 </p>
-                <p>(@review.CreatedAt)</p>
+                <p class="text-muted">(@review.CreatedAt)</p>
                 @if (User.Identity.IsAuthenticated && review.User == User.Identity.Name)
                 {
-                    <div>
+                    <div class="d-flex gap-2">
                         <a asp-controller="Review" asp-action="Edit" asp-route-id="@review.Id" class="btn btn-warning">Edit</a>
                         <a asp-controller="Review" asp-action="Delete" asp-route-id="@review.Id" class="btn btn-danger">Delete</a>
                     </div>
                 }
-                <br>
-                <br>
+                <hr class="col-md-6" style="border: 0.5px grey; opacity: 1;" />
             </li>
         }
     </ul>
@@ -72,5 +77,5 @@ else
 
 @if (this.User?.Identity != null && this.User.Identity.IsAuthenticated)
 {
-    <a asp-controller="Review" asp-action="Add" asp-route-destinationId="@Model.Id" class="btn btn-primary">Add Review</a>
+    <a asp-controller="Review" asp-action="Add" asp-route-destinationId="@Model.Id" class="btn btn-primary mt-3">Add Review</a>
 }
