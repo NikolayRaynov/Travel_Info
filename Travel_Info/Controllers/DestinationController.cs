@@ -115,6 +115,20 @@ namespace Travel_Info.Controllers
             return View(viewModel);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(EditDestinationViewModel model, List<IFormFile> NewImages)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            await destinationService.UpdateAsync(model, NewImages);
+
+            return RedirectToAction("Index");
+        }
+
         [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> Details(int id)

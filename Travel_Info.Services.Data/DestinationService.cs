@@ -137,7 +137,7 @@ namespace Travel_Info.Services.Data
                         if (image.Length > 0)
                         {
                             var fileName = Path.GetFileName(image.FileName);
-                            var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", categoryFolder).ToLower();
+                            var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/", categoryFolder).ToLower();
 
                             Directory.CreateDirectory(folderPath);
                             var filePath = Path.Combine(folderPath, fileName).ToLower();
@@ -147,7 +147,7 @@ namespace Travel_Info.Services.Data
                                 await image.CopyToAsync(stream);
                             }
 
-                            destination.Images.Add(new Image { Url = $"/image/{categoryFolder}/{fileName}" });
+                            destination.Images.Add(new Image { Url = $"/images/{categoryFolder}/{fileName}" });
                         }
                     }
                 }
