@@ -137,6 +137,34 @@ namespace Travel_Info.Controllers
             return RedirectToAction("Edit", new { id });
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var destination = await destinationService.GetByIdAsync(id);
+            if (destination == null)
+            {
+                return NotFound();
+            }
+
+            var viewModel = new DeleteDestinationViewModel
+            {
+                id = destination.Id,
+                Name = destination.Name,
+                Description = destination.Description,
+                ImageUrls = destination.ImageUrls
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(DeleteDestinationViewModel model)
+        {
+            await destinationService.DeleteDestinationAsync(model.id);
+            return RedirectToAction("Index");
+        }
+
         [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> Details(int id)
@@ -153,7 +181,7 @@ namespace Travel_Info.Controllers
                 Id = destination.Id,
                 Name = destination.Name,
                 Description = destination.Description,
-                ImageUrls = destination.ImageUrls.ToList(),
+                ImageUrls = destination.ImageUrls,
                 Reviews = destination.Reviews
                 .Select(r => new ReviewViewModel
                 {
