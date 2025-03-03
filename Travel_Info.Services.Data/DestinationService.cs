@@ -38,6 +38,29 @@ namespace Travel_Info.Services.Data
             await repository.SaveChangesAsync();
         }
 
+        public async Task DeleteImageAsync(int destinationId, string imageUrl)
+        {
+            var destination = await repository.All<Destination>()
+                .Include(d => d.Images)
+                .FirstOrDefaultAsync(d => d.Id == destinationId);
+
+            if (destination != null)
+            {
+                var imageToDelete = destination.Images.FirstOrDefault(i => i.Url == imageUrl);
+                if (imageToDelete != null)
+                {
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", imageUrl.TrimStart('/'));
+                    if (File.Exists(filePath))
+                    {
+                        File.Delete(filePath);
+                    }
+
+                    repository.Delete(imageToDelete);
+                    await repository.SaveChangesAsync();
+                }
+            }
+        }
+
         public async Task<IEnumerable<DestinationIndexViewModel>> GetAllAsync()
         {
             return await repository.All<Destination>()

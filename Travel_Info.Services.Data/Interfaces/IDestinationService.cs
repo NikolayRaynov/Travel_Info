@@ -10,5 +10,6 @@ namespace Travel_Info.Services.Data.Interfaces
         Task CreateAsync(AddDestinationViewModel destinationModel, List<string> imageUrls, string userId);
         Task UpdateAsync(EditDestinationViewModel destination, List<IFormFile> newImages);
         Task SoftDeleteAsync(int id);
+        Task DeleteImageAsync(int destinationId, string imageUrl);
     }
 }
