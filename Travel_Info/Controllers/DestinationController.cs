@@ -129,6 +129,14 @@ namespace Travel_Info.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteImage(int id, string imageUrl)
+        {
+            await destinationService.DeleteImageAsync(id, imageUrl);
+            return RedirectToAction("Edit", new { id });
+        }
+
         [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> Details(int id)
