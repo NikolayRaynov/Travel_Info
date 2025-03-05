@@ -129,14 +129,6 @@ namespace Travel_Info.Controllers
             return RedirectToAction("Index");
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteImage(int id, string imageUrl)
-        {
-            await destinationService.DeleteImageAsync(id, imageUrl);
-            return RedirectToAction("Edit", new { id });
-        }
-
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
@@ -148,7 +140,7 @@ namespace Travel_Info.Controllers
 
             var viewModel = new DeleteDestinationViewModel
             {
-                id = destination.Id,
+                Id = destination.Id,
                 Name = destination.Name,
                 Description = destination.Description,
                 ImageUrls = destination.ImageUrls
@@ -161,8 +153,16 @@ namespace Travel_Info.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(DeleteDestinationViewModel model)
         {
-            await destinationService.DeleteDestinationAsync(model.id);
+            await destinationService.DeleteDestinationAsync(model.Id);
             return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteImage(int id, string imageUrl)
+        {
+            await destinationService.DeleteImageAsync(id, imageUrl);
+            return RedirectToAction("Edit", new { id });
         }
 
         [AllowAnonymous]
