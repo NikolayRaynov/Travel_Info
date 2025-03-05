@@ -162,9 +162,36 @@ namespace Travel_Info.Services.Data
 
         public async Task DeleteDestinationAsync(int destinationId)
         {
-            var destination = await repository.GetByIdAsync<Destination>(destinationId);
+            var destination = await repository
+                .All<Destination>()
+                .Include(d => d.Images)
+                .FirstOrDefaultAsync(d => d.Id == destinationId);
+
             if (destination != null)
             {
+                var category = await categoryService
+                    .GetByIdAsync(destination.CategoryId);
+
+                var categoryFolder = category.NameEn;
+
+                foreach (var image in destination.Images)
+                {
+                    var fileName = Path.GetFileName(image.Url);
+                    var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/", categoryFolder).ToLower();
+                    var filePath = Path.Combine(folderPath, fileName).ToLower();
+
+                    if (File.Exists(filePath))
+                    {
+                        File.Delete(filePath);
+                    }
+                }
+
+                repository.DeleteRange<Image>(i => i.DestinationId == destinationId);
+                await repository.SaveChangesAsync();
+
+                repository.DeleteRange<Review>(r => r.DestinationId == destinationId);
+                await repository.SaveChangesAsync();
+
                 repository.Delete(destination);
                 await repository.SaveChangesAsync();
             }
