@@ -7,44 +7,55 @@
     </div>
 }
 
-<div class="card">
-    <div class="card-header">
-        <h4>@Model.DestinationName</h4>
-    </div>
-    <div class="card-body">
-        @if (Model.DestinationImageUrls != null && Model.DestinationImageUrls.Any())
-        {
-            <div id="imageCarousel" class="carousel slide" data-bs-ride="carousel">
-                <div class="carousel-inner">
-                    @for (int i = 0; i < Model.DestinationImageUrls.Count; i++)
+}
+
+@{
+    ViewBag.Title = "Add to Favorites";
+}
+
+<h2 class="text-center">@ViewBag.Title</h2>
+
+<div class="text-center row justify-content-center">
+    <div class="card col-3 h-100" style="width: 20rem; margin: 0.5rem;">
+        <div id="carouselExampleIndicators_@Model.DestinationId" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                @if (Model.DestinationImageUrls != null && Model.DestinationImageUrls.Any())
+                {
+                    for (int i = 0; i < Model.DestinationImageUrls.Count; i++)
                     {
                         <div class="carousel-item @(i == 0 ? "active" : "")">
-                            <img src="@Model.DestinationImageUrls[i]" class="d-block w-100" alt="@Model.DestinationName" style="height: 200px; object-fit: cover;">
+                            <img src="@Model.DestinationImageUrls[i]" class="d-block w-100" style="height: 200px; object-fit: cover;" alt="@Model.DestinationName">
                         </div>
                     }
-                </div>
-                <button class="carousel-control-prev" type="button" data-bs-target="#imageCarousel" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Previous</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#imageCarousel" data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Next</span>
-                </button>
+                }
+                else
+                {
+                    <div class="carousel-item active">
+                        <img src="~/images/NoPhoto.jpg" class="d-block w-100" style="height: 200px; object-fit: cover;" alt="No Image">
+                    </div>
+                }
             </div>
-        }
-        else
-        {
-            <img src="~/images/NoPhoto.jpg" class="img-fluid" alt="@Model.DestinationName" style="height: 200px; object-fit: cover;">
-        }
-        
-        <p>@Model.DestinationDescription</p>
-    </div>
-    <div class="card-footer">
-        <form asp-action="Add" method="post">
-            <input type="hidden" asp-for="DestinationId" />
-            <button type="submit" class="btn btn-primary">Add to Favorites</button>
-        </form>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators_@Model.DestinationId" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators_@Model.DestinationId" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+        <div class="card-body">
+            <h4 class="card-title">@Model.DestinationName</h4>
+            <h6 class="card-text">@Model.DestinationDescription</h6>
+        </div>
+        <div class="row gx-0">
+            <div class="col-12 px-1">
+                <form asp-action="Add" method="post">
+                    <input type="hidden" asp-for="DestinationId" />
+                    <button type="submit" class="btn btn-primary btn-sm mb-2 w-100 fw-bold rounded btn-dark-text">Add to Favorites</button>
+                </form>
+            </div>
+        </div>
     </div>
 </div>
 
