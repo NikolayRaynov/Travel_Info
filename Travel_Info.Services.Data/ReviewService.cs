@@ -18,6 +18,8 @@ namespace Travel_Info.Services.Data
         public async Task<IEnumerable<ReviewViewModel>> GetAllReviewsByDestinationIdAsync(int destinationId)
         {
             var reviews = await repository.All<Review>()
+                .Include(d => d.Destination)
+                .Include(u => u.User)
                 .Where(r => r.DestinationId == destinationId && !r.IsDeleted)
                 .ToListAsync();
 

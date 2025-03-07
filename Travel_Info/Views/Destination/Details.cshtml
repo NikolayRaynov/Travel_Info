@@ -37,7 +37,7 @@
 @if (Model.Reviews.Any())
 {
     <ul class="list-unstyled">
-        @foreach (var review in Model.Reviews)
+        @foreach (var review in Model.Reviews.Take(3))
         {
             <li class="mb-4">
                 <p><strong>@review.User:</strong></p>
@@ -69,6 +69,12 @@
             </li>
         }
     </ul>
+    @if (Model.Reviews.Count > 3) 
+    {
+        <a asp-controller="Review" asp-action="Index" asp-route-destinationId="@Model.Id" class="btn btn-secondary mt-3">
+            View All Reviews
+        </a>
+    }
 }
 else
 {
