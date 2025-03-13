@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Travel_Info.Data.Models;
@@ -7,6 +8,7 @@ using Travel_Info.Web.ViewModels.PlaceToVisit;
 
 namespace Travel_Info.Controllers
 {
+    [Authorize]
     public class PlaceToVisitController : Controller
     {
         private readonly IPlaceToVisitService placeToVisitService;
