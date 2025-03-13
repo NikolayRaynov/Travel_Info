@@ -17,6 +17,7 @@
     @foreach (var place in Model)
     {
         <div class="card col-3 h-100" style="width: 20rem; margin: 0.5rem;">
+            <h4 class="card-title">@place.Name</h4>
             <div id="carouselExampleIndicators_@place.Id" class="carousel slide" data-bs-ride="carousel">
                 <div class="carousel-inner">
                     @if (place.ImageUrls != null && place.ImageUrls.Any())
@@ -45,8 +46,9 @@
                 </button>
             </div>
             <div class="card-body">
-                <h4 class="card-title">@place.Name</h4>
-                <h6 class="card-text">@place.Description</h6>
+                <h6 class="card-text" style="max-height: 15rem; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 10; -webkit-box-orient: vertical;">
+                    @place.Description
+                </h6>
             </div>
             <div class="row gx-0">
                 <div class="col-12 px-1">
