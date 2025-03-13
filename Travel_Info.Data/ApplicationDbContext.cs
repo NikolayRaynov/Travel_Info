@@ -31,10 +31,10 @@ namespace Travel_Info.Data
 
             base.OnModelCreating(builder);
 
-            GlobalFilter(builder);
+            GlobalIsDeletedFilter(builder);
         }
 
-        private static void GlobalFilter(ModelBuilder builder)
+        private static void GlobalIsDeletedFilter(ModelBuilder builder)
         {
             builder.Entity<Destination>().HasQueryFilter(d => !d.IsDeleted);
             builder.Entity<Image>().HasQueryFilter(i => !i.IsDeleted);
