@@ -5,6 +5,8 @@
     public class AddReviewViewModel
     {
         public int DestinationId { get; set; }
+
+        [Range(1, 5, ErrorMessage = "Рейтингът трябва да бъде между 1 и 5.")]
         public int Rating { get; set; }
 
         [MaxLength(CommentMaxLength)]

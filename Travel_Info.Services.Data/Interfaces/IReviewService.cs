@@ -1,5 +1,4 @@
-﻿using Travel_Info.Data.Models;
-using Travel_Info.Web.ViewModels.Review;
+﻿using Travel_Info.Web.ViewModels.Review;
 
 namespace Travel_Info.Services.Data.Interfaces
 {

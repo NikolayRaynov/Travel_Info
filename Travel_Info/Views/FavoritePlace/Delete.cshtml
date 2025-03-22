@@ -45,6 +45,7 @@
             <h5 class="card-title">@Model.DestinationName</h5>
             <p class="card-text">@Model.DestinationDescription</p>
             <form asp-action="Delete" method="post">
+                @Html.AntiForgeryToken()
                 <input type="hidden" name="DestinationId" value="@Model.DestinationId" />
                 <button type="submit" class="btn btn-danger">Remove from Favorites</button>
                 <a asp-action="Index" class="btn btn-secondary">Cancel</a>

@@ -48,6 +48,7 @@
         </div>
         <div class="row gx-0">
             <div class="col-12 px-1">
+                @Html.AntiForgeryToken()
                 <form asp-action="Add" method="post">
                     <input type="hidden" asp-for="DestinationId" />
                     <button type="submit" class="btn btn-primary btn-sm mb-2 w-100 fw-bold rounded btn-dark-text">Add to Wishlist</button>
@@ -56,3 +57,7 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

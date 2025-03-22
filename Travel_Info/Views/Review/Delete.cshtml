@@ -16,6 +16,7 @@
 </div>
 
 <form asp-action="Delete" method="post">
+    @Html.AntiForgeryToken()
     <input type="hidden" asp-for="Id" />
     <input type="hidden" asp-for="DestinationId" />
 
@@ -24,3 +25,7 @@
         <a asp-action="Details" asp-route-id="@Model.DestinationId" class="btn btn-secondary">Cancel</a>
     </div>
 </form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

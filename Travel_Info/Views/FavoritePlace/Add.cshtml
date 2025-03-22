@@ -7,8 +7,6 @@
     </div>
 }
 
-}
-
 @{
     ViewBag.Title = "Add to Favorites";
 }
@@ -51,6 +49,7 @@
         <div class="row gx-0">
             <div class="col-12 px-1">
                 <form asp-action="Add" method="post">
+                    @Html.AntiForgeryToken()
                     <input type="hidden" asp-for="DestinationId" />
                     <button type="submit" class="btn btn-primary btn-sm mb-2 w-100 fw-bold rounded btn-dark-text">Add to Favorites</button>
                 </form>

@@ -7,7 +7,6 @@ using Travel_Info.Web.ViewModels.Review;
 namespace Travel_Info.Controllers
 {
     [Authorize]
-    
     public class ReviewController : Controller
     {
         private readonly IReviewService reviewService;
@@ -47,28 +46,45 @@ namespace Travel_Info.Controllers
             }
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            await reviewService.AddReviewAsync(model, userId);
-            return RedirectToAction("Details", "Destination", new { id = model.DestinationId });
+
+            try
+            {
+                await reviewService.AddReviewAsync(model, userId);
+                return RedirectToAction("Details", "Destination", new { id = model.DestinationId });
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return View(model);
+            }
         }
 
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var review = await reviewService.GetReviewByIdAsync(id);
-            if (review == null || review.User != User.FindFirstValue(ClaimTypes.NameIdentifier))
+            try
             {
-                return NotFound();
+                var review = await reviewService.GetReviewByIdAsync(id);
+                if (review == null || review.User != User.FindFirstValue(ClaimTypes.NameIdentifier))
+                {
+                    return NotFound();
+                }
+
+                var model = new EditReviewViewModel
+                {
+                    Id = review.Id,
+                    Rating = review.Rating,
+                    Comment = review.Comment,
+                    DestinationId = review.DestinationId
+                };
+
+                return View(model);
             }
-
-            var model = new EditReviewViewModel
+            catch (Exception ex)
             {
-                Id = review.Id,
-                Rating = review.Rating,
-                Comment = review.Comment,
-                DestinationId = review.DestinationId
-            };
-
-            return View(model);
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return View("Error");
+            }
         }
 
         [HttpPost]
@@ -80,36 +96,61 @@ namespace Travel_Info.Controllers
             }
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            await reviewService.UpdateReviewAsync(model, userId);
-            return RedirectToAction("Details", "Destination", new { id = model.DestinationId });
+
+            try
+            {
+                await reviewService.UpdateReviewAsync(model, userId);
+                return RedirectToAction("Details", "Destination", new { id = model.DestinationId });
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return View("Error");
+            }
         }
 
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            var review = await reviewService.GetReviewByIdAsync(id);
-            if (review == null || review.User != User.FindFirstValue(ClaimTypes.NameIdentifier))
+            try
             {
-                return NotFound();
+                var review = await reviewService.GetReviewByIdAsync(id);
+                if (review == null || review.User != User.FindFirstValue(ClaimTypes.NameIdentifier))
+                {
+                    return NotFound();
+                }
+
+                var model = new DeleteReviewViewModel
+                {
+                    Id = review.Id,
+                    Rating = review.Rating,
+                    Comment = review.Comment,
+                    DestinationId = review.DestinationId
+                };
+
+                return View(model);
             }
-
-            var model = new DeleteReviewViewModel
+            catch (InvalidOperationException)
             {
-                Id = review.Id,
-                Rating = review.Rating,
-                Comment = review.Comment,
-                DestinationId = review.DestinationId
-            };
-
-            return View(model);
+                return RedirectToAction("Index", "Destination");
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> Delete(DeleteReviewViewModel model)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            await reviewService.DeleteReviewAsync(model, userId);
-            return RedirectToAction("Details", "Destination", new { id = model.DestinationId });
+
+            try
+            {
+                await reviewService.DeleteReviewAsync(model, userId);
+                return RedirectToAction("Details", "Destination", new { id = model.DestinationId });
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return View("Error");
+            }
         }
     }
 }

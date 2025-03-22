@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Ganss.Xss;
+using Microsoft.EntityFrameworkCore;
 using Travel_Info.Data.Models;
 using Travel_Info.Data.Repository.Interfaces;
 using Travel_Info.Services.Data.Interfaces;
@@ -9,10 +10,12 @@ namespace Travel_Info.Services.Data
     public class ReviewService : IReviewService
     {
         private readonly IRepository repository;
+        private readonly IHtmlSanitizer htmlSanitizer;
 
-        public ReviewService(IRepository repository)
+        public ReviewService(IRepository repository, IHtmlSanitizer htmlSanitizer)
         {
             this.repository = repository;
+            this.htmlSanitizer = htmlSanitizer;
         }
 
         public async Task<IEnumerable<ReviewViewModel>> GetAllReviewsByDestinationIdAsync(int destinationId)
@@ -54,6 +57,16 @@ namespace Travel_Info.Services.Data
 
         public async Task AddReviewAsync(AddReviewViewModel model, string userId)
         {
+            var destinationExists = await repository.All<Destination>()
+                    .AnyAsync(d => d.Id == model.DestinationId && !d.IsDeleted);
+
+            if (!destinationExists)
+            {
+                throw new InvalidOperationException("The destination does not exist.");
+            }
+
+            model.Comment = htmlSanitizer.Sanitize(model.Comment);
+
             var review = new Review
             {
                 Rating = model.Rating,
@@ -69,7 +82,10 @@ namespace Travel_Info.Services.Data
 
         public async Task UpdateReviewAsync(EditReviewViewModel model, string userId)
         {
+            model.Comment = htmlSanitizer.Sanitize(model.Comment);
+
             var review = await repository.GetByIdAsync<Review>(model.Id);
+
             if (review != null && review.UserId == userId)
             {
                 review.Rating = model.Rating;
@@ -78,6 +94,10 @@ namespace Travel_Info.Services.Data
                 repository.Update(review);
                 await repository.SaveChangesAsync();
             }
+            else
+            {
+                throw new InvalidOperationException("Review is not found or you are not allowed to edit it");
+            }
         }
 
         public async Task DeleteReviewAsync(DeleteReviewViewModel model, string userId)
@@ -85,9 +105,12 @@ namespace Travel_Info.Services.Data
             var review = await repository.GetByIdAsync<Review>(model.Id);
             if (review != null && review.UserId == userId)
             {
-                review.IsDeleted = true;
-                repository.Update(review);
+                repository.Delete(review);
                 await repository.SaveChangesAsync();
+            }
+            else
+            {
+                throw new InvalidOperationException("Review is not found or you are not allowed to edit it");
             }
         }
     }
