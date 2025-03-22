@@ -23,7 +23,7 @@ namespace Travel_Info.Services.Data
             var reviews = await repository.All<Review>()
                 .Include(d => d.Destination)
                 .Include(u => u.User)
-                .Where(r => r.DestinationId == destinationId && !r.IsDeleted)
+                .Where(r => r.DestinationId == destinationId)
                 .ToListAsync();
 
             return reviews.Select(r => new ReviewViewModel
@@ -58,7 +58,7 @@ namespace Travel_Info.Services.Data
         public async Task AddReviewAsync(AddReviewViewModel model, string userId)
         {
             var destinationExists = await repository.All<Destination>()
-                    .AnyAsync(d => d.Id == model.DestinationId && !d.IsDeleted);
+                    .AnyAsync(d => d.Id == model.DestinationId);
 
             if (!destinationExists)
             {

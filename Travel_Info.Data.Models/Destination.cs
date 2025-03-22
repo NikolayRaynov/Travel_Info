@@ -42,9 +42,6 @@ namespace Travel_Info.Data.Models
         [ForeignKey(nameof(UserId))]
         public virtual ApplicationUser User { get; set; } = null!;
 
-        [Comment("Indicator for logical deletion of the destination.")]
-        public bool IsDeleted { get; set; } = false;
-
         public virtual ICollection<Image> Images { get; set; } = new List<Image>();
         public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
     }
