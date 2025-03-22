@@ -126,17 +126,6 @@ namespace Travel_Info.Services.Data
             };
         }
 
-        public async Task SoftDeleteAsync(int id)
-        {
-            var destination = await repository.GetByIdAsync<Destination>(id);
-            if (destination != null)
-            {
-                destination.IsDeleted = true;
-                repository.Update(destination);
-                await repository.SaveChangesAsync();
-            }
-        }
-
         public async Task UpdateAsync(EditDestinationViewModel destinationModel, List<IFormFile> newImages, string userId)
         {
             var destination = await repository.GetByIdAsync<Destination>(destinationModel.Id);

@@ -32,8 +32,5 @@ namespace Travel_Info.Data.Models
         public int DestinationId { get; set; }
         [ForeignKey(nameof(DestinationId))]
         public virtual Destination Destination { get; set; } = null!;
-
-        [Comment("Indicator for logical deletion of the review.")]
-        public bool IsDeleted { get; set; } = false;
     }
 }

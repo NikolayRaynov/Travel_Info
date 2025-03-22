@@ -26,8 +26,5 @@ namespace Travel_Info.Data.Models
 
         [ForeignKey(nameof(DestinationId))]
         public virtual Destination Destination { get; set; } = null!;
-
-        [Comment("Indicator for logical deletion of the image.")]
-        public bool IsDeleted { get; set; } = false;
     }
 }

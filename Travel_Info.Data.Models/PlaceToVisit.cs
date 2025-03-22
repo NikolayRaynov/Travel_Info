@@ -14,9 +14,6 @@ namespace Travel_Info.Data.Models
         public string UserId { get; set; } = string.Empty;
         [ForeignKey(nameof(UserId))]
         public virtual ApplicationUser User { get; set; } = null!;
-
-        [Comment("Indicator for logical deletion of the favorite place.")]
-        public bool IsDeleted { get; set; } = false;
         public virtual ICollection<Destination> Destinations { get; set; } = new HashSet<Destination>();
     }
 }
