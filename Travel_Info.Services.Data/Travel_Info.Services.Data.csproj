@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="HtmlSanitizer" Version="8.1.870" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Travel_Info.Common\Travel_Info.Common.csproj" />
     <ProjectReference Include="..\Travel_Info.Data\Travel_Info.Data.csproj" />
     <ProjectReference Include="..\Travel_Info.Web.ViewModels\Travel_Info.Web.ViewModels.csproj" />

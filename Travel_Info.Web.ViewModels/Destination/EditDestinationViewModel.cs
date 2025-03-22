@@ -16,6 +16,7 @@
         [MinLength(DestinationDescriptionMinLength)]
         [MaxLength(DestinationDescriptionMaxLength)]
         public string Description { get; set; } = string.Empty;
+        public int CategoryId { get; set; }
 
         [MaxLength(ImageUrlMaxLength)]
         public List<string> ImageUrls { get; set; } = new List<string>();

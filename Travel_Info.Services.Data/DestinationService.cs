@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Ganss.Xss;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Travel_Info.Data.Models;
 using Travel_Info.Data.Repository.Interfaces;
@@ -6,28 +8,38 @@ using Travel_Info.Services.Data.Interfaces;
 using Travel_Info.Web.ViewModels.Destination;
 using Travel_Info.Web.ViewModels.Review;
 
+using static Travel_Info.Common.ApplicationConstants;
+
 namespace Travel_Info.Services.Data
 {
     public class DestinationService : IDestinationService
     {
         private readonly IRepository repository;
         private readonly ICategoryService categoryService;
+        private readonly IHtmlSanitizer htmlSanitizer;
+        private readonly UserManager<ApplicationUser> userManager;
 
-        public DestinationService(IRepository repository, ICategoryService categoryService)
+        public DestinationService(IRepository repository, ICategoryService categoryService, IHtmlSanitizer htmlSanitizer, UserManager<ApplicationUser> userManager)
         {
             this.repository = repository;
             this.categoryService = categoryService;
+            this.htmlSanitizer = htmlSanitizer;
+            this.userManager = userManager;
         }
 
-        public async Task CreateAsync(AddDestinationViewModel destinationModel, List<string> imageUrls, string userId)
+        public async Task CreateAsync(AddDestinationViewModel destinationModel, List<IFormFile> images, string userId)
         {
+            ValidateImages(images);
+
             var destination = new Destination
             {
-                Name = destinationModel.Name,
-                Description = destinationModel.Description,
+                Name = htmlSanitizer.Sanitize(destinationModel.Name),
+                Description = htmlSanitizer.Sanitize(destinationModel.Description),
                 CategoryId = destinationModel.CategoryId,
                 UserId = userId
             };
+
+            var imageUrls = await SaveImages(images, destinationModel.CategoryId);
 
             foreach (var imageUrl in imageUrls)
             {
@@ -38,7 +50,7 @@ namespace Travel_Info.Services.Data
             await repository.SaveChangesAsync();
         }
 
-        public async Task DeleteImageAsync(int destinationId, string imageUrl)
+        public async Task DeleteImageAsync(int destinationId, string imageUrl, string userId)
         {
             var destination = await repository.All<Destination>()
                 .Include(d => d.Images)
@@ -46,10 +58,16 @@ namespace Travel_Info.Services.Data
 
             if (destination != null)
             {
+                if (destination.UserId != userId)
+                {
+                    throw new UnauthorizedAccessException("You are not allowed to delete images from this destination.");
+                }
+
                 var imageToDelete = destination.Images.FirstOrDefault(i => i.Url == imageUrl);
+
                 if (imageToDelete != null)
                 {
-                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", imageUrl.TrimStart('/'));
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), DefaultFolder, imageUrl.TrimStart('/'));
                     if (File.Exists(filePath))
                     {
                         File.Delete(filePath);
@@ -97,14 +115,14 @@ namespace Travel_Info.Services.Data
                 ImageUrls = destination.Images
                     .Select(i => i.Url).ToList(),
                 Reviews = destination.Reviews
-                .Select(r => new ReviewViewModel
-                {
-                    Id = r.Id,
-                    Rating = r.Rating,
-                    Comment = r.Comment,
-                    CreatedAt = r.CreatedAt,
-                    User = r.User.UserName
-                }).ToList()
+                    .Select(r => new ReviewViewModel
+                    {
+                        Id = r.Id,
+                        Rating = r.Rating,
+                        Comment = r.Comment,
+                        CreatedAt = r.CreatedAt,
+                        User = r.User.UserName
+                    }).ToList()
             };
         }
 
@@ -119,65 +137,55 @@ namespace Travel_Info.Services.Data
             }
         }
 
-        public async Task UpdateAsync(EditDestinationViewModel destinationModel, List<IFormFile> newImages)
+        public async Task UpdateAsync(EditDestinationViewModel destinationModel, List<IFormFile> newImages, string userId)
         {
             var destination = await repository.GetByIdAsync<Destination>(destinationModel.Id);
-            if (destination != null)
+            if (destination == null || destination.UserId != userId)
             {
-                destination.Name = destinationModel.Name;
-                destination.Description = destinationModel.Description;
-
-                if (newImages != null && newImages.Count > 0)
-                {
-                    var category = await categoryService.GetByIdAsync(destination.CategoryId);
-                    var categoryFolder = category.NameEn;
-
-                    foreach (var image in newImages)
-                    {
-                        if (image.Length > 0)
-                        {
-                            var fileName = Path.GetFileName(image.FileName);
-                            var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/", categoryFolder).ToLower();
-
-                            Directory.CreateDirectory(folderPath);
-                            var filePath = Path.Combine(folderPath, fileName).ToLower();
-
-                            using (var stream = new FileStream(filePath, FileMode.Create))
-                            {
-                                await image.CopyToAsync(stream);
-                            }
-
-                            destination.Images.Add(new Image { Url = $"/images/{categoryFolder}/{fileName}" });
-                        }
-                    }
-                }
-
-                repository.Update(destination);
-                await repository.SaveChangesAsync();
-
-                repository.Update(destination);
-                await repository.SaveChangesAsync();
+                throw new UnauthorizedAccessException("You are not allowed to edit this destination.");
             }
+
+            destination.Name = htmlSanitizer.Sanitize(destinationModel.Name);
+            destination.Description = htmlSanitizer.Sanitize(destinationModel.Description);
+
+            if (newImages != null && newImages.Count > 0)
+            {
+                var imageUrls = await SaveImages(newImages, destination.CategoryId);
+                foreach (var imageUrl in imageUrls)
+                {
+                    destination.Images.Add(new Image { Url = imageUrl });
+                }
+            }
+
+            repository.Update(destination);
+            await repository.SaveChangesAsync();
         }
 
-        public async Task DeleteDestinationAsync(int destinationId)
+        public async Task DeleteDestinationAsync(int destinationId, string userId)
         {
             var destination = await repository
                 .All<Destination>()
                 .Include(d => d.Images)
+                .Include(d => d.Reviews)
                 .FirstOrDefaultAsync(d => d.Id == destinationId);
 
             if (destination != null)
             {
-                var category = await categoryService
-                    .GetByIdAsync(destination.CategoryId);
+                if (destination.UserId != userId)
+                {
+                    throw new UnauthorizedAccessException("You are not allowed to delete images from this destination.");
+                }
 
+                repository.DeleteRange<Review>(r => r.DestinationId == destinationId);
+                await repository.SaveChangesAsync();
+
+                var category = await categoryService.GetByIdAsync(destination.CategoryId);
                 var categoryFolder = category.NameEn;
 
                 foreach (var image in destination.Images)
                 {
                     var fileName = Path.GetFileName(image.Url);
-                    var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/", categoryFolder).ToLower();
+                    var folderPath = Path.Combine(Directory.GetCurrentDirectory(), UrlPath, categoryFolder).ToLower();
                     var filePath = Path.Combine(folderPath, fileName).ToLower();
 
                     if (File.Exists(filePath))
@@ -186,14 +194,51 @@ namespace Travel_Info.Services.Data
                     }
                 }
 
-                repository.DeleteRange<Image>(i => i.DestinationId == destinationId);
-                await repository.SaveChangesAsync();
-
-                repository.DeleteRange<Review>(r => r.DestinationId == destinationId);
-                await repository.SaveChangesAsync();
-
                 repository.Delete(destination);
                 await repository.SaveChangesAsync();
+            }
+        }
+
+        private async Task<List<string>> SaveImages(List<IFormFile> images, int categoryId)
+        {
+            var category = await categoryService.GetByIdAsync(categoryId);
+            var categoryFolder = category.NameEn;
+            var imageUrls = new List<string>();
+
+            foreach (var image in images)
+            {
+                var fileExtension = Path.GetExtension(image.FileName).ToLowerInvariant();
+                if (fileExtension == ".jpg" || fileExtension == ".jpeg" || fileExtension == ".png")
+                {
+                    var fileName = Guid.NewGuid().ToString() + fileExtension;
+                    var folderPath = Path.Combine(Directory.GetCurrentDirectory(), UrlPath, categoryFolder);
+                    Directory.CreateDirectory(folderPath);
+                    var filePath = Path.Combine(folderPath, fileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await image.CopyToAsync(stream);
+                    }
+
+                    imageUrls.Add($"/images/{categoryFolder}/{fileName}");
+                }
+                else
+                {
+                    throw new InvalidOperationException("Invalid image. Please upload a .jpg, .jpeg or .png file.");
+                }
+            }
+
+            return imageUrls;
+        }
+
+        private void ValidateImages(List<IFormFile> images)
+        {
+            foreach (var image in images)
+            {
+                if (image.Length > 5 * 1024 * 1024)
+                {
+                    throw new InvalidOperationException("Please upload image up to 5MB.");
+                }
             }
         }
     }

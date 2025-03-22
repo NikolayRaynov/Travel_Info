@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Ganss.Xss;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Travel_Info.Services.Data.Interfaces;
@@ -13,11 +14,13 @@ namespace Travel_Info.Controllers
     {
         private readonly IDestinationService destinationService;
         private readonly ICategoryService categoryService;
+        private readonly IHtmlSanitizer htmlSanitizer;
 
-        public DestinationController(IDestinationService destinationService, ICategoryService categoryService)
+        public DestinationController(IDestinationService destinationService, ICategoryService categoryService, IHtmlSanitizer htmlSanitizer)
         {
             this.destinationService = destinationService;
             this.categoryService = categoryService;
+            this.htmlSanitizer = htmlSanitizer;
         }
 
         [AllowAnonymous]
@@ -57,39 +60,20 @@ namespace Travel_Info.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Add(AddDestinationViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var category = await categoryService.GetByIdAsync(model.CategoryId);
-                var categoryFolder = category.NameEn;
-
-                var imageUrls = new List<string>();
-
-                foreach (var image in model.Images)
+                try
                 {
-                    if (image.Length > 0)
-                    {
-                        var fileName = Path.GetFileName(image.FileName);
-                        var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", categoryFolder);
-
-                        Directory.CreateDirectory(folderPath);
-                        var filePath = Path.Combine(folderPath, fileName);
-
-                        using (var stream = new FileStream(filePath, FileMode.Create))
-                        {
-                            await image.CopyToAsync(stream);
-                        }
-
-                        imageUrls.Add($"/images/{categoryFolder}/{fileName}");
-                    }
+                    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                    await destinationService.CreateAsync(model, model.Images.ToList(), userId);
+                    return RedirectToAction(nameof(Index));
                 }
-
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                await destinationService.CreateAsync(model, imageUrls, userId);
-
-                return RedirectToAction(nameof(Index));
+                catch (InvalidOperationException ex)
+                {
+                    ModelState.AddModelError(string.Empty, ex.Message);
+                }
             }
 
             return View(model);
@@ -116,17 +100,24 @@ namespace Travel_Info.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(EditDestinationViewModel model, List<IFormFile> NewImages)
+        public async Task<IActionResult> Edit(EditDestinationViewModel model, List<IFormFile> newImages)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
 
-            await destinationService.UpdateAsync(model, NewImages);
-
-            return RedirectToAction("Index");
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                await destinationService.UpdateAsync(model, newImages, userId);
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return View(model);
+            }
         }
 
         [HttpGet]
@@ -153,15 +144,16 @@ namespace Travel_Info.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(DeleteDestinationViewModel model)
         {
-            await destinationService.DeleteDestinationAsync(model.Id);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            await destinationService.DeleteDestinationAsync(model.Id, userId);
             return RedirectToAction("Index");
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteImage(int id, string imageUrl)
         {
-            await destinationService.DeleteImageAsync(id, imageUrl);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            await destinationService.DeleteImageAsync(id, imageUrl, userId);
             return RedirectToAction("Edit", new { id });
         }
 
