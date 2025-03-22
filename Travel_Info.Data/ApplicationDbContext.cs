@@ -16,7 +16,7 @@ namespace Travel_Info.Data
         public DbSet<Destination> Destinations { get; set; } = null!;
         public DbSet<Image> Images { get; set; } = null!;
         public DbSet<PlaceToVisit> PlacesToVisit { get; set; } = null!;
-        public DbSet<FavoritePlace> FavoritesPlaces { get; set; } = null!;
+        public DbSet<FavoritePlace> FavoritePlaces { get; set; } = null!;
         public DbSet<Review> Reviews { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder builder)
