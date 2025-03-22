@@ -30,17 +30,6 @@ namespace Travel_Info.Data
             builder.ApplyConfiguration(new ReviewConfiguration());
 
             base.OnModelCreating(builder);
-
-            GlobalIsDeletedFilter(builder);
-        }
-
-        private static void GlobalIsDeletedFilter(ModelBuilder builder)
-        {
-            builder.Entity<Destination>().HasQueryFilter(d => !d.IsDeleted);
-            builder.Entity<Image>().HasQueryFilter(i => !i.IsDeleted);
-            builder.Entity<Review>().HasQueryFilter(r => !r.IsDeleted);
-            builder.Entity<FavoritePlace>().HasQueryFilter(fp => !fp.IsDeleted);
-            builder.Entity<PlaceToVisit>().HasQueryFilter(ptv => !ptv.IsDeleted);
         }
     }
 }

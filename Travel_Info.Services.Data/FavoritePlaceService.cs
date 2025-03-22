@@ -20,7 +20,7 @@ namespace Travel_Info.Services.Data
             var favoritePlace = await repository
                 .All<FavoritePlace>()
                 .Include(fp => fp.Destinations)
-                .FirstOrDefaultAsync(fp => fp.UserId == userId && !fp.IsDeleted);
+                .FirstOrDefaultAsync(fp => fp.UserId == userId);
 
             if (favoritePlace == null)
             {
@@ -37,10 +37,13 @@ namespace Travel_Info.Services.Data
 
             if (!favoritePlace.Destinations.Any())
             {
-                favoritePlace.IsDeleted = true;
+                repository.Delete(favoritePlace);
+            }
+            else
+            {
+                repository.Update(favoritePlace);
             }
 
-            repository.Update(favoritePlace);
             await repository.SaveChangesAsync();
         }
 
@@ -49,14 +52,14 @@ namespace Travel_Info.Services.Data
             return await repository
                 .All<FavoritePlace>()
                 .AnyAsync(f => f.UserId == userId && f.Destinations
-                .Any(d => d.Id == destinationId) && !f.IsDeleted);
+                .Any(d => d.Id == destinationId));
         }
 
         public async Task<IEnumerable<DestinationIndexViewModel>> GetAllFavoritesAsync(string userId)
         {
             return await repository
                 .All<FavoritePlace>()
-                .Where(pv => pv.UserId == userId && !pv.IsDeleted)
+                .Where(pv => pv.UserId == userId)
                 .Include(pv => pv.Destinations)
                 .ThenInclude(d => d.Images)
                 .SelectMany(pv => pv.Destinations)
