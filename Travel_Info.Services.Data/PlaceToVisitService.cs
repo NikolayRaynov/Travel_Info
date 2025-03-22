@@ -58,7 +58,7 @@ namespace Travel_Info.Services.Data
         {
             return await repository
                 .All<PlaceToVisit>()
-                .Where(pv => pv.UserId == userId && !pv.IsDeleted)
+                .Where(pv => pv.UserId == userId)
                 .Include(pv => pv.Destinations)
                 .ThenInclude(d => d.Images)
                 .SelectMany(pv => pv.Destinations)
@@ -79,7 +79,7 @@ namespace Travel_Info.Services.Data
             return await repository
                 .All<PlaceToVisit>()
                 .AnyAsync(w => w.UserId == userId && w.Destinations
-                .Any(d => d.Id == destinationId) && !w.IsDeleted);
+                .Any(d => d.Id == destinationId));
         }
 
         public async Task RemoveFromWishlistAsync(int destinationId, string userId)
@@ -87,7 +87,7 @@ namespace Travel_Info.Services.Data
             var desiredPlaces = await repository
                 .All<PlaceToVisit>()
                 .Include(pv => pv.Destinations)
-                .FirstOrDefaultAsync(pv => pv.UserId == userId && !pv.IsDeleted);
+                .FirstOrDefaultAsync(pv => pv.UserId == userId);
 
             if (desiredPlaces == null)
             {
@@ -102,7 +102,11 @@ namespace Travel_Info.Services.Data
 
             if (!desiredPlaces.Destinations.Any())
             {
-                desiredPlaces.IsDeleted = true;
+                repository.Delete(desiredPlaces);
+            }
+            else
+            {
+                repository.Update(desiredPlaces);
             }
 
             repository.Update(desiredPlaces);
