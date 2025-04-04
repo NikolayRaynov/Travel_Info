@@ -15,8 +15,9 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<IPlaceToVisitService, PlaceToVisitService>();
             services.AddScoped<IReviewService, ReviewService>();
             services.AddScoped<ICategoryService, CategoryService>();
+			services.AddScoped<IUserService, UserService>();
 
-            return services;
+			return services;
         }
     }
 }

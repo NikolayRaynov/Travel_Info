@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Travel_Info.Areas.Admin.Controllers
 {
-    [Area("Admin")]
-    [Authorize(Roles = "Admin")]
-    public class UserController : Controller
+	using static Common.ApplicationConstants;
+
+	[Area(AdminRoleName)]
+	[Authorize(Roles = AdminRoleName)]
+	public class HomeController : Controller
     {
         public IActionResult Index()
         {

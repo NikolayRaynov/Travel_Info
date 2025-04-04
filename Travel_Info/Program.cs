@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Travel_Info.Data;
 using Travel_Info.Data.Models;
+using Travel_Info.Web.Infrastructure.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +12,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
-builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
     options.SignIn.RequireConfirmedAccount = false;
     options.SignIn.RequireConfirmedEmail = false;
@@ -39,6 +40,7 @@ builder.Services.AddControllersWithViews(options =>
 {
     options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
 });
+builder.Services.AddRazorPages();
 builder.Services.AddApplicationServices();
 builder.Services.AddScoped<IHtmlSanitizer, HtmlSanitizer>();
 
@@ -60,6 +62,18 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthentication();
+app.Use((context, next) =>
+{
+	if (context.User.Identity?.IsAuthenticated == true && context.Request.Path == "/")
+	{
+		if (context.User.IsInRole("Admin"))
+		{
+			context.Response.Redirect("/Admin/Home/Index");
+			return Task.CompletedTask;
+		}
+	}
+	return next();
+});
 app.UseAuthorization();
 
 app.MapControllerRoute(
@@ -69,5 +83,12 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
+
+using (var scope = app.Services.CreateScope())
+{
+	var services = scope.ServiceProvider;
+	RolesSeeder.SeedRoles(services);
+	RolesSeeder.AssignAdminRole(services);
+}
 
 app.Run();
