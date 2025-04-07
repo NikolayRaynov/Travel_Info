@@ -1,20 +1,26 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Travel_Info.Data.Models;
+using Travel_Info.Data.Repository.Interfaces;
 using Travel_Info.Services.Data.Interfaces;
 using Travel_Info.Web.ViewModels.Admin.UserManagement;
 
 namespace Travel_Info.Services.Data
 {
+	using static Travel_Info.Common.ApplicationConstants;
 	public class UserService : IUserService
 	{
 		private readonly UserManager<ApplicationUser> userManager;
 		private readonly RoleManager<IdentityRole> roleManager;
+		private readonly IRepository repository;
+		private readonly ICategoryService categoryService;
 
-		public UserService(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+		public UserService(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IRepository repository, ICategoryService categoryService)
 		{
 			this.userManager = userManager;
 			this.roleManager = roleManager;
+			this.repository = repository;
+			this.categoryService = categoryService;
 		}
 
 		public async Task<IEnumerable<AllUsersViewModel>> GetAllUsersAsync()
@@ -115,22 +121,54 @@ namespace Travel_Info.Services.Data
 				return false;
 			}
 
-			ApplicationUser? user = await userManager
-				.FindByIdAsync(userId);
+			ApplicationUser? user = await userManager.FindByIdAsync(userId);
 
 			if (user == null)
 			{
 				return false;
 			}
 
-			IdentityResult? result = await this.userManager
-				.DeleteAsync(user);
-			if (!result.Succeeded)
+			var userDestinations = await this.repository
+				.All<Destination>()
+				.Include(d => d.Images)
+				.Include(d => d.Reviews)
+				.Where(d => d.UserId == userId)
+				.ToListAsync();
+
+			foreach (var destination in userDestinations)
 			{
-				return false;
+				repository.DeleteRange<Review>(r => r.DestinationId == destination.Id);
+
+				var category = await categoryService.GetByIdAsync(destination.CategoryId);
+				var categoryFolder = category.NameEn;
+
+				foreach (var image in destination.Images)
+				{
+					var fileName = Path.GetFileName(image.Url);
+					var folderPath = Path.Combine(Directory.GetCurrentDirectory(), UrlPath, categoryFolder).ToLower();
+					var filePath = Path.Combine(folderPath, fileName).ToLower();
+
+					if (File.Exists(filePath))
+					{
+						File.Delete(filePath);
+					}
+				}
+
+				repository.Delete(destination);
 			}
 
-			return true;
+			await repository.SaveChangesAsync();
+
+			var externalLogins = await this.userManager.GetLoginsAsync(user);
+			foreach (var externalLogin in externalLogins)
+			{
+				await this.userManager.RemoveLoginAsync(user, externalLogin.LoginProvider, externalLogin.ProviderKey);
+			}
+
+			var result = await this.userManager.DeleteAsync(user);
+
+			return result.Succeeded;
 		}
 	}
 }
+	
