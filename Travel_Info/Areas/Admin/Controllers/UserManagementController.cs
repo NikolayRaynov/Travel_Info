@@ -62,29 +62,14 @@ namespace Travel_Info.Areas.Admin.Controllers
 		[HttpPost]
 		public async Task<IActionResult> DeleteUser(string userId)
 		{
-			var user = await this.userManager.FindByIdAsync(userId);
-			if (user == null)
-			{
-				return this.RedirectToAction(nameof(Index));
-			}
+            var result = await this.userService.DeleteUserAsync(userId);
 
-			var externalLogins = await this.userManager.GetLoginsAsync(user);
-            foreach (var externalLogin in externalLogins)
+            if (!result)
             {
-				var result = await this.userManager.RemoveLoginAsync(user, externalLogin.LoginProvider, externalLogin.ProviderKey);
-				if (!result.Succeeded)
-				{
-					return this.RedirectToAction(nameof(Index));
-				}
+                return this.RedirectToAction(nameof(Index));
             }
 
-			var deleteResult = await this.userManager.DeleteAsync(user);
-			if (!deleteResult.Succeeded)
-			{
-				return this.RedirectToAction(nameof(Index));
-			}
-
-			return this.RedirectToAction(nameof(Index));
-		}
+            return this.RedirectToAction(nameof(Index));
+        }
 	}
 }
