@@ -19,7 +19,8 @@ namespace Travel_Info.Services.Data
         private readonly IHtmlSanitizer htmlSanitizer;
         private readonly UserManager<ApplicationUser> userManager;
 
-        public DestinationService(IRepository repository, ICategoryService categoryService, IHtmlSanitizer htmlSanitizer, UserManager<ApplicationUser> userManager)
+        public DestinationService(IRepository repository, ICategoryService categoryService, IHtmlSanitizer htmlSanitizer, 
+            UserManager<ApplicationUser> userManager)
         {
             this.repository = repository;
             this.categoryService = categoryService;
@@ -58,7 +59,7 @@ namespace Travel_Info.Services.Data
 
             if (destination != null)
             {
-                if (destination.UserId != userId)
+                if (destination.UserId != userId && !await IsUserAdmin(userId))
                 {
                     throw new UnauthorizedAccessException("You are not allowed to delete images from this destination.");
                 }
@@ -129,7 +130,7 @@ namespace Travel_Info.Services.Data
         public async Task UpdateAsync(EditDestinationViewModel destinationModel, List<IFormFile> newImages, string userId)
         {
             var destination = await repository.GetByIdAsync<Destination>(destinationModel.Id);
-            if (destination == null || destination.UserId != userId)
+            if (destination == null || (destination.UserId != userId && !await IsUserAdmin(userId)))
             {
                 throw new UnauthorizedAccessException("You are not allowed to edit this destination.");
             }
@@ -160,7 +161,7 @@ namespace Travel_Info.Services.Data
 
             if (destination != null)
             {
-                if (destination.UserId != userId)
+                if (destination.UserId != userId && !await IsUserAdmin(userId))
                 {
                     throw new UnauthorizedAccessException("You are not allowed to delete images from this destination.");
                 }
@@ -229,6 +230,12 @@ namespace Travel_Info.Services.Data
                     throw new InvalidOperationException("Please upload image up to 5MB.");
                 }
             }
+        }
+
+        private async Task<bool> IsUserAdmin(string userId)
+        {
+            var user = await userManager.FindByIdAsync(userId);
+            return await userManager.IsInRoleAsync(user, AdminRoleName);
         }
     }
 }

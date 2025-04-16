@@ -1,4 +1,5 @@
 ﻿@model DestinationDetailsViewModel
+@using static Travel_Info.Common.ApplicationConstants
 
 <h1 class="dest-name mb-4">@Model.Name</h1>
 
@@ -58,11 +59,11 @@
                 </span>
                 </p>
                 <p class="text-muted">(@review.CreatedAt)</p>
-                @if (User.Identity.IsAuthenticated && review.User == User.Identity.Name)
+                @if (User.Identity.IsAuthenticated && (review.User == User.Identity.Name || User.IsInRole(AdminRoleName)))
                 {
                     <div class="d-flex gap-2">
-                        <a asp-controller="Review" asp-action="Edit" asp-route-id="@review.Id" class="btn btn-warning">Edit</a>
-                        <a asp-controller="Review" asp-action="Delete" asp-route-id="@review.Id" class="btn btn-danger">Delete</a>
+                        <a asp-area="" asp-controller="Review" asp-action="Edit" asp-route-id="@review.Id" class="btn btn-warning">Edit</a>
+                        <a asp-area="" asp-controller="Review" asp-action="Delete" asp-route-id="@review.Id" class="btn btn-danger">Delete</a>
                     </div>
                 }
                 <hr class="col-md-6" style="border: 0.5px grey; opacity: 1;" />
