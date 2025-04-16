@@ -6,6 +6,8 @@ using Travel_Info.Web.ViewModels.Review;
 
 namespace Travel_Info.Controllers
 {
+    using static Travel_Info.Common.ApplicationConstants;
+
     [Authorize]
     public class ReviewController : Controller
     {
@@ -65,7 +67,17 @@ namespace Travel_Info.Controllers
             try
             {
                 var review = await reviewService.GetReviewByIdAsync(id);
-                if (review == null || review.User != User.FindFirstValue(ClaimTypes.NameIdentifier))
+                if (review == null)
+                {
+                    return NotFound();
+                }
+
+                var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+                bool isOwner = review.User == currentUserId;
+                bool isAdmin = User.IsInRole(AdminRoleName);
+
+                if (!isOwner && !isAdmin)
                 {
                     return NotFound();
                 }
@@ -115,7 +127,16 @@ namespace Travel_Info.Controllers
             try
             {
                 var review = await reviewService.GetReviewByIdAsync(id);
-                if (review == null || review.User != User.FindFirstValue(ClaimTypes.NameIdentifier))
+                if (review == null)
+                {
+                    return NotFound();
+                }
+
+                var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                bool isOwner = review.User == currentUserId;
+                bool isAdmin = User.IsInRole(AdminRoleName);
+
+                if (!isOwner && !isAdmin)
                 {
                     return NotFound();
                 }
@@ -130,9 +151,10 @@ namespace Travel_Info.Controllers
 
                 return View(model);
             }
-            catch (InvalidOperationException)
+            catch (InvalidOperationException ex)
             {
-                return RedirectToAction("Index", "Destination");
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return NotFound();
             }
         }
 

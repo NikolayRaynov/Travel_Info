@@ -1,4 +1,5 @@
 ﻿using Ganss.Xss;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Travel_Info.Data.Models;
 using Travel_Info.Data.Repository.Interfaces;
@@ -7,20 +8,23 @@ using Travel_Info.Web.ViewModels.Review;
 
 namespace Travel_Info.Services.Data
 {
+    using static Travel_Info.Common.ApplicationConstants;
     public class ReviewService : IReviewService
     {
         private readonly IRepository repository;
         private readonly IHtmlSanitizer htmlSanitizer;
-
-        public ReviewService(IRepository repository, IHtmlSanitizer htmlSanitizer)
+        private readonly UserManager<ApplicationUser> userManager;
+        public ReviewService(IRepository repository, IHtmlSanitizer htmlSanitizer, UserManager<ApplicationUser> userManager)
         {
             this.repository = repository;
             this.htmlSanitizer = htmlSanitizer;
+            this.userManager = userManager;
         }
 
         public async Task<IEnumerable<ReviewViewModel>> GetAllReviewsByDestinationIdAsync(int destinationId)
         {
-            var reviews = await repository.All<Review>()
+            var reviews = await repository
+                .AllReadonly<Review>()
                 .Include(d => d.Destination)
                 .Include(u => u.User)
                 .Where(r => r.DestinationId == destinationId)
@@ -32,13 +36,16 @@ namespace Travel_Info.Services.Data
                 Rating = r.Rating,
                 Comment = r.Comment,
                 CreatedAt = r.CreatedAt,
-                User = r.User.UserName
+                User = r.User.UserName,
+                DestinationId = r.DestinationId
             }).ToList();
         }
 
         public async Task<ReviewViewModel> GetReviewByIdAsync(int reviewId)
         {
-            var review = await repository.GetByIdAsync<Review>(reviewId);
+            var review = await repository.AllReadonly<Review>()
+                                         .Include(r => r.User)
+                                         .FirstOrDefaultAsync(r => r.Id == reviewId);
             if (review == null)
             {
                 throw new InvalidOperationException("Review not found");
@@ -57,20 +64,25 @@ namespace Travel_Info.Services.Data
 
         public async Task AddReviewAsync(AddReviewViewModel model, string userId)
         {
-            var destinationExists = await repository.All<Destination>()
-                    .AnyAsync(d => d.Id == model.DestinationId);
+            var destinationExists = await repository
+                .AllReadonly<Destination>()
+                .AnyAsync(d => d.Id == model.DestinationId);
 
             if (!destinationExists)
             {
                 throw new InvalidOperationException("The destination does not exist.");
             }
 
-            model.Comment = htmlSanitizer.Sanitize(model.Comment);
+            var userExists = await userManager.FindByIdAsync(userId) != null;
+            if (!userExists)
+            {
+                throw new InvalidOperationException("The user that performs the action does not exist.");
+            }
 
             var review = new Review
             {
                 Rating = model.Rating,
-                Comment = model.Comment,
+                Comment = htmlSanitizer.Sanitize(model.Comment),
                 CreatedAt = DateTime.UtcNow,
                 UserId = userId,
                 DestinationId = model.DestinationId
@@ -82,36 +94,58 @@ namespace Travel_Info.Services.Data
 
         public async Task UpdateReviewAsync(EditReviewViewModel model, string userId)
         {
-            model.Comment = htmlSanitizer.Sanitize(model.Comment);
+            var review = await repository
+                .All<Review>()
+                .FirstOrDefaultAsync(r => r.Id == model.Id);
 
-            var review = await repository.GetByIdAsync<Review>(model.Id);
+            if (review == null)
+            {
+                throw new InvalidOperationException("Review is not found.");
+            }
 
-            if (review != null && review.UserId == userId)
+            bool hasPermission = review.UserId == userId || await IsUserAdmin(userId);
+
+            if (hasPermission)
             {
                 review.Rating = model.Rating;
-                review.Comment = model.Comment;
+                review.Comment = htmlSanitizer.Sanitize(model.Comment!);
 
-                repository.Update(review);
                 await repository.SaveChangesAsync();
             }
             else
             {
-                throw new InvalidOperationException("Review is not found or you are not allowed to edit it");
+                throw new InvalidOperationException("You are not allowed to edit it.");
             }
         }
 
         public async Task DeleteReviewAsync(DeleteReviewViewModel model, string userId)
         {
-            var review = await repository.GetByIdAsync<Review>(model.Id);
-            if (review != null && review.UserId == userId)
+            var review = await repository
+                .All<Review>()
+                .FirstOrDefaultAsync(r => r.Id == model.Id);
+
+            if (review == null)
+            {
+                throw new InvalidOperationException("Review is not found.");
+            }
+
+            bool hasPermission = review.UserId == userId || await IsUserAdmin(userId);
+
+            if (hasPermission)
             {
                 repository.Delete(review);
                 await repository.SaveChangesAsync();
             }
             else
             {
-                throw new InvalidOperationException("Review is not found or you are not allowed to edit it");
+                throw new InvalidOperationException("You are not allowed to edit it.");
             }
+        }
+
+        private async Task<bool> IsUserAdmin(string userId)
+        {
+            var user = await userManager.FindByIdAsync(userId);
+            return user != null && await userManager.IsInRoleAsync(user, AdminRoleName);
         }
     }
 }

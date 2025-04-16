@@ -29,17 +29,20 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        @if (this.User?.Identity != null && this.User.Identity.IsAuthenticated && !this.User.IsInRole("Admin"))
+                        @if (this.User?.Identity != null && this.User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Destination" asp-action="Add">Add Destination</a>
                             </li>
-                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="FavoritePlace" asp-action="Index">My Favorites</a>
-                            </li>
-                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="PlaceToVisit" asp-action="Index">My Wishlist</a>
-                            </li>
+                            @if (!this.User.IsInRole(AdminRoleName))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="FavoritePlace" asp-action="Index">My Favorites</a>
+                                </li>
+                                 <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="PlaceToVisit" asp-action="Index">My Wishlist</a>
+                                </li>
+                            }
                         }
                     </ul>
                     <partial name="_LoginPartial" />
