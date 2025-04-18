@@ -11,8 +11,8 @@
 
         public static class Category
         {
-            public const int CategoryNameMinLength = 10;
-            public const int CategoryNameMaxLength = 80;
+            public const int CategoryNameMinLength = 4;
+            public const int CategoryNameMaxLength = 20;
         }
 
         public static class Destination
