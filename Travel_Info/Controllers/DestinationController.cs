@@ -9,6 +9,8 @@ using Travel_Info.Web.ViewModels.Review;
 
 namespace Travel_Info.Controllers
 {
+    using static Common.ApplicationConstants;
+
     [Authorize]
     public class DestinationController : Controller
     {
@@ -141,12 +143,18 @@ namespace Travel_Info.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(DeleteDestinationViewModel model)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             await destinationService.DeleteDestinationAsync(model.Id, userId);
-            return RedirectToAction("Index");
+            if (User.IsInRole(AdminRoleName))
+            {
+                return RedirectToAction(nameof(Index), "DestinationManagement", new { area = "Admin" });
+            }
+            else
+            {
+                return RedirectToAction("Index");
+            }
         }
 
         [HttpPost]
