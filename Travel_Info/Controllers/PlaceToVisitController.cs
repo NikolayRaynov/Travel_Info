@@ -15,7 +15,9 @@ namespace Travel_Info.Controllers
         private readonly IDestinationService destinationService;
         private readonly UserManager<ApplicationUser> userManager;
 
-        public PlaceToVisitController(IPlaceToVisitService placeToVisitService, IDestinationService destinationService, UserManager<ApplicationUser> userManager)
+        public PlaceToVisitController(IPlaceToVisitService placeToVisitService, 
+                                      IDestinationService destinationService, 
+                                      UserManager<ApplicationUser> userManager)
         {
             this.placeToVisitService = placeToVisitService;
             this.destinationService = destinationService;
@@ -26,74 +28,111 @@ namespace Travel_Info.Controllers
         public async Task<IActionResult> Index()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var desiredPlaces = await placeToVisitService.GetAllDesiredPlacesAsync(userId);
 
-            return View(desiredPlaces);
+            try
+            {
+                var desiredPlaces = await placeToVisitService.GetAllDesiredPlacesAsync(userId);
+
+                return View(desiredPlaces);
+            }
+            catch (Exception)
+            {
+                return RedirectToAction("Error", "Home", new { area = "", statusCode = 500 });
+            }
         }
 
         [HttpGet]
         public async Task<IActionResult> Add(int id)
         {
-            var destination = await destinationService.GetByIdAsync(id);
-
-            if (destination == null)
+            try
             {
-                return NotFound();
+                var destination = await destinationService.GetByIdAsync(id);
+
+                if (destination == null)
+                {
+                    return RedirectToAction("Error", "Home", new { area = "", statusCode = 404 });
+                }
+
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+                if (await placeToVisitService.IsInWishlistAsync(id, userId))
+                {
+                    TempData["ErrorMessage"] = "This destination is already in your favorites.";
+                    return RedirectToAction(nameof(Index), "Destination");
+                }
+
+                var viewModel = new AddToWishlistViewModel
+                {
+                    DestinationId = destination.Id,
+                    DestinationName = destination.Name,
+                    DestinationDescription = destination.Description,
+                    DestinationImageUrls = destination.ImageUrls
+                };
+
+                return View(viewModel);
             }
-
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            if (await placeToVisitService.IsInWishlistAsync(id, userId))
+            catch (Exception)
             {
-                TempData["ErrorMessage"] = "This destination is already in your favorites.";
-                return RedirectToAction("Index", "Destination");
+                return RedirectToAction("Error", "Home", new { area = "", statusCode = 500 });
             }
-
-            var viewModel = new AddToWishlistViewModel
-            {
-                DestinationId = destination.Id,
-                DestinationName = destination.Name,
-                DestinationDescription = destination.Description,
-                DestinationImageUrls = destination.ImageUrls
-            };
-
-            return View(viewModel);
         }
 
         [HttpPost]
         public async Task<IActionResult> Add(AddToWishlistViewModel model)
         {
+            if (model.DestinationId <= 0)
+            {
+                TempData["ErrorMessage"] = "Invalid destination.";
+                return RedirectToAction(nameof(Index), "Destination");
+            }
+
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            if (await placeToVisitService.AddToWishlistAsync(model.DestinationId, userId))
+            try
             {
-                return RedirectToAction("Index", "PlaceToVisit");
+                var success = await placeToVisitService.AddToWishlistAsync(model.DestinationId, userId);
+
+                if (success)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "This destination is already in your wishlist.";
+                    return RedirectToAction(nameof(Index), "Destination");
+                }
             }
-            else
+            catch (Exception)
             {
-                TempData["ErrorMessage"] = "This destination is already in your wishlist.";
-                return RedirectToAction("Index", "Destination");
+                return RedirectToAction("Error", "Home", new { area = "", statusCode = 500 });
             }
         }
 
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            var destination = await destinationService.GetByIdAsync(id);
-            if (destination == null)
+            try
             {
-                return NotFound();
+                var destination = await destinationService.GetByIdAsync(id);
+                if (destination == null)
+                {
+                    return RedirectToAction("Error", "Home", new { area = "", statusCode = 404 });
+                }
+
+                var viewModel = new DeleteFromWishlistViewModel
+                {
+                    DestinationId = destination.Id,
+                    DestinationName = destination.Name,
+                    DestinationDescription = destination.Description,
+                    DestinationImageUrls = destination.ImageUrls
+                };
+
+                return View(viewModel);
             }
-
-            var viewModel = new DeleteFromWishlistViewModel
+            catch (Exception)
             {
-                DestinationId = destination.Id,
-                DestinationName = destination.Name,
-                DestinationDescription = destination.Description,
-                DestinationImageUrls = destination.ImageUrls
-            };
-
-            return View(viewModel);
+                return RedirectToAction("Error", "Home", new { area = "", statusCode = 500 });
+            }
         }
 
         [HttpPost]
@@ -104,13 +143,13 @@ namespace Travel_Info.Controllers
             try
             {
                 await placeToVisitService.RemoveFromWishlistAsync(model.DestinationId, userId);
-            }
-            catch (InvalidOperationException ex)
-            {
-                TempData["ErrorMessage"] = ex.Message;
-            }
 
-            return RedirectToAction("Index");
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception)
+            {
+                return RedirectToAction("Error", "Home", new { area = "", statusCode = 500 });
+            }
         }
     }
 }

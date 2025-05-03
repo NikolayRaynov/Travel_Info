@@ -57,45 +57,49 @@ namespace Travel_Info.Areas.Admin.Controllers
 
                 return RedirectToAction(nameof(Index), "CategoryManagement", new { area = "Admin" });
             }
-            catch (IOException ioEx)
-            {
-                ModelState.AddModelError(string.Empty, $"Error working with the file system: {ioEx.Message}");
-                return View(model);
-            }
             catch (Exception)
             {
-                ModelState.AddModelError(string.Empty, "An unexpected error occurred while adding a category.");
-                return View(model);
+                return RedirectToAction("Error", "Home", new { area = "", statusCode = 500 });
             }
         }
 
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            bool exists = await categoryService.ExistByIdAsync(id);
-            if (!exists)
+            try
             {
-                return RedirectToAction(nameof(Index), "CategoryManagement", new { area = "Admin" });
+                bool exists = await categoryService.ExistByIdAsync(id);
+                if (!exists)
+                {
+                    return RedirectToAction(nameof(Index), "CategoryManagement", new { area = "Admin" });
+                }
+
+                CategoryViewModel? model = await categoryService.GetCategoryForEditAsync(id);
+                if (model == null)
+                {
+                    return RedirectToAction("Error", "Home", new { area = "", statusCode = 404 });
+                }
+
+                return View(model);
             }
-
-            CategoryViewModel model = await categoryService.GetCategoryForEditAsync(id);
-
-            return View(model);
+            catch (Exception)
+            {
+                return RedirectToAction("Error", "Home", new { area = "", statusCode = 500 });
+            }
+            
         }
 
         [HttpPost]
         public async Task<IActionResult> Edit(int id, CategoryViewModel model)
         {
+            if (id != model.Id)
+            {
+                return RedirectToAction("Error", "Home", new { area = "", statusCode = 400 });
+            }
+
             if (!ModelState.IsValid)
             {
                 return View(model);
-            }
-
-            bool exists = await categoryService.ExistByIdAsync(id);
-            if (!exists)
-            {
-                TempData["ErrorMessage"] = "The category you are trying to edit no longer exists.";
-                return RedirectToAction(nameof(Index), "CategoryManagement", new { area = "Admin" });
             }
 
             try
@@ -105,20 +109,17 @@ namespace Travel_Info.Areas.Admin.Controllers
 
                 return RedirectToAction(nameof(Index), "CategoryManagement", new { area = "Admin" });
             }
-            catch (IOException ioEx)
+            catch (InvalidOperationException)
             {
-                ModelState.AddModelError(string.Empty, $"Error working with the file system: {ioEx.Message}");
-                return View(model);
+                return RedirectToAction("Error", "Home", new { area = "", statusCode = 404 });
             }
-            catch (InvalidOperationException invOpEx)
+            catch (IOException)
             {
-                ModelState.AddModelError(string.Empty, invOpEx.Message);
-                return View(model);
+                return RedirectToAction("Error", "Home", new { area = "", statusCode = 500 });
             }
             catch (Exception)
             {
-                ModelState.AddModelError(string.Empty, "An unexpected error occurred while editing a category.");
-                return View(model);
+                return RedirectToAction("Error", "Home", new { area = "", statusCode = 500 });
             }
         }
     }

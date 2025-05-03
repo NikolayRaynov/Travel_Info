@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Travel_Info.Data.Models;
 using Travel_Info.Services.Data.Interfaces;
 using Travel_Info.Web.ViewModels.Admin.UserManagement;
@@ -25,10 +26,17 @@ namespace Travel_Info.Areas.Admin.Controllers
 		[HttpGet]
 		public async Task<IActionResult> Index()
 		{
-			IEnumerable<AllUsersViewModel> allUsers = await this.userService
-				.GetAllUsersAsync();
+			try
+			{
+                IEnumerable<AllUsersViewModel> allUsers = await this.userService
+                .GetAllUsersAsync();
 
-			return this.View(allUsers);
+                return this.View(allUsers);
+            }
+			catch (Exception)
+			{
+                return RedirectToAction("Error", "Home", new { area = "", statusCode = 500 });
+            }
 		}
 
 		[HttpPost]
@@ -39,8 +47,8 @@ namespace Travel_Info.Areas.Admin.Controllers
 
 			if (!assignResult)
 			{
-				return this.RedirectToAction(nameof(Index));
-			}
+                return RedirectToAction("Error", "Home", new { area = "", statusCode = 404 });
+            }
 
 			return this.RedirectToAction(nameof(Index));
 		}
@@ -53,8 +61,8 @@ namespace Travel_Info.Areas.Admin.Controllers
 
 			if (!assignResult)
 			{
-				return this.RedirectToAction(nameof(Index));
-			}
+                return RedirectToAction("Error", "Home", new { area = "", statusCode = 404 });
+            }
 
 			return this.RedirectToAction(nameof(Index));
 		}
@@ -62,14 +70,23 @@ namespace Travel_Info.Areas.Admin.Controllers
 		[HttpPost]
 		public async Task<IActionResult> DeleteUser(string userId)
 		{
-            var result = await this.userService.DeleteUserAsync(userId);
-
-            if (!result)
-            {
+			try
+			{
+                await this.userService.DeleteUserAsync(userId);
                 return this.RedirectToAction(nameof(Index));
             }
-
-            return this.RedirectToAction(nameof(Index));
+            catch (InvalidOperationException)
+            {
+                return RedirectToAction("Error", "Home", new { area = "", statusCode = 404 });
+            }
+            catch (DbUpdateException)
+            {
+                return RedirectToAction("Error", "Home", new { area = "", statusCode = 500 });
+            }
+            catch (Exception)
+            {
+                return RedirectToAction("Error", "Home", new { area = "", statusCode = 500 });
+            }
         }
 	}
 }

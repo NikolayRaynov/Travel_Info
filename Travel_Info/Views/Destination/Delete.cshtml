@@ -46,7 +46,7 @@
             <p class="card-text">@Model.Description</p>
             <form asp-action="Delete" method="post">
                 @Html.AntiForgeryToken()
-                <input type="hidden" name="DestinationId" value="@Model.Id" />
+                <input type="hidden" asp-for="Id"/>
                 <button type="submit" class="btn btn-danger">Delete</button>
                 <a asp-action="Index" class="btn btn-secondary">Cancel</a>
             </form>

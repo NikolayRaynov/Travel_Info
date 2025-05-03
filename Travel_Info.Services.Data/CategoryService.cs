@@ -1,10 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Travel_Info.Data.Models;
 using Travel_Info.Data.Repository.Interfaces;
 using Travel_Info.Services.Data.Interfaces;
 using Travel_Info.Web.ViewModels.Category;
-using Microsoft.AspNetCore.Hosting;
-using System.Security.Cryptography;
 
 namespace Travel_Info.Services.Data
 {
@@ -62,7 +61,7 @@ namespace Travel_Info.Services.Data
                 .ToListAsync();
         }
 
-        public async Task<CategoryViewModel> GetByIdAsync(int id)
+        public async Task<CategoryViewModel?> GetByIdAsync(int id)
         {
             var category = await repository
                 .AllReadonly<Category>()
@@ -75,15 +74,10 @@ namespace Travel_Info.Services.Data
                 })
                 .FirstOrDefaultAsync();
 
-            if (category == null)
-            {
-                throw new InvalidOperationException("Category not found.");
-            }
-
             return category;
         }
 
-        public async Task<CategoryViewModel> GetCategoryForEditAsync(int id)
+        public async Task<CategoryViewModel?> GetCategoryForEditAsync(int id)
         {
             var category = await repository
                 .AllReadonly<Category>()

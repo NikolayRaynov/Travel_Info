@@ -41,14 +41,14 @@ namespace Travel_Info.Services.Data
             }).ToList();
         }
 
-        public async Task<ReviewViewModel> GetReviewByIdAsync(int reviewId)
+        public async Task<ReviewViewModel?> GetReviewByIdAsync(int reviewId)
         {
             var review = await repository.AllReadonly<Review>()
                                          .Include(r => r.User)
                                          .FirstOrDefaultAsync(r => r.Id == reviewId);
             if (review == null)
             {
-                throw new InvalidOperationException("Review not found");
+                return null;
             }
 
             return new ReviewViewModel
@@ -76,7 +76,7 @@ namespace Travel_Info.Services.Data
             var userExists = await userManager.FindByIdAsync(userId) != null;
             if (!userExists)
             {
-                throw new InvalidOperationException("The user that performs the action does not exist.");
+                throw new InvalidOperationException("The user does not exist.");
             }
 
             var review = new Review
@@ -114,7 +114,7 @@ namespace Travel_Info.Services.Data
             }
             else
             {
-                throw new InvalidOperationException("You are not allowed to edit it.");
+                throw new InvalidOperationException("You are not allowed to edit this review.");
             }
         }
 
@@ -138,7 +138,7 @@ namespace Travel_Info.Services.Data
             }
             else
             {
-                throw new InvalidOperationException("You are not allowed to edit it.");
+                throw new InvalidOperationException("You are not allowed to edit this review.");
             }
         }
 

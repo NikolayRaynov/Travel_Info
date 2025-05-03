@@ -18,8 +18,9 @@ namespace Travel_Info.Areas.Admin.Controllers
         private readonly ICategoryService categoryService;
         private readonly IHtmlSanitizer htmlSanitizer;
 
-        public DestinationManagementController(IDestinationService destinationService, ICategoryService categoryService, 
-            IHtmlSanitizer htmlSanitizer)
+        public DestinationManagementController(IDestinationService destinationService, 
+                                               ICategoryService categoryService, 
+                                               IHtmlSanitizer htmlSanitizer)
         {
             this.destinationService = destinationService;
             this.categoryService = categoryService;
@@ -29,35 +30,40 @@ namespace Travel_Info.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var destinations = await destinationService.GetAllAsync();
-            var viewModels = destinations
-                .Select(d => new DestinationIndexViewModel
-                {
-                    Id = d.Id,
-                    Name = d.Name,
-                    Description = d.Description,
-                    ImageUrls = d.ImageUrls.ToList(),
-                    UserId = d.UserId
-                }).ToList();
-
-            return View(viewModels);
+            try
+            {
+                var destinations = await destinationService.GetAllAsync();
+                return View(destinations);
+            }
+            catch (Exception)
+            {
+                return RedirectToAction("Error", "Home", new { area = "", statusCode = 500 });
+            }
         }
 
         [HttpGet]
         public async Task<IActionResult> Add()
         {
-            var categories = await categoryService.GetAllAsync();
-            var models = new AddDestinationViewModel
+            try
             {
-                Categories = categories
-                    .Select(c => new CategoryViewModel
-                    {
-                        Id = c.Id,
-                        NameBg = c.NameBg
-                    }).ToList()
-            };
+                var categories = await categoryService.GetAllAsync();
+                var models = new AddDestinationViewModel
+                {
+                    Categories = categories
+                        .Select(c => new CategoryViewModel
+                        {
+                            Id = c.Id,
+                            NameBg = c.NameBg
+                        }).ToList()
+                };
 
-            return View(models);
+                return View(models);
+            }
+            catch (Exception)
+            {
+                return RedirectToAction("Error", "Home", new { area = "", statusCode = 500 });
+            }
+            
         }
 
         [HttpPost]
@@ -71,9 +77,13 @@ namespace Travel_Info.Areas.Admin.Controllers
                     await destinationService.CreateAsync(model, model.Images.ToList(), userId);
                     return RedirectToAction(nameof(Index));
                 }
-                catch (InvalidOperationException ex)
+                catch (InvalidOperationException)
                 {
-                    ModelState.AddModelError(string.Empty, ex.Message);
+                    return RedirectToAction("Error", "Home", new { area = "", statusCode = 404 });
+                }
+                catch (Exception)
+                {
+                    return RedirectToAction("Error", "Home", new { area = "", statusCode = 500 });
                 }
             }
 
@@ -83,70 +93,106 @@ namespace Travel_Info.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var destination = await destinationService.GetByIdAsync(id);
-            if (destination == null)
+            try
             {
-                return NotFound();
+                var destination = await destinationService.GetByIdAsync(id);
+                if (destination == null)
+                {
+                    return RedirectToAction("Error", "Home", new { area = "", statusCode = 404 });
+                }
+
+                var viewModel = new EditDestinationViewModel
+                {
+                    Id = destination.Id,
+                    Name = destination.Name,
+                    Description = destination.Description,
+                    ImageUrls = destination.ImageUrls.ToList()
+                };
+
+                return View(viewModel);
             }
-
-            var viewModel = new EditDestinationViewModel
+            catch (UnauthorizedAccessException)
             {
-                Id = destination.Id,
-                Name = destination.Name,
-                Description = destination.Description,
-                ImageUrls = destination.ImageUrls.ToList()
-            };
-
-            return View(viewModel);
+                return RedirectToAction("Error", "Home", new { area = "", statusCode = 403 });
+            }
+            catch (Exception)
+            {
+                return RedirectToAction("Error", "Home", new { area = "", statusCode = 500 });
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> Edit(EditDestinationViewModel model, List<IFormFile> newImages)
         {
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                return View(model);
+                try
+                {
+                    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                    await destinationService.UpdateAsync(model, newImages, userId);
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    return RedirectToAction("Error", "Home", new { area = "", statusCode = 403 });
+                }
+                catch (Exception)
+                {
+                    return RedirectToAction("Error", "Home", new { area = "", statusCode = 500 });
+                }
             }
 
-            try
-            {
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                await destinationService.UpdateAsync(model, newImages, userId);
-                return RedirectToAction(nameof(Index));
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError(string.Empty, ex.Message);
-                return View(model);
-            }
+            return View(model);
         }
 
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            var destination = await destinationService.GetByIdAsync(id);
-            if (destination == null)
+            try
             {
-                return NotFound();
+                var destination = await destinationService.GetByIdAsync(id);
+                if (destination == null)
+                {
+                    return RedirectToAction("Error", "Home", new { area = "", statusCode = 404 });
+                }
+
+                var viewModel = new DeleteDestinationViewModel
+                {
+                    Id = destination.Id,
+                    Name = destination.Name,
+                    Description = destination.Description,
+                    ImageUrls = destination.ImageUrls
+                };
+
+                return View(viewModel);
             }
-
-            var viewModel = new DeleteDestinationViewModel
+            catch (UnauthorizedAccessException)
             {
-                Id = destination.Id,
-                Name = destination.Name,
-                Description = destination.Description,
-                ImageUrls = destination.ImageUrls
-            };
-
-            return View(viewModel);
+                return RedirectToAction("Error", "Home", new { area = "", statusCode = 403 });
+            }
+            catch (Exception)
+            {
+                return RedirectToAction("Error", "Home", new { area = "", statusCode = 500 });
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> Delete(DeleteDestinationViewModel model)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            await destinationService.DeleteDestinationAsync(model.Id, userId);
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                await destinationService.DeleteDestinationAsync(model.Id, userId);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return RedirectToAction("Error", "Home", new { area = "", statusCode = 403 });
+            }
+            catch (Exception)
+            {
+                return RedirectToAction("Error", "Home", new { area = "", statusCode = 500 });
+            }
         }
     }
 }

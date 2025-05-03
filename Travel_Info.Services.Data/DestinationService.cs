@@ -105,7 +105,7 @@ namespace Travel_Info.Services.Data
 
             if (destination == null)
             {
-                throw new InvalidOperationException("Destination not found");
+                return null;
             }
 
             return new DestinationIndexViewModel
@@ -170,6 +170,11 @@ namespace Travel_Info.Services.Data
                 await repository.SaveChangesAsync();
 
                 var category = await categoryService.GetByIdAsync(destination.CategoryId);
+                if (category == null)
+                {
+                    throw new InvalidOperationException("The category is not found.");
+                }
+
                 var categoryFolder = category.NameEn;
 
                 foreach (var image in destination.Images)
@@ -192,6 +197,11 @@ namespace Travel_Info.Services.Data
         private async Task<List<string>> SaveImages(List<IFormFile> images, int categoryId)
         {
             var category = await categoryService.GetByIdAsync(categoryId);
+            if (category == null)
+            {
+                throw new InvalidOperationException("The category is not found.");
+            }
+
             var categoryFolder = category.NameEn;
             var imageUrls = new List<string>();
 
@@ -235,6 +245,11 @@ namespace Travel_Info.Services.Data
         private async Task<bool> IsUserAdmin(string userId)
         {
             var user = await userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return false;
+            }
+
             return await userManager.IsInRoleAsync(user, AdminRoleName);
         }
     }
