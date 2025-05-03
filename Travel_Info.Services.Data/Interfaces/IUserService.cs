@@ -8,6 +8,6 @@ namespace Travel_Info.Services.Data.Interfaces
 		Task<bool> UserExistsByIdAsync(string userId);
 		Task<bool> AssignUserToRoleAsync(string userId, string roleName);
 		Task<bool> RemoveUserRoleAsync(string userId, string roleName);
-		Task<bool> DeleteUserAsync(string userId);
+		Task DeleteUserAsync(string userId);
 	}
 }

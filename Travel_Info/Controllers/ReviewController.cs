@@ -42,23 +42,25 @@ namespace Travel_Info.Controllers
         [HttpPost]
         public async Task<IActionResult> Add(AddReviewViewModel model)
         {
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                return View(model);
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+                try
+                {
+                    await reviewService.AddReviewAsync(model, userId);
+                }
+                catch (InvalidOperationException)
+                {
+                    return RedirectToAction("Error", "Home", new { area = "", statusCode = 404 });
+                }
+                catch (Exception)
+                {
+                    return RedirectToAction("Error", "Home", new { area = "", statusCode = 500 });
+                }
             }
 
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            try
-            {
-                await reviewService.AddReviewAsync(model, userId);
-                return RedirectToAction("Details", "Destination", new { id = model.DestinationId });
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError(string.Empty, ex.Message);
-                return View(model);
-            }
+            return RedirectToAction("Details", "Destination", new { id = model.DestinationId });
         }
 
         [HttpGet]
@@ -69,7 +71,7 @@ namespace Travel_Info.Controllers
                 var review = await reviewService.GetReviewByIdAsync(id);
                 if (review == null)
                 {
-                    return NotFound();
+                    return RedirectToAction("Error", "Home", new { area = "", statusCode = 404 });
                 }
 
                 var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -79,7 +81,7 @@ namespace Travel_Info.Controllers
 
                 if (!isOwner && !isAdmin)
                 {
-                    return NotFound();
+                    return RedirectToAction("Error", "Home", new { area = "", statusCode = 403 });
                 }
 
                 var model = new EditReviewViewModel
@@ -92,33 +94,38 @@ namespace Travel_Info.Controllers
 
                 return View(model);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                ModelState.AddModelError(string.Empty, ex.Message);
-                return View("Error");
+                return RedirectToAction("Error", "Home", new { area = "", statusCode = 500 });
             }
         }
 
         [HttpPost]
         public async Task<IActionResult> Edit(EditReviewViewModel model)
         {
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                return View(model);
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+                try
+                {
+                    await reviewService.UpdateReviewAsync(model, userId);
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    return RedirectToAction("Error", "Home", new { area = "", statusCode = 403 });
+                }
+                catch (InvalidOperationException)
+                {
+                    return RedirectToAction("Error", "Home", new { area = "", statusCode = 404 });
+                }
+                catch (Exception)
+                {
+                    return RedirectToAction("Error", "Home", new { area = "", statusCode = 500 });
+                }
             }
 
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            try
-            {
-                await reviewService.UpdateReviewAsync(model, userId);
-                return RedirectToAction("Details", "Destination", new { id = model.DestinationId });
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError(string.Empty, ex.Message);
-                return View("Error");
-            }
+            return RedirectToAction("Details", "Destination", new { id = model.DestinationId });
         }
 
         [HttpGet]
@@ -129,7 +136,7 @@ namespace Travel_Info.Controllers
                 var review = await reviewService.GetReviewByIdAsync(id);
                 if (review == null)
                 {
-                    return NotFound();
+                    return RedirectToAction("Error", "Home", new { area = "", statusCode = 404 });
                 }
 
                 var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -138,7 +145,7 @@ namespace Travel_Info.Controllers
 
                 if (!isOwner && !isAdmin)
                 {
-                    return NotFound();
+                    return RedirectToAction("Error", "Home", new { area = "", statusCode = 403 });
                 }
 
                 var model = new DeleteReviewViewModel
@@ -151,10 +158,9 @@ namespace Travel_Info.Controllers
 
                 return View(model);
             }
-            catch (InvalidOperationException ex)
+            catch (Exception)
             {
-                ModelState.AddModelError(string.Empty, ex.Message);
-                return NotFound();
+                return RedirectToAction("Error", "Home", new { area = "", statusCode = 500 });
             }
         }
 
@@ -168,10 +174,17 @@ namespace Travel_Info.Controllers
                 await reviewService.DeleteReviewAsync(model, userId);
                 return RedirectToAction("Details", "Destination", new { id = model.DestinationId });
             }
-            catch (Exception ex)
+            catch (UnauthorizedAccessException)
             {
-                ModelState.AddModelError(string.Empty, ex.Message);
-                return View("Error");
+                return RedirectToAction("Error", "Home", new { area = "", statusCode = 403 });
+            }
+            catch (InvalidOperationException)
+            {
+                return RedirectToAction("Error", "Home", new { area = "", statusCode = 404 });
+            }
+            catch (Exception)
+            {
+                return RedirectToAction("Error", "Home", new { area = "", statusCode = 500 });
             }
         }
     }

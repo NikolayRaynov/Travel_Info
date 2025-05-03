@@ -25,8 +25,7 @@ namespace Travel_Info.Services.Data
 
 		public async Task<IEnumerable<AllUsersViewModel>> GetAllUsersAsync()
 		{
-			IEnumerable<ApplicationUser> allUsers = await this.userManager.Users
-				.ToArrayAsync();
+			IEnumerable<ApplicationUser> allUsers = await this.userManager.Users.ToArrayAsync();
 			ICollection<AllUsersViewModel> allUsersViewModel = new List<AllUsersViewModel>();
 
 			foreach (ApplicationUser user in allUsers)
@@ -59,8 +58,7 @@ namespace Travel_Info.Services.Data
 				return false;
 			}
 
-			ApplicationUser? user = await userManager
-				.FindByIdAsync(userId);
+			ApplicationUser? user = await userManager.FindByIdAsync(userId);
 			bool roleExists = await this.roleManager.RoleExistsAsync(roleName);
 
 			if (user == null || !roleExists)
@@ -90,8 +88,7 @@ namespace Travel_Info.Services.Data
 				return false;
 			}
 
-			ApplicationUser? user = await userManager
-				.FindByIdAsync(userId);
+			ApplicationUser? user = await userManager.FindByIdAsync(userId);
 			bool roleExists = await this.roleManager.RoleExistsAsync(roleName);
 
 			if (user == null || !roleExists)
@@ -114,60 +111,87 @@ namespace Travel_Info.Services.Data
 			return true;
 		}
 
-		public async Task<bool> DeleteUserAsync(string userId)
+		public async Task DeleteUserAsync(string userId)
 		{
 			if (string.IsNullOrEmpty(userId))
 			{
-				return false;
-			}
+                throw new ArgumentException("User ID cannot be null or empty.", nameof(userId));
+            }
 
 			ApplicationUser? user = await userManager.FindByIdAsync(userId);
 
 			if (user == null)
 			{
-				return false;
-			}
+                throw new InvalidOperationException("The user was not found.");
+            }
 
-			var userDestinations = await this.repository
-				.All<Destination>()
-				.Include(d => d.Images)
-				.Include(d => d.Reviews)
-				.Where(d => d.UserId == userId)
-				.ToListAsync();
-
-			foreach (var destination in userDestinations)
+			try
 			{
-				repository.DeleteRange<Review>(r => r.DestinationId == destination.Id);
+                var userDestinations = await this.repository
+                .All<Destination>()
+                .Include(d => d.Images)
+                .Include(d => d.Reviews)
+                .Where(d => d.UserId == userId)
+                .ToListAsync();
 
-				var category = await categoryService.GetByIdAsync(destination.CategoryId);
-				var categoryFolder = category.NameEn;
+                foreach (var destination in userDestinations)
+                {
+                    repository.DeleteRange<Review>(r => r.DestinationId == destination.Id);
 
-				foreach (var image in destination.Images)
-				{
-					var fileName = Path.GetFileName(image.Url);
-					var folderPath = Path.Combine(Directory.GetCurrentDirectory(), UrlPath, categoryFolder).ToLower();
-					var filePath = Path.Combine(folderPath, fileName).ToLower();
+                    var category = await categoryService.GetByIdAsync(destination.CategoryId);
+                    var categoryFolder = category?.NameEn;
 
-					if (File.Exists(filePath))
+                    if (!string.IsNullOrEmpty(categoryFolder))
 					{
-						File.Delete(filePath);
-					}
-				}
+                        var folderPath = Path.Combine(Directory.GetCurrentDirectory(), UrlPath, categoryFolder).ToLower();
 
-				repository.Delete(destination);
-			}
+                        foreach (var image in destination.Images)
+                        {
+                            var fileName = Path.GetFileName(image.Url);
+                            var filePath = Path.Combine(folderPath, fileName).ToLower();
 
-			await repository.SaveChangesAsync();
+							try
+							{
+                                if (File.Exists(filePath))
+                                {
+                                    File.Delete(filePath);
+                                }
+                            }
+                            catch (UnauthorizedAccessException authEx)
+                            {
+                                throw new UnauthorizedAccessException($"No permission to delete file {filePath}", authEx);
+                            }
+                            catch (Exception fileEx)
+                            {
+                                throw new Exception($"Unexpected error deleting file {filePath}", fileEx);
+                            }
+                        }
+                    }
 
-			var externalLogins = await this.userManager.GetLoginsAsync(user);
-			foreach (var externalLogin in externalLogins)
+                    repository.DeleteRange<Image>(i => i.DestinationId == destination.Id);
+                    repository.Delete(destination);
+                }
+
+                await repository.SaveChangesAsync();
+            }
+			catch (DbUpdateException dbEx)
 			{
-				await this.userManager.RemoveLoginAsync(user, externalLogin.LoginProvider, externalLogin.ProviderKey);
-			}
+                throw new DbUpdateException($"Database error during user cleanup: {dbEx.Message}", dbEx);
+            }
 
-			var result = await this.userManager.DeleteAsync(user);
+            var externalLogins = await this.userManager.GetLoginsAsync(user);
 
-			return result.Succeeded;
+            foreach (var externalLogin in externalLogins)
+            {
+                await this.userManager
+                    .RemoveLoginAsync(user, externalLogin.LoginProvider, externalLogin.ProviderKey);
+            }
+
+            var result = await this.userManager.DeleteAsync(user);
+            if (!result.Succeeded)
+            {
+                throw new InvalidOperationException($"Failed to delete user Identity: {string.Join(", ", result.Errors.Select(e => e.Description))}");
+            }
 		}
 	}
 }

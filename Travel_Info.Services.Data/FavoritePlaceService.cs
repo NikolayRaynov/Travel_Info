@@ -77,7 +77,8 @@ namespace Travel_Info.Services.Data
 
         public async Task<bool> AddToFavoritesAsync(int destinationId, string userId)
         {
-            var existingFavorite = await repository.All<FavoritePlace>()
+            var existingFavorite = await repository
+                .All<FavoritePlace>()
                 .Include(fp => fp.Destinations)
                 .FirstOrDefaultAsync(fp => fp.UserId == userId && fp.Destinations
                 .Any(d => d.Id == destinationId));
@@ -87,7 +88,8 @@ namespace Travel_Info.Services.Data
                 return false;
             }
 
-            var userFavorites = await repository.All<FavoritePlace>()
+            var userFavorites = await repository
+                .All<FavoritePlace>()
                 .FirstOrDefaultAsync(fp => fp.UserId == userId);
 
             if (userFavorites == null)

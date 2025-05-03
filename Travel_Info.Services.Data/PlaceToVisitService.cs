@@ -17,7 +17,8 @@ namespace Travel_Info.Services.Data
 
         public async Task<bool> AddToWishlistAsync(int destinationId, string userId)
         {
-            var existingDesiredPlace = await repository.All<PlaceToVisit>()
+            var existingDesiredPlace = await repository
+                .All<PlaceToVisit>()
                 .Include(pv => pv.Destinations)
                 .FirstOrDefaultAsync(pv => pv.UserId == userId && pv.Destinations
                 .Any(d => d.Id == destinationId));
@@ -27,7 +28,8 @@ namespace Travel_Info.Services.Data
                 return false;
             }
 
-            var userWishlist = await repository.All<PlaceToVisit>()
+            var userWishlist = await repository
+                .All<PlaceToVisit>()
                 .FirstOrDefaultAsync(pv => pv.UserId == userId);
 
             if (userWishlist == null)

@@ -15,7 +15,9 @@ namespace Travel_Info.Web.Controllers
         private readonly IDestinationService destinationService;
         private readonly UserManager<ApplicationUser> userManager;
 
-        public FavoritePlaceController(IFavoritePlaceService favoritePlaceService, IDestinationService destinationService, UserManager<ApplicationUser> userManager)
+        public FavoritePlaceController(IFavoritePlaceService favoritePlaceService, 
+                                        IDestinationService destinationService, 
+                                        UserManager<ApplicationUser> userManager)
         {
             this.favoritePlaceService = favoritePlaceService;
             this.destinationService = destinationService;
@@ -26,38 +28,54 @@ namespace Travel_Info.Web.Controllers
         public async Task<IActionResult> Index()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var favoriteDestinations = await favoritePlaceService.GetAllFavoritesAsync(userId);
 
-            return View(favoriteDestinations);
+            try
+            {
+                var favoriteDestinations = await favoritePlaceService.GetAllFavoritesAsync(userId);
+
+                return View(favoriteDestinations);
+            }
+            catch (Exception)
+            {
+                return RedirectToAction("Error", "Home", new { area = "", statusCode = 500 });
+            }
+            
         }
 
         [HttpGet]
         public async Task<IActionResult> Add(int id)
         {
-            var destination = await destinationService.GetByIdAsync(id);
-
-            if (destination == null)
+            try
             {
-                return NotFound();
+                var destination = await destinationService.GetByIdAsync(id);
+
+                if (destination == null)
+                {
+                    return RedirectToAction("Error", "Home", new { area = "", statusCode = 404 });
+                }
+
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+                if (await favoritePlaceService.IsInFavoriteAsync(id, userId))
+                {
+                    TempData["ErrorMessage"] = "This destination is already in your favorites.";
+                    return RedirectToAction("Index", "Destination");
+                }
+
+                var viewModel = new AddToFavoriteViewModel
+                {
+                    DestinationId = destination.Id,
+                    DestinationName = destination.Name,
+                    DestinationDescription = destination.Description,
+                    DestinationImageUrls = destination.ImageUrls
+                };
+
+                return View(viewModel);
             }
-
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            if (await favoritePlaceService.IsInFavoriteAsync(id, userId))
+            catch (Exception)
             {
-                TempData["ErrorMessage"] = "This destination is already in your favorites.";
-                return RedirectToAction("Index", "Destination");
+                return RedirectToAction("Error", "Home", new { area = "", statusCode = 500 });
             }
-
-            var viewModel = new AddToFavoriteViewModel
-            {
-                DestinationId = destination.Id,
-                DestinationName = destination.Name,
-                DestinationDescription = destination.Description,
-                DestinationImageUrls = destination.ImageUrls
-            };
-
-            return View(viewModel);
         }
 
         [HttpPost]
@@ -66,42 +84,56 @@ namespace Travel_Info.Web.Controllers
             if (model.DestinationId <= 0)
             {
                 TempData["ErrorMessage"] = "Invalid destination.";
-                return RedirectToAction("Index", "Destination");
+                return RedirectToAction(nameof(Index), "Destination");
             }
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var success = await favoritePlaceService.AddToFavoritesAsync(model.DestinationId, userId);
+            try
+            {
+                var success = await favoritePlaceService.AddToFavoritesAsync(model.DestinationId, userId);
 
-            if (success)
-            {
-                return RedirectToAction("Index", "FavoritePlace");
+                if (success)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "An error occurred while adding the destination to your favorites.";
+                    return RedirectToAction(nameof(Index), "Destination");
+                }
             }
-            else
+            catch (Exception)
             {
-                TempData["ErrorMessage"] = "An error occurred while adding the destination to your favorites.";
-                return RedirectToAction("Index", "Destination");
+                return RedirectToAction("Error", "Home", new { area = "", statusCode = 500 });
             }
         }
 
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            var destination = await destinationService.GetByIdAsync(id);
-            if (destination == null)
+            try
             {
-                return NotFound();
+                var destination = await destinationService.GetByIdAsync(id);
+                if (destination == null)
+                {
+                    return RedirectToAction("Error", "Home", new { area = "", statusCode = 404 });
+                }
+
+                var viewModel = new DeleteFavoriteViewModel
+                {
+                    DestinationId = destination.Id,
+                    DestinationName = destination.Name,
+                    DestinationDescription = destination.Description,
+                    DestinationImageUrls = destination.ImageUrls
+                };
+
+                return View(viewModel);
             }
-
-            var viewModel = new DeleteFavoriteViewModel
+            catch (Exception)
             {
-                DestinationId = destination.Id,
-                DestinationName = destination.Name,
-                DestinationDescription = destination.Description,
-                DestinationImageUrls = destination.ImageUrls
-            };
-
-            return View(viewModel);
+                return RedirectToAction("Error", "Home", new { area = "", statusCode = 500 });
+            }
         }
 
         [HttpPost]
@@ -112,13 +144,13 @@ namespace Travel_Info.Web.Controllers
             try
             {
                 await favoritePlaceService.RemoveFromFavoritesAsync(model.DestinationId, userId);
-            }
-            catch (InvalidOperationException ex)
-            {
-                TempData["ErrorMessage"] = ex.Message;
-            }
 
-            return RedirectToAction("Index");
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception)
+            {
+                return RedirectToAction("Error", "Home", new { area = "", statusCode = 500 });
+            }
         }
     }
 }
