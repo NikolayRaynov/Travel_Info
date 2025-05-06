@@ -1,6 +1,7 @@
 ﻿using Ganss.Xss;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Security.Claims;
 using Travel_Info.Services.Data.Interfaces;
 using Travel_Info.Web.ViewModels.Category;
@@ -29,20 +30,32 @@ namespace Travel_Info.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? categoryId)
         {
-            var destinations = await destinationService.GetAllAsync();
-            var viewModels = destinations
-            .Select(d => new DestinationIndexViewModel
+            try
             {
-                Id = d.Id,
-                Name = d.Name,
-                Description = d.Description,
-                ImageUrls = d.ImageUrls.ToList(),
-                UserId = d.UserId,
-            }).ToList();
+                var allCategories = await categoryService.GetAllAsync();
 
-            return View(viewModels);
+                ViewBag.Categories = new SelectList(allCategories, "Id", "NameBg", categoryId);
+                ViewBag.SelectedCategoryId = categoryId;
+
+                var destinations = await destinationService.GetAllAsync(categoryId);
+
+                var viewModels = destinations
+                .Select(d => new DestinationIndexViewModel
+                {
+                    Id = d.Id,
+                    Name = d.Name,
+                    ImageUrls = d.ImageUrls.ToList(),
+                    UserId = d.UserId,
+                }).ToList();
+
+                return View(viewModels);
+            }
+            catch (Exception)
+            {
+                return RedirectToAction("Error", "Home", new { area = "", statusCode = 500 });
+            }
         }
 
         [HttpGet]
