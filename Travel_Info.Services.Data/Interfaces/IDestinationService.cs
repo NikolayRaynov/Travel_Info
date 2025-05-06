@@ -5,7 +5,7 @@ namespace Travel_Info.Services.Data.Interfaces
 {
     public interface IDestinationService
     {
-        Task<IEnumerable<DestinationIndexViewModel>> GetAllAsync();
+        Task<IEnumerable<DestinationIndexViewModel>> GetAllAsync(int? categoryId = null);
         Task<DestinationIndexViewModel?> GetByIdAsync(int id);
         Task CreateAsync(AddDestinationViewModel destinationModel, List<IFormFile> images, string userId);
         Task UpdateAsync(EditDestinationViewModel destination, List<IFormFile> newImages, string userId);

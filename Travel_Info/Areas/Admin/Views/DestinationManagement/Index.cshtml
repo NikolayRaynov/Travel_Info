@@ -15,7 +15,32 @@
     </div>
 }
 
+<div class="row justify-content-center mb-4">
+    <div class="col-md-6">
+        <form asp-action="Index" method="get" class="d-flex align-items-center">
+            <label for="categoryId" class="form-label me-2 mb-0">Категория:</label>
+            <select name="categoryId" id="categoryId" asp-items="ViewBag.Categories" class="form-select me-2">
+                <option value="">Всички</option>
+            </select>
+            <button type="submit" class="btn btn-primary">Филтрирай</button>
+        </form>
+    </div>
+</div>
+
 <div class="text-center row justify-content-center">
+@if (!Model.Any())
+{
+    if (ViewBag.SelectedCategoryId != null && ViewBag.SelectedCategoryId > 0)
+    {
+        <p class="text-center">Няма намерени дестинации в избраната категория.</p>
+    }
+    else
+    {
+         <p class="text-center">Все още няма добавени дестинации.</p>
+    }
+}
+else
+{
     @foreach (var e in Model)
     {
         <div class="card col-3 h-100" style="width: 20rem; margin:0.5rem">
@@ -64,6 +89,7 @@
             </div>
         </div>
     }
+}
 </div>
 
 @section Scripts {

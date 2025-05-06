@@ -80,9 +80,16 @@ namespace Travel_Info.Services.Data
             }
         }
 
-        public async Task<IEnumerable<DestinationIndexViewModel>> GetAllAsync()
+        public async Task<IEnumerable<DestinationIndexViewModel>> GetAllAsync(int? categoryId = null)
         {
-            return await repository.All<Destination>()
+            var query = repository.All<Destination>();
+
+            if (categoryId.HasValue && categoryId.Value > 0)
+            {
+                query = query.Where(d => d.CategoryId == categoryId.Value);
+            }
+
+            return await query
                 .Include(d => d.Images)
                 .Select(d => new DestinationIndexViewModel
                 {
