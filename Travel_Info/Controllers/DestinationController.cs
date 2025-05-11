@@ -6,7 +6,6 @@ using System.Security.Claims;
 using Travel_Info.Services.Data.Interfaces;
 using Travel_Info.Web.ViewModels.Category;
 using Travel_Info.Web.ViewModels.Destination;
-using Travel_Info.Web.ViewModels.Review;
 
 namespace Travel_Info.Controllers
 {
@@ -30,7 +29,7 @@ namespace Travel_Info.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        public async Task<IActionResult> Index(int? categoryId)
+        public async Task<IActionResult> Index(int? categoryId, int pageNumber = DefaultPageNumber)
         {
             try
             {
@@ -39,18 +38,8 @@ namespace Travel_Info.Controllers
                 ViewBag.Categories = new SelectList(allCategories, "Id", "NameBg", categoryId);
                 ViewBag.SelectedCategoryId = categoryId;
 
-                var destinations = await destinationService.GetAllAsync(categoryId);
-
-                var viewModels = destinations
-                .Select(d => new DestinationIndexViewModel
-                {
-                    Id = d.Id,
-                    Name = d.Name,
-                    ImageUrls = d.ImageUrls.ToList(),
-                    UserId = d.UserId,
-                }).ToList();
-
-                return View(viewModels);
+                var pageViewModel = await destinationService.GetAllAsync(pageNumber, DefaultPageSize, categoryId);
+                return View(pageViewModel);
             }
             catch (Exception)
             {

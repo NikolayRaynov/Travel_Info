@@ -80,7 +80,8 @@ namespace Travel_Info.Services.Data
             }
         }
 
-        public async Task<IEnumerable<DestinationIndexViewModel>> GetAllAsync(int? categoryId = null)
+        public async Task<DestinationPageViewModel> GetAllAsync(int pageNumber = DefaultPageNumber, 
+            int pageSize = DefaultPageSize, int? categoryId = null)
         {
             var query = repository.All<Destination>();
 
@@ -89,7 +90,12 @@ namespace Travel_Info.Services.Data
                 query = query.Where(d => d.CategoryId == categoryId.Value);
             }
 
-            return await query
+            var totalItems = await query.CountAsync();
+
+            var destinationsOnPage = await query
+                .OrderByDescending(d => d.Id)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
                 .Include(d => d.Images)
                 .Select(d => new DestinationIndexViewModel
                 {
@@ -100,6 +106,28 @@ namespace Travel_Info.Services.Data
                     UserId = d.UserId
                 })
                 .ToListAsync();
+
+            int calculatedTotalPages = 0;
+
+            if (pageSize > 0)
+            {
+                calculatedTotalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+            }
+
+            if (calculatedTotalPages == 0 && totalItems > 0)
+            {
+                calculatedTotalPages = 1;
+            }
+
+            var viewModel = new DestinationPageViewModel
+            {
+                Destinations = destinationsOnPage,
+                TotalCount = totalItems,
+                PageNumber = pageNumber,
+                TotalPages = calculatedTotalPages
+            };
+
+            return viewModel;
         }
 
         public async Task<DestinationIndexViewModel?> GetByIdAsync(int id)

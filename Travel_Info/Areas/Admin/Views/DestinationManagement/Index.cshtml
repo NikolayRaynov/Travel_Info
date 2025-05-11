@@ -1,9 +1,16 @@
 ﻿@using System.Security.Claims;
 @using static Travel_Info.Common.ApplicationConstants
-@model IEnumerable<DestinationIndexViewModel>
+@model DestinationPageViewModel
 
 @{
     ViewBag.Title = "Destinations";
+
+    var currentCategoryId = ViewBag.SelectedCategoryId as int?;
+    var queryParams = new Dictionary<string, string>();
+    if (currentCategoryId.HasValue && currentCategoryId.Value > 0)
+    {
+        queryParams["categoryId"] = currentCategoryId.Value.ToString();
+    }
 }
 
 <h2 class="text-center">@ViewBag.Title</h2>
@@ -28,7 +35,7 @@
 </div>
 
 <div class="text-center row justify-content-center">
-@if (!Model.Any())
+@if (Model.Destinations == null || !Model.Destinations.Any())
 {
     if (ViewBag.SelectedCategoryId != null && ViewBag.SelectedCategoryId > 0)
     {
@@ -41,7 +48,7 @@
 }
 else
 {
-    @foreach (var e in Model)
+    @foreach (var e in Model.Destinations)
     {
         <div class="card col-3 h-100" style="width: 20rem; margin:0.5rem">
         <h4>@e.Name</h4>
@@ -91,6 +98,61 @@ else
     }
 }
 </div>
+
+@if (Model.TotalPages > 0)
+{
+    <div class="row mt-4">
+        <div class="col-md-12 d-flex justify-content-center">
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    @if (Model.HasPreviousPage)
+                    {
+                        queryParams["pageNumber"] = (Model.PageNumber - 1).ToString();
+                        <li class="page-item">
+                            <a class="page-link" asp-action="Index" asp-all-route-data="queryParams">Previous</a>
+                        </li>
+                        { queryParams.Remove("pageNumber"); }
+                    }
+                    else
+                    {
+                        <li class="page-item disabled">
+                            <span class="page-link">Previous</span>
+                        </li>
+                    }
+
+                    @for (var i = 1; i <= Model.TotalPages; i++)
+                    {
+                        queryParams["pageNumber"] = i.ToString();
+                        <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                            <a class="page-link" asp-action="Index" asp-all-route-data="queryParams">@i</a>
+                        </li>
+                        { queryParams.Remove("pageNumber"); }
+                    }
+
+                    @if (Model.HasNextPage)
+                    {
+                        queryParams["pageNumber"] = (Model.PageNumber + 1).ToString();
+                        <li class="page-item">
+                            <a class="page-link" asp-action="Index" asp-all-route-data="queryParams">Next</a>
+                        </li>
+                         { queryParams.Remove("pageNumber"); }
+                    }
+                    else
+                    {
+                        <li class="page-item disabled">
+                            <span class="page-link">Next</span>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <small>Page @Model.PageNumber of @Model.TotalPages</small>
+        </div>
+    </div>
+}
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
