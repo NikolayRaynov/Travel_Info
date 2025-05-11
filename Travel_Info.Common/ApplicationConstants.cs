@@ -7,6 +7,8 @@
         public const string UrlPath = "wwwroot/images/";
         public const int UsernameMinLength = 4;
         public const int UsernameMaxLength = 255;
-		public const string AdminRoleName = "Admin";
+        public const string AdminRoleName = "Admin";
+        public const int DefaultPageSize = 9;
+        public const int DefaultPageNumber = 1;
 	}
 }

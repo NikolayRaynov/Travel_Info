@@ -29,7 +29,7 @@ namespace Travel_Info.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(int? categoryId)
+        public async Task<IActionResult> Index(int? categoryId, int pageNumber = DefaultPageNumber)
         {
             try
             {
@@ -38,18 +38,8 @@ namespace Travel_Info.Areas.Admin.Controllers
                 ViewBag.Categories = new SelectList(allCategories, "Id", "NameBg", categoryId);
                 ViewBag.SelectedCategoryId = categoryId;
 
-                var destinations = await destinationService.GetAllAsync(categoryId);
-
-                var viewModels = destinations
-                .Select(d => new DestinationIndexViewModel
-                {
-                    Id = d.Id,
-                    Name = d.Name,
-                    ImageUrls = d.ImageUrls.ToList(),
-                    UserId = d.UserId,
-                }).ToList();
-
-                return View(viewModels);
+                var pageViewModel = await destinationService.GetAllAsync(pageNumber, DefaultPageSize, categoryId);
+                return View(pageViewModel);
             }
             catch (Exception)
             {
