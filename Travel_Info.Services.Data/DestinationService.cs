@@ -17,15 +17,17 @@ namespace Travel_Info.Services.Data
         private readonly IRepository repository;
         private readonly ICategoryService categoryService;
         private readonly IHtmlSanitizer htmlSanitizer;
+        private readonly IFileService fileService;
         private readonly UserManager<ApplicationUser> userManager;
 
-        public DestinationService(IRepository repository, ICategoryService categoryService, IHtmlSanitizer htmlSanitizer, 
-            UserManager<ApplicationUser> userManager)
+        public DestinationService(IRepository repository, ICategoryService categoryService, IHtmlSanitizer htmlSanitizer,
+            UserManager<ApplicationUser> userManager, IFileService fileService)
         {
             this.repository = repository;
             this.categoryService = categoryService;
             this.htmlSanitizer = htmlSanitizer;
             this.userManager = userManager;
+            this.fileService = fileService;
         }
 
         public async Task CreateAsync(AddDestinationViewModel destinationModel, List<IFormFile> images, string userId)
@@ -210,7 +212,7 @@ namespace Travel_Info.Services.Data
                     throw new InvalidOperationException("The category is not found.");
                 }
 
-                var categoryFolder = category.NameEn;
+                var categoryFolder = fileService.SanitizeFolderName(category.NameEn);
 
                 foreach (var image in destination.Images)
                 {
@@ -237,7 +239,7 @@ namespace Travel_Info.Services.Data
                 throw new InvalidOperationException("The category is not found.");
             }
 
-            var categoryFolder = category.NameEn;
+            var categoryFolder = fileService.SanitizeFolderName(category.NameEn);
             var imageUrls = new List<string>();
 
             foreach (var image in images)
