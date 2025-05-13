@@ -10,17 +10,20 @@ namespace Travel_Info.Services.Data
     public class CategoryService : ICategoryService
     {
         private readonly IRepository repository;
+        private readonly IFileService fileService;
         private readonly IWebHostEnvironment webHostEnvironment;
 
-        public CategoryService(IRepository repository, IWebHostEnvironment webHostEnvironment)
+        public CategoryService(IRepository repository, IWebHostEnvironment webHostEnvironment, IFileService fileService)
         {
             this.repository = repository;
             this.webHostEnvironment = webHostEnvironment;
+            this.fileService = fileService;
         }
 
         public async Task AddAsync(AddCategoryViewModel model, string webRootPath)
         {
-            string categoryFolderPath = Path.Combine(webRootPath, "images", model.NameEn);
+            string sanitizedNameEn = fileService.SanitizeFolderName(model.NameEn);
+            string categoryFolderPath = Path.Combine(webRootPath, "images", sanitizedNameEn);
 
             try
             {
@@ -110,8 +113,8 @@ namespace Travel_Info.Services.Data
                 throw new InvalidOperationException("The category is not found.");
             }
 
-            string oldNameEn = category.NameEn;
-            string newNameEn = model.NameEn;
+            string oldNameEn = fileService.SanitizeFolderName(category.NameEn);
+            string newNameEn = fileService.SanitizeFolderName(model.NameEn);
 
             if (oldNameEn != newNameEn)
             {

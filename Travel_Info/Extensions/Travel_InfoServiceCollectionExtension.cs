@@ -16,6 +16,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<IReviewService, ReviewService>();
             services.AddScoped<ICategoryService, CategoryService>();
 			services.AddScoped<IUserService, UserService>();
+			services.AddScoped<IFileService, FileService>();
 
 			return services;
         }

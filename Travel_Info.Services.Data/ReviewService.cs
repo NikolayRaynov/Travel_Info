@@ -138,7 +138,7 @@ namespace Travel_Info.Services.Data
             }
             else
             {
-                throw new InvalidOperationException("You are not allowed to edit this review.");
+                throw new UnauthorizedAccessException("You are not allowed to delete this review.");
             }
         }
 
