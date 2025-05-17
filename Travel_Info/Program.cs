@@ -1,9 +1,11 @@
 ﻿using Ganss.Xss;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Travel_Info.Data;
 using Travel_Info.Data.Models;
+using Travel_Info.Services.Data;
 using Travel_Info.Web.Infrastructure.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,7 +16,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
-    options.SignIn.RequireConfirmedAccount = false;
+    options.SignIn.RequireConfirmedAccount = true;
     options.SignIn.RequireConfirmedEmail = false;
     options.SignIn.RequireConfirmedPhoneNumber = false;
     options.Password.RequireDigit = false;
@@ -44,6 +46,7 @@ builder.Services.AddControllersWithViews(options =>
 builder.Services.AddRazorPages();
 builder.Services.AddApplicationServices();
 builder.Services.AddScoped<IHtmlSanitizer, HtmlSanitizer>();
+builder.Services.AddTransient<IEmailSender, EmailSender>();
 
 var app = builder.Build();
 
