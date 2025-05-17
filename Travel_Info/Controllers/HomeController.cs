@@ -15,7 +15,7 @@ namespace Travel_Info.Controllers
 
         public IActionResult Index()
         {
-            return RedirectToAction("Index", "Destination");
+            return RedirectToAction(nameof(Index), "Destination");
         }
 
         public IActionResult Error(int? statusCode = null)
