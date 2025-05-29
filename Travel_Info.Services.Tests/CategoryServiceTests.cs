@@ -12,27 +12,27 @@ namespace Travel_Info.Services.Tests
     [TestFixture]
     public class CategoryServiceTests
     {
-        private Mock<IRepository> _mockRepository;
-        private Mock<IFileService> _mockFileService;
-        private Mock<IWebHostEnvironment> _mockWebHostEnvironment;
-        private CategoryService _categoryService;
-        private string _testWebRootPath;
+        private Mock<IRepository> mockRepository;
+        private Mock<IFileService> mockFileService;
+        private Mock<IWebHostEnvironment> mockWebHostEnvironment;
+        private CategoryService categoryService;
+        private string testWebRootPath;
 
         [SetUp]
         public void Setup()
         {
-            _mockRepository = new Mock<IRepository>();
-            _mockFileService = new Mock<IFileService>();
-            _mockWebHostEnvironment = new Mock<IWebHostEnvironment>();
+            this.mockRepository = new Mock<IRepository>();
+            this.mockFileService = new Mock<IFileService>();
+            this.mockWebHostEnvironment = new Mock<IWebHostEnvironment>();
 
-            _testWebRootPath = Path.Combine(Path.GetTempPath(), "test_wwwroot_category_service");
+            this.testWebRootPath = Path.Combine(Path.GetTempPath(), "test_wwwroot_category_service");
 
-            Directory.CreateDirectory(_testWebRootPath);
+            Directory.CreateDirectory(testWebRootPath);
 
-            _categoryService = new CategoryService(
-                _mockRepository.Object,
-                _mockWebHostEnvironment.Object,
-                _mockFileService.Object
+            this.categoryService = new CategoryService(
+                this.mockRepository.Object,
+                this.mockWebHostEnvironment.Object,
+                this.mockFileService.Object
             );
         }
 
@@ -41,9 +41,9 @@ namespace Travel_Info.Services.Tests
         {
             try
             {
-                if (Directory.Exists(_testWebRootPath))
+                if (Directory.Exists(testWebRootPath))
                 {
-                    Directory.Delete(_testWebRootPath, true);
+                    Directory.Delete(testWebRootPath, true);
                 }
             }
             catch (Exception ex)
@@ -57,25 +57,26 @@ namespace Travel_Info.Services.Tests
         {
             var model = new AddCategoryViewModel { NameBg = "Тест Категория", NameEn = "Test Category" };
             var sanitizedNameEn = "Test_Category";
-            var expectedFolderPath = Path.Combine(_testWebRootPath, "images", sanitizedNameEn);
+            var expectedFolderPath = Path.Combine(testWebRootPath, "images", sanitizedNameEn);
 
-            _mockFileService.Setup(fs => fs.SanitizeFolderName(model.NameEn)).Returns(sanitizedNameEn);
-            _mockRepository.Setup(r => r.AddAsync(It.IsAny<Category>())).Returns(Task.CompletedTask);
-            _mockRepository.Setup(r => r.SaveChangesAsync()).ReturnsAsync(1);
+            this.mockFileService.Setup(fs => fs.SanitizeFolderName(model.NameEn)).Returns(sanitizedNameEn);
+            this.mockRepository.Setup(r => r.AddAsync(It.IsAny<Category>())).Returns(Task.CompletedTask);
+            this.mockRepository.Setup(r => r.SaveChangesAsync()).ReturnsAsync(1);
 
             Category capturedCategory = null;
-            _mockRepository.Setup(r => r.AddAsync(It.IsAny<Category>()))
+
+            this.mockRepository.Setup(r => r.AddAsync(It.IsAny<Category>()))
                            .Callback<Category>(c => capturedCategory = c)
                            .Returns(Task.CompletedTask);
 
-            await _categoryService.AddAsync(model, _testWebRootPath);
+            await categoryService.AddAsync(model, this.testWebRootPath);
 
-            _mockFileService.Verify(fs => fs.SanitizeFolderName(model.NameEn), Times.Once);
-            _mockRepository.Verify(r => r.AddAsync(It.Is<Category>(c =>
+            this.mockFileService.Verify(fs => fs.SanitizeFolderName(model.NameEn), Times.Once);
+            this.mockRepository.Verify(r => r.AddAsync(It.Is<Category>(c =>
                 c.NameBg == model.NameBg &&
                 c.NameEn == model.NameEn
             )), Times.Once);
-            _mockRepository.Verify(r => r.SaveChangesAsync(), Times.Once);
+            this.mockRepository.Verify(r => r.SaveChangesAsync(), Times.Once);
 
             Assert.IsNotNull(capturedCategory);
             Assert.AreEqual(model.NameBg, capturedCategory.NameBg);
@@ -86,10 +87,19 @@ namespace Travel_Info.Services.Tests
         public async Task ExistByIdAsync_ShouldReturnTrue_WhenCategoryExists()
         {
             var categoryId = 1;
-            var categories = new List<Category> { new Category { Id = categoryId } }.AsQueryable().BuildMock();
-            _mockRepository.Setup(r => r.AllReadonly<Category>()).Returns(categories);
+            var categories = new List<Category> 
+            { 
+                new Category 
+                { 
+                    Id = categoryId 
+                }
+            }
+            .AsQueryable()
+            .BuildMock();
 
-            var result = await _categoryService.ExistByIdAsync(categoryId);
+            this.mockRepository.Setup(r => r.AllReadonly<Category>()).Returns(categories);
+
+            var result = await categoryService.ExistByIdAsync(categoryId);
 
             Assert.IsTrue(result);
         }
@@ -99,9 +109,10 @@ namespace Travel_Info.Services.Tests
         {
             var categoryId = 1;
             var categories = new List<Category>().AsQueryable().BuildMock();
-            _mockRepository.Setup(r => r.AllReadonly<Category>()).Returns(categories);
 
-            var result = await _categoryService.ExistByIdAsync(categoryId);
+            this.mockRepository.Setup(r => r.AllReadonly<Category>()).Returns(categories);
+
+            var result = await categoryService.ExistByIdAsync(categoryId);
 
             Assert.IsFalse(result);
         }
@@ -115,9 +126,10 @@ namespace Travel_Info.Services.Tests
                 new Category { Id = 2, NameBg = "Плаж", NameEn = "Beach" }
             };
             var mockDbCategories = dbCategories.AsQueryable().BuildMock();
-            _mockRepository.Setup(r => r.AllReadonly<Category>()).Returns(mockDbCategories);
 
-            var result = await _categoryService.GetAllAsync();
+            this.mockRepository.Setup(r => r.AllReadonly<Category>()).Returns(mockDbCategories);
+
+            var result = await categoryService.GetAllAsync();
             var resultList = result.ToList();
 
             Assert.AreEqual(2, resultList.Count);
@@ -131,9 +143,10 @@ namespace Travel_Info.Services.Tests
             var categoryId = 1;
             var category = new Category { Id = categoryId, NameBg = "ТестБГ", NameEn = "TestEN" };
             var categories = new List<Category> { category }.AsQueryable().BuildMock();
-            _mockRepository.Setup(r => r.AllReadonly<Category>()).Returns(categories);
 
-            var result = await _categoryService.GetByIdAsync(categoryId);
+            this.mockRepository.Setup(r => r.AllReadonly<Category>()).Returns(categories);
+
+            var result = await categoryService.GetByIdAsync(categoryId);
 
             Assert.IsNotNull(result);
             Assert.AreEqual(categoryId, result.Id);
@@ -146,9 +159,10 @@ namespace Travel_Info.Services.Tests
         {
             var categoryId = 1;
             var categories = new List<Category>().AsQueryable().BuildMock();
-            _mockRepository.Setup(r => r.AllReadonly<Category>()).Returns(categories);
 
-            var result = await _categoryService.GetByIdAsync(categoryId);
+            this.mockRepository.Setup(r => r.AllReadonly<Category>()).Returns(categories);
+
+            var result = await this.categoryService.GetByIdAsync(categoryId);
 
             Assert.IsNull(result);
         }
@@ -159,9 +173,10 @@ namespace Travel_Info.Services.Tests
             var categoryId = 1;
             var category = new Category { Id = categoryId, NameBg = "ТестБГ", NameEn = "TestEN" };
             var categories = new List<Category> { category }.AsQueryable().BuildMock();
-            _mockRepository.Setup(r => r.AllReadonly<Category>()).Returns(categories);
 
-            var result = await _categoryService.GetCategoryForEditAsync(categoryId);
+            this.mockRepository.Setup(r => r.AllReadonly<Category>()).Returns(categories);
+
+            var result = await this.categoryService.GetCategoryForEditAsync(categoryId);
 
             Assert.IsNotNull(result);
             Assert.AreEqual(categoryId, result.Id);
@@ -176,9 +191,10 @@ namespace Travel_Info.Services.Tests
             var categoryNameEn = "TestEN";
             var category = new Category { Id = categoryId, NameEn = categoryNameEn };
             var categories = new List<Category> { category }.AsQueryable().BuildMock();
-            _mockRepository.Setup(r => r.AllReadonly<Category>()).Returns(categories);
 
-            var result = await _categoryService.GetCategoryNameEnByIdAsync(categoryId);
+            this.mockRepository.Setup(r => r.AllReadonly<Category>()).Returns(categories);
+
+            var result = await this.categoryService.GetCategoryNameEnByIdAsync(categoryId);
 
             Assert.AreEqual(categoryNameEn, result);
         }
@@ -193,20 +209,20 @@ namespace Travel_Info.Services.Tests
             var sanitizedOldName = "OldEN_sanitized";
             var sanitizedNewName = "NewEN_sanitized";
 
-            _mockRepository.Setup(r => r.GetByIdAsync<Category>(categoryId)).ReturnsAsync(existingCategory);
+            this.mockRepository.Setup(r => r.GetByIdAsync<Category>(categoryId)).ReturnsAsync(existingCategory);
 
-            _mockFileService.Setup(fs => fs.SanitizeFolderName("OldEN")).Returns(sanitizedOldName);
-            _mockFileService.Setup(fs => fs.SanitizeFolderName("NewEN")).Returns(sanitizedNewName);
+            this.mockFileService.Setup(fs => fs.SanitizeFolderName("OldEN")).Returns(sanitizedOldName);
+            this.mockFileService.Setup(fs => fs.SanitizeFolderName("NewEN")).Returns(sanitizedNewName);
 
-            _mockRepository.Setup(r => r.SaveChangesAsync()).ReturnsAsync(1);
+            this.mockRepository.Setup(r => r.SaveChangesAsync()).ReturnsAsync(1);
 
-            await _categoryService.UpdateAsync(categoryId, model, _testWebRootPath);
-            _mockRepository.Verify(r => r.GetByIdAsync<Category>(categoryId), Times.Once);
+            await this.categoryService.UpdateAsync(categoryId, model, testWebRootPath);
+            this.mockRepository.Verify(r => r.GetByIdAsync<Category>(categoryId), Times.Once);
 
             Assert.AreEqual(model.NameBg, existingCategory.NameBg);
             Assert.AreEqual(sanitizedNewName.ToLower(), existingCategory.NameEn);
 
-            _mockRepository.Verify(r => r.SaveChangesAsync(), Times.Once);
+            this.mockRepository.Verify(r => r.SaveChangesAsync(), Times.Once);
         }
 
         [Test]
@@ -217,16 +233,18 @@ namespace Travel_Info.Services.Tests
             var model = new CategoryViewModel { Id = categoryId, NameBg = "НовоБГ", NameEn = "SameOldEN" };
             var sanitizedName = "SameOldEN_sanitized";
 
-            _mockRepository.Setup(r => r.GetByIdAsync<Category>(categoryId)).ReturnsAsync(existingCategory);
-            _mockFileService.Setup(fs => fs.SanitizeFolderName(It.IsAny<string>())).Returns(sanitizedName);
-            _mockRepository.Setup(r => r.SaveChangesAsync()).ReturnsAsync(1);
+            this.mockRepository.Setup(r => r.GetByIdAsync<Category>(categoryId)).ReturnsAsync(existingCategory);
+            this.mockFileService.Setup(fs => fs.SanitizeFolderName(It.IsAny<string>())).Returns(sanitizedName);
+            this.mockRepository.Setup(r => r.SaveChangesAsync()).ReturnsAsync(1);
 
-            await _categoryService.UpdateAsync(categoryId, model, _testWebRootPath);
+            await this.categoryService.UpdateAsync(categoryId, model, testWebRootPath);
 
-            _mockRepository.Verify(r => r.GetByIdAsync<Category>(categoryId), Times.Once);
+            this.mockRepository.Verify(r => r.GetByIdAsync<Category>(categoryId), Times.Once);
+
             Assert.AreEqual(model.NameBg, existingCategory.NameBg);
             Assert.AreEqual(sanitizedName.ToLower(), existingCategory.NameEn);
-            _mockRepository.Verify(r => r.SaveChangesAsync(), Times.Once);
+
+            this.mockRepository.Verify(r => r.SaveChangesAsync(), Times.Once);
         }
 
         [Test]
@@ -234,10 +252,12 @@ namespace Travel_Info.Services.Tests
         {
             var categoryId = 1;
             var model = new CategoryViewModel { Id = categoryId, NameBg = "НовоБГ", NameEn = "NewEN" };
-            _mockRepository.Setup(r => r.GetByIdAsync<Category>(categoryId)).ReturnsAsync((Category)null);
+
+            this.mockRepository.Setup(r => r.GetByIdAsync<Category>(categoryId)).ReturnsAsync((Category)null);
 
             var ex = Assert.ThrowsAsync<InvalidOperationException>(async () =>
-                await _categoryService.UpdateAsync(categoryId, model, _testWebRootPath));
+                await categoryService.UpdateAsync(categoryId, model, testWebRootPath));
+
             Assert.AreEqual("The category is not found.", ex.Message);
         }
     }
