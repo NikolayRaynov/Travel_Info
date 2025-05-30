@@ -20,9 +20,10 @@
                             <span asp-validation-for="Input.Username" class="text-danger"></span>
                         </div>
                         <div class="form-floating mb-3">
-                            <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" />
+                            <input asp-for="Input.Password" id="passwordInput" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" />
                             <label asp-for="Input.Password" class="form-label">Password</label>
                             <span asp-validation-for="Input.Password" class="text-danger"></span>
+                            <span toggle="#passwordInput" class="fa fa-fw fa-eye field-icon toggle-password"></span>
                         </div>
                         <div class="row mb-3">
                             <div class="col">
@@ -52,7 +53,8 @@
                     <div class="mt-4 pt-4 border-top">
                         <section>
                             @{
-                                if ((Model.ExternalLogins?.Count ?? 0) == 0)
+                                if
+                                ((Model.ExternalLogins?.Count ?? 0) == 0)
                                 {
                                     <div class="text-center">
                                         <p>
@@ -65,7 +67,8 @@
                                 }
                                 else
                                 {
-                                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                                    <form id="external-account" asp-page="./ExternalLogin"
+                                          asp-route-returnUrl="@Model.ReturnUrl" method="post">
                                         <div class="d-flex justify-content-center flex-wrap gap-2">
                                             @foreach (var provider in Model.ExternalLogins)
                                             {
@@ -83,7 +86,8 @@
                                                 }
                                                 else
                                                 {
-                                                    <button type="submit" class="btn btn-outline-secondary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">
+                                                    <button type="submit" class="btn btn-outline-secondary" name="provider" value="@provider.Name"
+                                                            title="Log in using your @provider.DisplayName account">
                                                         @provider.DisplayName
                                                     </button>
                                                 }
@@ -99,7 +103,30 @@
         </div>
     </div>
 </div>
-
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+        <partial name="_ValidationScriptsPartial" />
+        <script>
+            $(document).ready(function() {
+                $(".toggle-password").click(function() {
+                    $(this).toggleClass("fa-eye fa-eye-slash");
+                    var input = $($(this).attr("toggle"));
+                    if (input.attr("type") == "password") {
+                        input.attr("type", "text");
+                    } else {
+                        input.attr("type", "password");
+                    }
+                });
+            });
+        </script>
+
+        <style>
+            .field-icon {
+                float: right;
+                margin-right: 15px;
+                margin-top: -35px;
+                position: relative;
+                z-index: 2;
+                cursor: pointer;
+            }
+        </style>
 }
