@@ -1,31 +1,51 @@
-﻿@{
-    Layout = null; // No shared layout
-}
+﻿<script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.9.6/lottie.min.js"></script>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>404 - Page Not Found</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="~/css/errorPages.css"/>
-</head>
-<body class="d-flex align-items-center justify-content-center">
-<div class="text-center content">
-    <div class="error-icon">🔍</div>
-    <h1 class="display-1 fw-bold text-danger">404</h1>
-    <p class="lead text-muted">Oops! The page you're looking for doesn't exist.</p>
-    <p class="mb-4">It seems you may have taken a wrong turn. Don't worry, it happens to the best of us!</p>
-    <a href="/" class="btn btn-primary btn-lg btn-hover-effect">
-        <i class="bi bi-arrow-left-circle"></i> Back to Home
-    </a>
+<div class="error-container">
+    <div class="lottie-animation"></div>
+    <div class="error-content">
+        <h1>404</h1>
+        <p>Oops! The page you're looking for doesn't exist.</p>
+        <a class="btn btn-primary" asp-area="" asp-controller="Home" asp-action="Index">Back to Home</a>
+    </div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<style>
+    .error-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f8f9fa;
+  }
+
+  .error-content {
+    text-align: center;
+  }
+
+  .error-content h1 {
+    font-size: 6rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+  }
+
+  .error-content p {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .lottie-animation {
+    max-width: 400px;
+    margin-bottom: 2rem;
+  }
+</style>
 <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            document.querySelector(".content").classList.add("visible");
-        });
-    </script>
-</body>
-</html>
+    const animation = lottie.loadAnimation({
+          container: document.querySelector('.lottie-animation'),
+          renderer: 'svg',
+          loop: true,
+          autoplay: true,
+          path: 'https://lottie.host/d987597c-7676-4424-8817-7fca6dc1a33e/BVrFXsaeui.json'
+
+    });
+</script>
