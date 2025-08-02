@@ -35,7 +35,7 @@ namespace Travel_Info.Areas.Admin.Controllers
             {
                 var allCategories = await categoryService.GetAllAsync();
 
-                ViewBag.Categories = new SelectList(allCategories, "Id", "NameBg", categoryId);
+                ViewBag.Categories = new SelectList(allCategories, "Id", "NameEn", categoryId);
                 ViewBag.SelectedCategoryId = categoryId;
 
                 var pageViewModel = await destinationService.GetAllAsync(pageNumber, DefaultPageSize, categoryId);
