@@ -3,7 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Travel_Info.Data.Models;
 
-namespace Travel_Info.Web.Infrastructure.Configuration
+namespace Travel_Info.Data.Configuration
 {
 	using static Travel_Info.Common.ApplicationConstants;
 	public static class RolesSeeder

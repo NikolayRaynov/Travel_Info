@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Travel_Info.Data.Models;
 using static Travel_Info.Common.ConfigurationConstants.Destination;
 
-namespace Travel_Info.Web.Infrastructure.Configuration
+namespace Travel_Info.Data.Configuration
 {
     public class DestinationConfiguration : IEntityTypeConfiguration<Destination>
     {

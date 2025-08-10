@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Travel_Info.Data;
+using Travel_Info.Data.Configuration;
 using Travel_Info.Data.Models;
 using Travel_Info.Services.Data;
-using Travel_Info.Web.Infrastructure.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
