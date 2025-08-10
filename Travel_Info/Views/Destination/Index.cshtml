@@ -82,8 +82,11 @@
 
                 <div class="row gx-0">
                     <div class="col-12 px-1">
-                        <a asp-controller="PlaceToVisit" asp-action="Add" asp-route-id="@e.Id" class="btn btn-primary btn-sm mb-2 w-100 fw-bold rounded btn-dark-text">Add to Wishlist</a>
-                        <a asp-controller="FavoritePlace" asp-action="Add" asp-route-id="@e.Id" class="btn btn-primary btn-sm mb-2 w-100 fw-bold rounded btn-dark-text">Add to Favorite</a>
+                        @if (User?.Identity?.IsAuthenticated == true && User.FindFirstValue(ClaimTypes.NameIdentifier) != e.UserId)
+                        {
+                            <a asp-controller="PlaceToVisit" asp-action="Add" asp-route-id="@e.Id" class="btn btn-primary btn-sm mb-2 w-100 fw-bold rounded btn-dark-text">Add to Wishlist</a>
+                            <a asp-controller="FavoritePlace" asp-action="Add" asp-route-id="@e.Id" class="btn btn-primary btn-sm mb-2 w-100 fw-bold rounded btn-dark-text">Add to Favorite</a>
+                        }
                         <a asp-controller="Destination" asp-action="Details" asp-route-id="@e.Id" class="btn btn-success btn-sm mb-2 w-100 fw-bold rounded btn-dark-text">Details</a>
                     </div>
                 </div>
