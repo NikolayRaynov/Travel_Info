@@ -22,9 +22,14 @@ body {
 }
 
 .bg-light-green {
-    background-color: #23e619;
+    background-color: #33f292;
 }
 
 .foother-grey {
     background-color: #797c80;
+}
+
+.navbar-nav .nav-link,
+.navbar-brand .btn.btn-link {
+    color: #0d6efd !important;
 }
