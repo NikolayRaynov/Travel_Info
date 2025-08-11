@@ -57,7 +57,8 @@ namespace Travel_Info.Controllers
                     .Select(c => new CategoryViewModel
                     {
                         Id = c.Id,
-                        NameBg = c.NameBg
+                        NameBg = c.NameBg,
+                        NameEn = c.NameEn
                     })
                     .ToList()
             };
