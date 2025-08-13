@@ -12,7 +12,7 @@ namespace Travel_Info.Services.Data
         {
             this.configuration = configuration;
         }
-        public Task SendEmailAsync(string email, string subject, string htmlMessage)
+        public async Task SendEmailAsync(string email, string subject, string htmlMessage)
         {
             var senderEmail = configuration["EmailSettings:SenderEmail"];
             var smtpUsername = configuration["EmailSettings:SmtpUsername"];
@@ -31,14 +31,12 @@ namespace Travel_Info.Services.Data
 
             using (var emailClient = new MailKit.Net.Smtp.SmtpClient())
             {
-                emailClient.Connect("smtp.gmail.com", 587, MailKit
+                await emailClient.ConnectAsync("smtp.gmail.com", 587, MailKit
                     .Security.SecureSocketOptions.StartTls);
-                emailClient.Authenticate(smtpUsername, smtpPassword);
-                emailClient.Send(emailToSend);
-                emailClient.Disconnect(true);
+                await emailClient.AuthenticateAsync(smtpUsername, smtpPassword);
+                await emailClient.SendAsync(emailToSend);
+                await emailClient.DisconnectAsync(true);
             }
-
-            return Task.CompletedTask;
         }
     }
 }
