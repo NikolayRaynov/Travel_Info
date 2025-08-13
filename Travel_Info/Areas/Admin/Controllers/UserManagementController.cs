@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Travel_Info.Data.Models;
 using Travel_Info.Services.Data.Interfaces;
 using Travel_Info.Web.ViewModels.Admin.UserManagement;
 
@@ -15,12 +13,10 @@ namespace Travel_Info.Areas.Admin.Controllers
 	public class UserManagementController : Controller
 	{
 		private readonly IUserService userService;
-		private readonly UserManager<ApplicationUser> userManager;
 
-		public UserManagementController(IUserService userService, UserManager<ApplicationUser> userManager)
+		public UserManagementController(IUserService userService)
 		{
 			this.userService = userService;
-			this.userManager = userManager;
 		}
 
 		[HttpGet]
