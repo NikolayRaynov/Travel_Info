@@ -1,7 +1,8 @@
 ﻿@model IEnumerable<ReviewViewModel>
+@using static Travel_Info.Common.ApplicationConstants
 
 @{
-    ViewBag.Title = "Reviews";
+    ViewBag.Title = "All reviews";
 }
 
 <h1>@ViewBag.Title</h1>
@@ -11,25 +12,41 @@
     <ul class="list-unstyled">
         @foreach (var review in Model)
         {
-            <li>
+            <li class="mb-4">
                 <p><strong>@review.User:</strong></p>
                 <p>@review.Comment</p>
                 <p>
                     Rating:
                     <span>
-                        @for (int i = 1; i <= @review.Rating; i++)
+                        @for (int i = 1; i <= 5; i++)
                         {
-                            <i class="bi bi-star-fill text-warning"></i>
+                            if (i <= @review.Rating)
+                            {
+                                <i class="bi bi-star-fill text-warning"></i>
+                            }
+                            else
+                            {
+                                <i class="bi bi-star text-muted"></i>
+                            }
                         }
                     </span>
                 </p>
-                <p>(@review.CreatedAt)</p>
-                <a asp-action="Edit" asp-route-id="@review.Id" class="btn btn-warning">Edit</a>
-                <a asp-action="Delete" asp-route-id="@review.Id" class="btn btn-danger">Delete</a>
+                <p class="text-muted">(@review.CreatedAt)</p>
+                @if (User.Identity.IsAuthenticated && (review.User == User.Identity.Name || User.IsInRole(AdminRoleName)))
+                {
+                    <div class="d-flex gap-2">
+                        <a asp-area="" asp-controller="Review" asp-action="Edit" asp-route-id="@review.Id" class="btn btn-warning">Edit</a>
+                        <a asp-area="" asp-controller="Review" asp-action="Delete" asp-route-id="@review.Id" class="btn btn-danger">Delete</a>
+                    </div>
+                }
+                <hr class="col-md-6" style="border: 0.5px grey; opacity: 1;" />
             </li>
+            <a asp-controller="Destination" asp-action="Details" asp-route-id="@review.DestinationId" class="btn btn-secondary">Back</a>
         }
     </ul>
+
 }
+
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
