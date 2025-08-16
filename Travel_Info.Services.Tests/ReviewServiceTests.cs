@@ -177,7 +177,7 @@ namespace Travel_Info.Services.Tests
             Assert.IsNotNull(result);
             Assert.AreEqual(existingReviewId, result.Id);
             Assert.AreEqual("My Review", result.Comment);
-            Assert.AreEqual(reviewUser.Id, result.User);
+            Assert.AreEqual("Reviewer", result.User);
         }
 
         [Test]
