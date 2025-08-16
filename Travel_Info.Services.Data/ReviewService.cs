@@ -57,7 +57,7 @@ namespace Travel_Info.Services.Data
                 Rating = review.Rating,
                 Comment = review.Comment,
                 CreatedAt = review.CreatedAt,
-                User = review.UserId,
+                User = review.User.UserName,
                 DestinationId = review.DestinationId
             };
         }
