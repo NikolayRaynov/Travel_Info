@@ -1,4 +1,6 @@
-﻿using Travel_Info.Data.Repository;
+﻿using Ganss.Xss;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Travel_Info.Data.Repository;
 using Travel_Info.Data.Repository.Interfaces;
 using Travel_Info.Services.Data;
 using Travel_Info.Services.Data.Interfaces;
@@ -17,8 +19,10 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<ICategoryService, CategoryService>();
 			services.AddScoped<IUserService, UserService>();
 			services.AddScoped<IFileService, FileService>();
+            services.AddScoped<IHtmlSanitizer, HtmlSanitizer>();
+            services.AddTransient<IEmailSender, EmailSender>();
 
-			return services;
+            return services;
         }
     }
 }

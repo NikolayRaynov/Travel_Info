@@ -44,8 +44,7 @@ builder.Services.AddControllersWithViews(options =>
 });
 builder.Services.AddRazorPages();
 builder.Services.AddApplicationServices();
-builder.Services.AddScoped<IHtmlSanitizer, HtmlSanitizer>();
-builder.Services.AddTransient<IEmailSender, EmailSender>();
+
 
 var app = builder.Build();
 
